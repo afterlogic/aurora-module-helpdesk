@@ -16,6 +16,7 @@ class HelpDeskModule extends AApiModule
 	
 	public $oAuthDecorator = null;
 	
+	//test v
 	public function init() 
 	{
 		$this->oMainManager = $this->GetManager('main');
