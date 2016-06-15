@@ -7,7 +7,7 @@
 	"StyleAllow": false,
 	"StyleImage": "",
 	"StyleText": "",
-	"FetcherType": "NONE",
+	"FetcherType": 0,
 	"FacebookAllow": false,
 	"FacebookId": "",
 	"FacebookSecret": "",
