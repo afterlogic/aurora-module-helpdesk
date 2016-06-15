@@ -23,7 +23,7 @@ class HelpDeskModule extends AApiModule
 		$this->oAccountsManager = $this->GetManager('accounts');
 		
 		$this->oCoreDecorator = \CApi::GetModuleDecorator('Core');
-		$this->oAuthDecorator = \CApi::GetModuleDecorator('Auth');
+		$this->oAuthDecorator = \CApi::GetModuleDecorator('BasicAuth');
 		
 //		$this->setObjectMap('CUser', array(
 //				'HelpdeskSignature'					=> array('string', ''), //'helpdesk_signature'),
