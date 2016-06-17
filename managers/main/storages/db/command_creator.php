@@ -231,7 +231,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 		$sSql = 'UPDATE %sahd_users SET %s WHERE %s = %d AND %s = %d';
 		return sprintf($sSql, $this->prefix(), implode(', ', $aResult),
 			$this->escapeColumn('id_tenant'), $oUser->IdTenant,
-			$this->escapeColumn('id_helpdesk_user'), $oUser->iObjectId
+			$this->escapeColumn('id_helpdesk_user'), $oUser->iId
 		);
 	}
 
@@ -462,7 +462,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 								EHelpdeskThreadType::Waiting
 							)).')'.
 						') OR ('.
-							$this->escapeColumn('id_owner').' = '.$oUser->iObjectId.' AND '.
+							$this->escapeColumn('id_owner').' = '.$oUser->iId.' AND '.
 							$this->escapeColumn('type').' IN ('.implode(',', array(
 								EHelpdeskThreadType::Answered
 							)).')'.
@@ -491,7 +491,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 
 		if (!$bIsAgent)
 		{
-			$aWhere[] = $this->escapeColumn('id_owner').' = '.$oUser->iObjectId;
+			$aWhere[] = $this->escapeColumn('id_owner').' = '.$oUser->iId;
 		}
 
 		if (0 < $iSearchOwner)
@@ -605,7 +605,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 		$sSql = 'SELECT DISTINCT id_helpdesk_thread, last_post_id FROM %sahd_reads WHERE %s = %d AND %s = %d AND %s IN (%s)';
 		return sprintf($sSql, $this->prefix(),
 			$this->escapeColumn('id_tenant'), $oUser->IdTenant,
-			$this->escapeColumn('id_owner'), $oUser->iObjectId,
+			$this->escapeColumn('id_owner'), $oUser->iId,
 			$this->escapeColumn('id_helpdesk_thread'), implode(',', $aThreadIds)
 		);
 	}
@@ -647,7 +647,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 		
 		$aWhere[] = $this->escapeColumn('id_tenant').' = '.$oUser->IdTenant;
 
-		if (!$oUser->Role === 1 || $oThread->IdOwner === $oUser->iObjectId)
+		if (!$oUser->Role === 1 || $oThread->IdOwner === $oUser->iId)
 		{
 			$aWhere[] = $this->escapeColumn('type').' <> '.EHelpdeskPostType::Internal;
 		}
@@ -804,7 +804,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 		$sSql = 'DELETE FROM %sahd_reads WHERE %s = %d AND %s = %d AND %s = %d';
 		return sprintf($sSql, $this->prefix(),
 			$this->escapeColumn('id_tenant'), $oUser->IdTenant,
-			$this->escapeColumn('id_owner'), $oUser->iObjectId,
+			$this->escapeColumn('id_owner'), $oUser->iId,
 			$this->escapeColumn('id_helpdesk_thread'), $oHelpdeskThread->IdHelpdeskThread
 		);
 	}
@@ -819,7 +819,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 	{
 		$sSql = 'INSERT INTO %sahd_reads ( id_tenant, id_owner, id_helpdesk_thread, last_post_id ) VALUES ( %d, %d, %d, %d )';
 		return sprintf($sSql, $this->prefix(),
-			$oUser->IdTenant, $oUser->iObjectId,
+			$oUser->IdTenant, $oUser->iId,
 			$oHelpdeskThread->IdHelpdeskThread, $oHelpdeskThread->LastPostId
 		);
 	}
@@ -849,7 +849,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 	{
 		$sSql = 'DELETE FROM %sahd_online  WHERE id_helpdesk_user = %d AND id_tenant = %d AND id_helpdesk_thread = %d';
 		return sprintf($sSql, $this->prefix(),
-			$oUser->iObjectId, $oUser->IdTenant, $iThreadID
+			$oUser->iId, $oUser->IdTenant, $iThreadID
 		);
 	}
 
@@ -879,7 +879,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 		
 		//TODO save $oHelpdeskUser->Email in email column
 		return sprintf($sSql, $this->prefix(),
-			$iThreadID, $oUser->iObjectId, $oUser->IdTenant,
+			$iThreadID, $oUser->iId, $oUser->IdTenant,
 			$this->escapeString($oUser->Name), $this->escapeString($oUser->Name),
 			time()
 		);

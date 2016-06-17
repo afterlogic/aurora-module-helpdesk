@@ -356,7 +356,7 @@ class HelpDeskModule extends AApiModule
 				{
 					//Create account for auth
 					$oAuthAccount = \CAccount::createInstance('HelpDesk');
-					$oAuthAccount->IdUser = $oEventResult->iObjectId;
+					$oAuthAccount->IdUser = $oEventResult->iId;
 					$oAuthAccount->Login = $sLogin;
 					$oAuthAccount->Password = $sPassword;
 					
@@ -364,7 +364,7 @@ class HelpDeskModule extends AApiModule
 					{
 						//Create propertybag account
 						$oAccount = \Modules\HelpDesk\CAccount::createInstance();
-						$oAccount->IdUser = $oEventResult->iObjectId;
+						$oAccount->IdUser = $oEventResult->iId;
 						$oAccount->NotificationEmail = $sLogin ? $sLogin : '';
 
 						$bResult = $this->oAccountsManager->createAccount($oAccount);
@@ -551,7 +551,7 @@ class HelpDeskModule extends AApiModule
 			
 			$oThread = new \CHelpdeskThread();
 			$oThread->IdTenant = $oUser->IdTenant;
-			$oThread->IdOwner = $oUser->iObjectId;
+			$oThread->IdOwner = $oUser->iId;
 			$oThread->Type = \EHelpdeskThreadType::Pending;
 			$oThread->Subject = $Subject;
 
@@ -569,7 +569,7 @@ class HelpDeskModule extends AApiModule
 		{
 			$oPost = new \CHelpdeskPost();
 			$oPost->IdTenant = $oUser->IdTenant;
-			$oPost->IdOwner = $oUser->iObjectId;
+			$oPost->IdOwner = $oUser->iId;
 			$oPost->IdHelpdeskThread = $oThread->IdHelpdeskThread;
 			$oPost->Type = $bIsInternal ? \EHelpdeskPostType::Internal : \EHelpdeskPostType::Normal;
 			$oPost->SystemType = \EHelpdeskPostSystemType::None;
@@ -608,7 +608,7 @@ class HelpDeskModule extends AApiModule
 						$oAttachment = new \CHelpdeskAttachment();
 						$oAttachment->IdHelpdeskThread = $oThread->IdHelpdeskThread;
 						$oAttachment->IdHelpdeskPost = $oPost->IdHelpdeskPost;
-						$oAttachment->IdOwner = $oUser->iObjectId;
+						$oAttachment->IdOwner = $oUser->iId;
 						$oAttachment->IdTenant = $oUser->IdTenant;
 
 						$oAttachment->FileName = $sUploadName;
@@ -821,7 +821,7 @@ class HelpDeskModule extends AApiModule
 
 					if ($oItem)
 					{
-						$oItem->ItsMe = $oUser->iObjectId === $oItem->IdOwner;
+						$oItem->ItsMe = $oUser->iId === $oItem->IdOwner;
 					}
 				}
 
@@ -1005,7 +1005,7 @@ class HelpDeskModule extends AApiModule
 				
 				if ($oOwnerUser)
 				{
-					$aOwnerDataList[$oOwnerUser->iObjectId] = array(
+					$aOwnerDataList[$oOwnerUser->iId] = array(
 						'Email' => '', //actualy, it's a User Login stored in Auth account
 						'Name' => $oOwnerUser->Name,
 						'NotificationEmail' => isset($oOwnerAccount) ? $oOwnerAccount->NotificationEmail : ''

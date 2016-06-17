@@ -59,7 +59,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 				if (null === $oAccount)
 				{
 //					$oAccount = $this->oStorage->getUserById($iUserId);
-					$oAccount = $this->oEavManager->getObjectById($iAccountId);
+					$oAccount = $this->oEavManager->getEntityById($iAccountId);
 					
 					if ($oAccount instanceof CHelpDeskAccount)
 					{
@@ -102,7 +102,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 		$oAccount = null;
 		try
 		{
-			$aResults = $this->oEavManager->getObjects(
+			$aResults = $this->oEavManager->getEntities(
 				$this->sAccountClassName, 
 				array(
 					'IsDisabled', 'Login', 'Password', 'IdUser'
@@ -135,7 +135,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 		$oAccount = null;
 		try
 		{
-			$aResults = $this->oEavManager->getObjects(
+			$aResults = $this->oEavManager->getEntities(
 				$this->sAccountClassName, 
 				array(
 					'IsDisabled', 'Login', 'IdUser'
@@ -180,7 +180,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 		$oAccount = null;
 		try
 		{
-			$aResults = $this->oEavManager->getObjects(
+			$aResults = $this->oEavManager->getEntities(
 				$this->sAccountClassName, 
 				array(
 					'IsDisabled', 'Login', 'IdUser'
@@ -235,7 +235,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 				$aFilters['Login'] = '%'.$sSearchDesc.'%';
 			}
 				
-			$aResults = $this->oEavManager->getObjects(
+			$aResults = $this->oEavManager->getEntities(
 				'CAccount', 
 				array(
 					'IsDisabled', 'Login', 'Password', 'IdUser'
@@ -251,7 +251,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 			{
 				foreach($aResults as $oItem)
 				{
-					$aResult[$oItem->iObjectId] = array(
+					$aResult[$oItem->iId] = array(
 						$oItem->Login,
 						$oItem->Password,
 						$oItem->IdUser,
@@ -279,7 +279,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 		try
 		{
 			$this->sAccountClassName;
-			$aResults = $this->oEavManager->getObjects(
+			$aResults = $this->oEavManager->getEntities(
 				$this->sAccountClassName,
 				array('IdUser'),
 				0,
@@ -293,7 +293,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 			{
 				foreach($aResults as $oObject)
 				{
-					if ($oObject->iObjectId !== $oAccount->iObjectId)
+					if ($oObject->iId !== $oAccount->iId)
 					{
 						$bResult = true;
 						break;
@@ -322,7 +322,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 			{
 				if (!$this->isExists($oAccount))
 				{
-					if (!$this->oEavManager->saveObject($oAccount))
+					if (!$this->oEavManager->saveEntity($oAccount))
 					{
 						throw new CApiManagerException(Errs::UsersManager_UserCreateFailed);
 					}
@@ -358,7 +358,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 			{
 //				if ($this->isExists($oAccount))
 //				{
-					if (!$this->oEavManager->saveObject($oAccount))
+					if (!$this->oEavManager->saveEntity($oAccount))
 					{
 						throw new CApiManagerException(Errs::UsersManager_UserCreateFailed);
 					}
@@ -392,7 +392,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 		$bResult = false;
 		try
 		{
-			$bResult = $this->oEavManager->deleteObject($oAccount->iObjectId);
+			$bResult = $this->oEavManager->deleteEntity($oAccount->iId);
 		}
 		catch (CApiBaseException $oException)
 		{

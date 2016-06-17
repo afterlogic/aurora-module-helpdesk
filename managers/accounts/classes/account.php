@@ -9,7 +9,7 @@ namespace Modules\HelpDesk;
  * @package Users
  * @subpackage Classes
  */
-class CAccount extends \APropertyBag
+class CAccount extends \AEntity
 {
 	/**
 	 * Creates a new instance of the object.
