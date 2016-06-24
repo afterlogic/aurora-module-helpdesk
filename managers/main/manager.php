@@ -52,7 +52,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 	{
 		if (null === $this->oApiUsers)
 		{
-			$this->oApiUsers = CApi::GetCoreManager('users');
+			$this->oApiUsers = CApi::GetSystemManager('users');
 		}
 
 		return $this->oApiUsers;
@@ -1169,9 +1169,9 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 			$oApiUsers = $this->_getApiUsers();
 			$oApiMail = $this->_getApiMail();
 			
-			$oApiFileCache = /* @var $oApiFileCache \CApiFilecacheManager */ \CApi::GetCoreManager('filecache');
+			$oApiFileCache = /* @var $oApiFileCache \CApiFilecacheManager */ \CApi::GetSystemManager('filecache');
 			$oApiFilestorage = /* @var $oApiFileCache \CApiFilestorageManager */ \CApi::Manager('filestorage');
-			$oApiIntegrator = /* @var $oApiIntegrator \CApiIntegratorManager */ \CApi::GetCoreManager('integrator');
+			$oApiIntegrator = /* @var $oApiIntegrator \CApiIntegratorManager */ \CApi::GetSystemManager('integrator');
 			
 			if ($oApiUsers && $oApiMail && $oApiFileCache)
 			{
@@ -1361,7 +1361,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 		{
 			$oApiUsers = $this->_getApiUsers();
 			$oApiMail = $this->_getApiMail();
-			$oApiFileCache = /* @var $oApiFileCache \CApiFilecacheManager */ \CApi::GetCoreManager('filecache');
+			$oApiFileCache = /* @var $oApiFileCache \CApiFilecacheManager */ \CApi::GetSystemManager('filecache');
 			$oApiFilestorage = /* @var $oApiFileCache \CApiFilestorageManager */ \CApi::Manager('filestorage');
 
 			if ($oApiUsers && $oApiMail && $oApiFileCache)

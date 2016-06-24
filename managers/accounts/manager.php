@@ -28,7 +28,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 	{
 		parent::__construct('accounts', $oManager, $oModule);
 		
-		$this->oEavManager = \CApi::GetCoreManager('eav', 'db');
+		$this->oEavManager = \CApi::GetSystemManager('eav', 'db');
 		
 		$this->oCoreDecorator = \CApi::GetModuleDecorator('Core');
 		

@@ -169,7 +169,7 @@ class HelpDeskModule extends AApiModule
 	protected function getHelpdeskAccountFromMainAccount(&$oAccount)
 	{
 		$oResult = null;
-		$oApiUsers = CApi::GetCoreManager('users');
+		$oApiUsers = CApi::GetSystemManager('users');
 		if ($oAccount && $oAccount->IsDefaultAccount && $this->oApiCapabilityManager->isHelpdeskSupported($oAccount))
 		{
 			if (0 < $oAccount->User->IdHelpdeskUser)
@@ -311,7 +311,7 @@ class HelpDeskModule extends AApiModule
 		setcookie('aft-cache-ctrl', '', time() - 3600);
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 		{
-			$oApiIntegrator = \CApi::GetCoreManager('integrator');
+			$oApiIntegrator = \CApi::GetSystemManager('integrator');
 			$oApiIntegrator->logoutHelpdeskUser();
 		}
 
@@ -497,7 +497,7 @@ class HelpDeskModule extends AApiModule
 				throw new \System\Exceptions\ClientException(\System\Notifications::InvalidInputParameter);
 			}
 
-			$oApiTenants = \CApi::GetCoreManager('tenants');
+			$oApiTenants = \CApi::GetSystemManager('tenants');
 			$mIdTenant = $oApiTenants->getTenantIdByName($sTenantName);
 			if (!is_int($mIdTenant))
 			{
@@ -1147,7 +1147,7 @@ class HelpDeskModule extends AApiModule
 		$oAccount->User->HelpdeskSignature = trim((string) $this->getParamValue('HelpdeskSignature', $oAccount->User->HelpdeskSignature));
 		$oAccount->User->HelpdeskSignatureEnable = (bool) $this->getParamValue('HelpdeskSignatureEnable', $oAccount->User->HelpdeskSignatureEnable);
 
-		$oApiUsers = \CApi::GetCoreManager('users');
+		$oApiUsers = \CApi::GetSystemManager('users');
 		return $oApiUsers->UpdateAccount($oAccount);
 	}	
 	
