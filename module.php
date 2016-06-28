@@ -1141,7 +1141,7 @@ class HelpDeskModule extends AApiModule
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult);*/
 
-		$oAccount = $this->getAccountFromParam();
+		$oAccount = null; //$this->getAccountFromParam(); TODO:
 
 		$oAccount->User->AllowHelpdeskNotifications =  (bool) $this->getParamValue('AllowHelpdeskNotifications', $oAccount->User->AllowHelpdeskNotifications);
 		$oAccount->User->HelpdeskSignature = trim((string) $this->getParamValue('HelpdeskSignature', $oAccount->User->HelpdeskSignature));
