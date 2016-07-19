@@ -32,12 +32,6 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 	{
 		parent::__construct('main', $oManager, $sForcedStorage, $oModule);
 
-		$this->incClass('enum');
-		$this->incClass('user');
-		$this->incClass('attachment');
-		$this->incClass('post');
-		$this->incClass('thread');
-
 		$this->oApiMail = null;
 		$this->oApiUsers = null;
 		$this->oApiTenants = null;

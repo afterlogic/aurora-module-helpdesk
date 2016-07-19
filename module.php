@@ -16,9 +16,15 @@ class HelpDeskModule extends AApiModule
 	
 	public $oAuthDecorator = null;
 	
-	//test comit
 	public function init() 
 	{
+		$this->incClass('account');
+		$this->incClass('enum');
+		$this->incClass('user');
+		$this->incClass('attachment');
+		$this->incClass('post');
+		$this->incClass('thread');
+		
 		$this->oMainManager = $this->GetManager('main');
 		$this->oAccountsManager = $this->GetManager('accounts');
 		
