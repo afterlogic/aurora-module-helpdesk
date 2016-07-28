@@ -351,10 +351,12 @@ class HelpDeskModule extends AApiModule
 				$iUserId = \CApi::getLogginedUserId();
 				
 				$this->broadcastEvent('CreateAccount', array(
-					'IdTenant' => $mIdTenant,
-					'IdUser' => $iUserId,
-					'login' => $sLogin,
-					'password' => $sPassword,
+					array(
+						'TenantId' => $mIdTenant,
+						'UserId' => $iUserId,
+						'login' => $sLogin,
+						'password' => $sPassword
+					),
 					'result' => &$oEventResult
 				));
 				
