@@ -145,7 +145,7 @@ class HelpDeskModule extends AApiModule
 	
 	protected function GetCurrentAccount()
 	{
-		$iUserId = \CApi::getLogginedUserId();
+		$iUserId = \CApi::getAuthenticatedUserId();
 	
 		if (!$this->oCurrentAccount && $iUserId)
 		{
@@ -153,18 +153,6 @@ class HelpDeskModule extends AApiModule
 		}
 		
 		return $this->oCurrentAccount;
-	}
-	
-	protected function GetCurrentUser()
-	{
-		$iUserId = \CApi::getLogginedUserId();
-	
-		if (!$this->oCurrentUser && $iUserId)
-		{
-			$this->oCurrentUser = $this->oCoreDecorator->GetUser($iUserId);
-		}
-		
-		return $this->oCurrentUser;
 	}
 	
 	/**
@@ -348,7 +336,7 @@ class HelpDeskModule extends AApiModule
 			try
 			{
 				$oEventResult = null;
-				$iUserId = \CApi::getLogginedUserId();
+				$iUserId = \CApi::getAuthenticatedUserId();
 				
 				$this->broadcastEvent('CreateAccount', array(
 					array(
@@ -530,7 +518,7 @@ class HelpDeskModule extends AApiModule
 	
 	public function CreatePost($ThreadId = 0, $IsInternal = '0', $Subject = '', $Text = '', $Cc = '', $Bcc = '', $Attachments = null, $IsExt = 0)
 	{
-		$oUser = $this->GetCurrentUser();
+		$oUser = \CApi::getAuthenticatedUser();
 		
 		/* @var $oAccount CAccount */
 
@@ -652,7 +640,7 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function DeletePost($PostId = 0, $ThreadId = 0, $IsExt = 0)
 	{
-		$oUser = $this->GetCurrentUser();
+		$oUser = \CApi::getAuthenticatedUser();
 
 		if (!$oUser)
 		{
@@ -687,7 +675,7 @@ class HelpDeskModule extends AApiModule
 	public function GetThreadByIdOrHash()
 	{
 		$oThread = false;
-		$oUser = $this->GetCurrentUser();
+		$oUser = \CApi::getAuthenticatedUser();
 
 		$bIsAgent = $this->IsAgent($oUser);
 
@@ -740,7 +728,7 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function GetPosts($ThreadId = 0, $StartFromId = 0, $Limit = 10, $IsExt = 1)
 	{
-		$oUser = $this->GetCurrentUser();
+		$oUser = \CApi::getAuthenticatedUser();
 		
 
 		if (1 > $ThreadId || 0 > $StartFromId || 1 > $Limit)
@@ -886,7 +874,7 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function DeleteThread($ThreadId = 0, $IsExt = 0)
 	{
-		$oUser = $this->GetCurrentUser();
+		$oUser = \CApi::getAuthenticatedUser();
 
 		if (!$oUser)
 		{
@@ -914,7 +902,7 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function ChangeThreadState($ThreadId = 0, $ThreadType = \EHelpdeskThreadType::None, $IsExt = 0)
 	{
-		$oUser = $this->GetCurrentUser();
+		$oUser = \CApi::getAuthenticatedUser();
 
 //		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
 //		$iThreadType = (int) $this->getParamValue('Type', \EHelpdeskThreadType::None);
@@ -949,7 +937,7 @@ class HelpDeskModule extends AApiModule
 
 	public function PingThread($ThreadId = 0)
 	{
-		$oUser = $this->GetCurrentUser();
+		$oUser = \CApi::getAuthenticatedUser();
 
 //		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
 
@@ -965,7 +953,7 @@ class HelpDeskModule extends AApiModule
 	
 	public function SetThreadSeen($ThreadId = 0)
 	{
-		$oUser = $this->GetCurrentUser();
+		$oUser = \CApi::getAuthenticatedUser();
 
 //		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
 
@@ -988,7 +976,7 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function GetThreads($Offset = 0, $Limit = 10, $Filter = \EHelpdeskThreadFilterType::All, $Search = '')
 	{
-		$oUser = $this->GetCurrentUser();
+		$oUser = \CApi::getAuthenticatedUser();
 		
 		if (0 > $Offset || 1 > $Limit)
 		{
@@ -1068,7 +1056,7 @@ class HelpDeskModule extends AApiModule
 	
 	public function GetThreadsPendingCount()
 	{
-		$oUser = $this->GetCurrentUser();
+		$oUser = \CApi::getAuthenticatedUser();
 
 		if (!($oUser instanceof \CHelpdeskUser))
 		{
@@ -1084,7 +1072,7 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function UpdateUserPassword()
 	{
-		$oUser = $this->GetCurrentUser();
+		$oUser = \CApi::getAuthenticatedUser();
 
 		$sCurrentPassword = (string) $this->getParamValue('CurrentPassword', '');
 		$sNewPassword = (string) $this->getParamValue('NewPassword', '');
@@ -1108,7 +1096,7 @@ class HelpDeskModule extends AApiModule
 	public function UpdateSettings()
 	{
 		setcookie('aft-cache-ctrl', '', time() - 3600);
-		$oUser = $this->GetCurrentUser();
+		$oUser = \CApi::getAuthenticatedUser();
 
 		$sName = (string) $this->getParamValue('Name', $oUser->Name);
 		$sLanguage = (string) $this->getParamValue('Language', $oUser->Language);
