@@ -66,7 +66,7 @@ class HelpDeskModule extends AApiModule
 //		$this->subscribeEvent('HelpDesk::Login', array($this, 'checkAuth'));
 	}
 	
-	public function GetAppData($oUser = null)
+	public function GetAppData()
 	{
 		return array(
 			'ActivatedEmail' => '', // AppData.HelpdeskActivatedEmail
