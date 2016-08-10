@@ -647,7 +647,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 		
 		$aWhere[] = $this->escapeColumn('id_tenant').' = '.$oUser->IdTenant;
 
-		if (!$oUser->Role === 1 || $oThread->IdOwner === $oUser->iId)
+		if (!$oUser->Role === \EUserRole::PowerUser || $oThread->IdOwner === $oUser->iId)
 		{
 			$aWhere[] = $this->escapeColumn('type').' <> '.EHelpdeskPostType::Internal;
 		}
