@@ -68,6 +68,8 @@ class HelpDeskModule extends AApiModule
 	
 	public function GetAppData()
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		
 		return array(
 			'ActivatedEmail' => '', // AppData.HelpdeskActivatedEmail
 			'AllowEmailNotifications' => false, // AppData.User.AllowHelpdeskNotifications
@@ -94,6 +96,8 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function setInheritedSettings()
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::NormalUser);
+		
 //		$oSettings =& CApi::GetSettings();
 //		$oMap = $this->getStaticMap();
 		
@@ -145,6 +149,8 @@ class HelpDeskModule extends AApiModule
 	
 	protected function GetCurrentAccount()
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		
 		$iUserId = \CApi::getAuthenticatedUserId();
 	
 		if (!$this->oCurrentAccount && $iUserId)
@@ -214,6 +220,8 @@ class HelpDeskModule extends AApiModule
 	
 	public function Login($Login = '', $Password = '', $SignMe = 0)
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		
 		setcookie('aft-cache-ctrl', '', time() - 3600);
 		$sTenantName = \CApi::getTenantName();
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
@@ -302,6 +310,8 @@ class HelpDeskModule extends AApiModule
 
 	public function Logout()
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		
 		setcookie('aft-cache-ctrl', '', time() - 3600);
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 		{
@@ -314,6 +324,8 @@ class HelpDeskModule extends AApiModule
 	
 	public function Register($Email, $Password, $Name = '', $IsExt = false)
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		
 		$sTenantName = \CApi::getTenantName();
 //		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 //		{
@@ -410,11 +422,15 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function IsAgent(\CUser $oUser)
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		
 		return $this->oMainManager->isAgent($oUser);
 	}	
 	
 	public function Forgot($Email = '', $IsExt = false)
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		
 		$sTenantName = \CApi::getTenantName();
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 		{
@@ -482,6 +498,8 @@ class HelpDeskModule extends AApiModule
 	
 	public function ForgotChangePassword()
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		
 		$sTenantName = \CApi::getTenantName();
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 		{
@@ -518,6 +536,8 @@ class HelpDeskModule extends AApiModule
 	
 	public function CreatePost($ThreadId = 0, $IsInternal = '0', $Subject = '', $Text = '', $Cc = '', $Bcc = '', $Attachments = null, $IsExt = 0)
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		
 		$oUser = \CApi::getAuthenticatedUser();
 		
 		/* @var $oAccount CAccount */
@@ -640,6 +660,8 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function DeletePost($PostId = 0, $ThreadId = 0, $IsExt = 0)
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		
 		$oUser = \CApi::getAuthenticatedUser();
 
 		if (!$oUser)
@@ -674,6 +696,8 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function GetThreadByIdOrHash()
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		
 		$oThread = false;
 		$oUser = \CApi::getAuthenticatedUser();
 
@@ -728,6 +752,8 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function GetPosts($ThreadId = 0, $StartFromId = 0, $Limit = 10, $IsExt = 1)
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		
 		$oUser = \CApi::getAuthenticatedUser();
 		
 
@@ -874,6 +900,8 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function DeleteThread($ThreadId = 0, $IsExt = 0)
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		
 		$oUser = \CApi::getAuthenticatedUser();
 
 		if (!$oUser)
@@ -902,6 +930,8 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function ChangeThreadState($ThreadId = 0, $ThreadType = \EHelpdeskThreadType::None, $IsExt = 0)
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		
 		$oUser = \CApi::getAuthenticatedUser();
 
 //		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
@@ -937,6 +967,8 @@ class HelpDeskModule extends AApiModule
 
 	public function PingThread($ThreadId = 0)
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		
 		$oUser = \CApi::getAuthenticatedUser();
 
 //		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
@@ -953,6 +985,8 @@ class HelpDeskModule extends AApiModule
 	
 	public function SetThreadSeen($ThreadId = 0)
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		
 		$oUser = \CApi::getAuthenticatedUser();
 
 //		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
@@ -976,6 +1010,8 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function GetThreads($Offset = 0, $Limit = 10, $Filter = \EHelpdeskThreadFilterType::All, $Search = '')
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		
 		$oUser = \CApi::getAuthenticatedUser();
 		
 		if (0 > $Offset || 1 > $Limit)
@@ -1056,6 +1092,8 @@ class HelpDeskModule extends AApiModule
 	
 	public function GetThreadsPendingCount()
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		
 		$oUser = \CApi::getAuthenticatedUser();
 
 		if (!($oUser instanceof \CHelpdeskUser))
@@ -1072,6 +1110,8 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function UpdateUserPassword()
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		
 		$oUser = \CApi::getAuthenticatedUser();
 
 		$sCurrentPassword = (string) $this->getParamValue('CurrentPassword', '');
@@ -1095,6 +1135,8 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function UpdateSettings()
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		
 		setcookie('aft-cache-ctrl', '', time() - 3600);
 		$oUser = \CApi::getAuthenticatedUser();
 
@@ -1118,6 +1160,8 @@ class HelpDeskModule extends AApiModule
 	 */
 	public function UpdateUserSettings()
 	{
+		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		
 		/*$oAccount = $this->getAccountFromParam();
 		$oHelpdeskUser = $this->GetHelpdeskAccountFromMainAccount($oAccount);
 		
