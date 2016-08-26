@@ -1205,9 +1205,4 @@ class HelpDeskModule extends AApiModule
 //			);
 //		}
 //	}
-	
-	public function CheckNonAuthorizedMethodAllowed($sMethodName = '', $sAuthToken = '')
-	{
-		return !!in_array($sMethodName, array('Login', 'Register', 'Forgot'));
-	}
 }
