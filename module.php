@@ -4,6 +4,8 @@ use \Modules\HelpDesk\CAccount;
 
 class HelpDeskModule extends AApiModule
 {
+	//test
+	
 	public $oCurrentAccount = null;
 	
 	public $oCurrentUser = null;
