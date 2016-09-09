@@ -1,5 +1,4 @@
 <?php
-
 /* -AFTERLOGIC LICENSE HEADER- */
 
 /**
