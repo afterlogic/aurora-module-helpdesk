@@ -4,8 +4,6 @@ use \Modules\HelpDesk\CAccount;
 
 class HelpDeskModule extends AApiModule
 {
-	//test
-	
 	public $oCurrentAccount = null;
 	
 	public $oCurrentUser = null;
@@ -20,6 +18,7 @@ class HelpDeskModule extends AApiModule
 	
 	public function init() 
 	{
+		//test
 		$this->incClass('account');
 		$this->incClass('enum');
 		$this->incClass('user');
