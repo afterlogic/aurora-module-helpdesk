@@ -67,6 +67,11 @@ class HelpDeskModule extends AApiModule
 //		$this->subscribeEvent('HelpDesk::Login', array($this, 'checkAuth'));
 	}
 	
+	/**
+	 * Obtaines list of module settings for authenticated user.
+	 * 
+	 * @return array
+	 */
 	public function GetAppData()
 	{
 		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
