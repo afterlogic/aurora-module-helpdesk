@@ -7,7 +7,6 @@ use \Modules\HelpDesk\CAccount as CHelpDeskAccount;
 /**
  * CApiAccountsManager class summary
  * 
- * @api
  * @package Accounts
  */
 class CApiHelpDeskAccountsManager extends AApiManager
@@ -38,7 +37,6 @@ class CApiHelpDeskAccountsManager extends AApiManager
 	/**
 	 * Retrieves information on particular WebMail Pro user. 
 	 * 
-	 * @api
 	 * @todo not used
 	 * 
 	 * @param int $iUserId User identifier.
@@ -85,7 +83,6 @@ class CApiHelpDeskAccountsManager extends AApiManager
 	/**
 	 * Retrieves information on particular WebMail Pro user. 
 	 * 
-	 * @api
 	 * @todo not used
 	 * 
 	 * @param int $iUserId User identifier.
@@ -204,8 +201,6 @@ class CApiHelpDeskAccountsManager extends AApiManager
 	/**
 	 * Obtains list of information about users for specific domain. Domain identifier is used for look up.
 	 * The answer contains information only about default account of founded user.
-	 * 
-	 * @api
 	 * 
 	 * @param int $iDomainId Domain identifier.
 	 * @param int $iPage List page.
