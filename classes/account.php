@@ -33,8 +33,6 @@ class CAccount extends \AEntity
 		));
 		
 		$this->SetDefaults();
-
-		\CApi::Plugin()->RunHook('api-account-construct', array(&$this));
 	}
 	
 	/**
