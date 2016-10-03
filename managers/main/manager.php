@@ -1806,7 +1806,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 //						$oFromEmail = \MailSo\Mime\Email::NewInstance($oFromAccount->Email, $sSiteName);
 //						$oToEmail = \MailSo\Mime\Email::NewInstance($sEmail, $oHelpdeskAccount->Name);
 //
-//						$oUserMessage = $this->_buildUserMailMail(PSEVEN_APP_ROOT_PATH.'templates/helpdesk/user.forgot.html',
+//						$oUserMessage = $this->_buildUserMailMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.forgot.html',
 //							$oFromEmail->ToString(), $oToEmail->ToString(),
 //							'Forgot', '', '', $oHelpdeskAccount, $sSiteName);
 //
@@ -1851,7 +1851,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 						$oFromEmail = \MailSo\Mime\Email::NewInstance($oFromAccount->Email, $sSiteName);
 						$oToEmail = \MailSo\Mime\Email::NewInstance($sEmail, $oHelpdeskAccount->Name);
 
-						$oUserMessage = $this->_buildUserMailMail(PSEVEN_APP_ROOT_PATH.'templates/helpdesk/user.registration'.($bCreateFromFetcher ? '.fetcher' : '').'.html',
+						$oUserMessage = $this->_buildUserMailMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.registration'.($bCreateFromFetcher ? '.fetcher' : '').'.html',
 							$oFromEmail->ToString(), $oToEmail->ToString(), 'Registration', '', '', $oHelpdeskAccount, $sSiteName);
 
 						$oApiMail->sendMessage($oFromAccount, $oUserMessage);
@@ -1905,7 +1905,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 
 						if (EHelpdeskPostType::Normal === $oPost->Type && ($bIsNew || $oThreadOwnerUser->iObjectId !== $oPost->IdOwner))
 						{
-							$oUserMessage = $this->_buildPostMail(PSEVEN_APP_ROOT_PATH.'templates/helpdesk/user.post'.($bIsNew ? '.new' : '').'.html',
+							$oUserMessage = $this->_buildPostMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.post'.($bIsNew ? '.new' : '').'.html',
 								$oHelpdeskSenderEmail->ToString(), $oThreadOwnerEmail->ToString(),
 								'New Post', $sCc, $sBcc, $oThreadOwnerUser, $oHelpdeskPostOwnerUser, $oThread, $oPost, $sSiteName);
 
@@ -1929,7 +1929,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 						$aAgents = $this->getAgentsEmailsForNotification($oPost->IdTenant, $aDeMail);
 						if (is_array($aAgents) && 0 < count($aAgents))
 						{
-							$oAgentMessage = $this->_buildPostMail(PSEVEN_APP_ROOT_PATH.'templates/helpdesk/agent.post.html',
+							$oAgentMessage = $this->_buildPostMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/agent.post.html',
 								$oHelpdeskSenderEmail->ToString(), is_array($aAgents) && 0 < count($aAgents) ? implode(', ', $aAgents) : '',
 								'New Post', $sCc, $sBcc, $oThreadOwnerUser, $oHelpdeskPostOwnerUser, $oThread, $oPost, $sSiteName);
 
@@ -1983,7 +1983,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 
 						if ($oThreadOwnerUser->iObjectId === $oThread->IdOwner)
 						{
-							$oUserMessage = $this->_buildPostMail(PSEVEN_APP_ROOT_PATH.'templates/helpdesk/user.post.notification.html',
+							$oUserMessage = $this->_buildPostMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.post.notification.html',
 								$oHelpdeskSenderEmail->ToString(), $oThreadOwnerEmail->ToString(),
 								'New Post', '', '', $oThreadOwnerUser, $oHelpdeskPostOwnerUser, $oThread, null, $sSiteName);
 

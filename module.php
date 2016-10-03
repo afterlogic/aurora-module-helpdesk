@@ -489,7 +489,7 @@ class HelpDeskModule extends AApiModule
 						$oFromEmail = \MailSo\Mime\Email::NewInstance($oFromAccount->Email, $sSiteName);
 						$oToEmail = \MailSo\Mime\Email::NewInstance($Email, $oAccount->Name);
 
-						$oUserMessage = $this->oMainManager->_buildUserMailMail(PSEVEN_APP_ROOT_PATH.'templates/helpdesk/user.forgot.html',
+						$oUserMessage = $this->oMainManager->_buildUserMailMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.forgot.html',
 							$oFromEmail->ToString(), $oToEmail->ToString(),
 							'Forgot', '', '', $oAccount, $sSiteName);
 
