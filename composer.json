@@ -1,6 +1,5 @@
 {
 	"name": "afterlogic/aurora-module-helpdesk",
-    	"version":"0.1.0",
     	"type": "aurora-module",
     	"dist":{
                "url":"https://github.com/afterlogic/aurora-module-helpdesk/archive/master.zip",
