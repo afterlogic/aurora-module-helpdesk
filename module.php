@@ -260,13 +260,14 @@ class HelpDeskModule extends AApiModule
 				
 				$mResult = null;
 				
+				$aArgs = array(
+					'Login' => $Login,
+					'Password' => $Password,
+					'SignMe' => $SignMe
+				);
 				$this->broadcastEvent(
 					'Login', 
-					array(
-						'Login' => $Login,
-						'Password' => $Password,
-						'SignMe' => $SignMe
-					),
+					$aArgs,
 					$mResult
 				);
 				
@@ -357,14 +358,15 @@ class HelpDeskModule extends AApiModule
 				$oEventResult = null;
 				$iUserId = \CApi::getAuthenticatedUserId();
 				
+				$aArgs = array(
+					'TenantId' => $mIdTenant,
+					'UserId' => $iUserId,
+					'login' => $sLogin,
+					'password' => $sPassword
+				);
 				$this->broadcastEvent(
 					'CreateAccount', 
-					array(
-						'TenantId' => $mIdTenant,
-						'UserId' => $iUserId,
-						'login' => $sLogin,
-						'password' => $sPassword
-					),
+					$aArgs,
 					$oEventResult
 				);
 				
