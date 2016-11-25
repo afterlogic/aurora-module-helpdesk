@@ -53,7 +53,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 				$iAccountId = (int) $iAccountId;
 				if (null === $oAccount)
 				{
-					$oAccount = $this->oEavManager->getEntityById($iAccountId);
+					$oAccount = $this->oEavManager->getEntity($iAccountId);
 					
 					if ($oAccount instanceof CHelpDeskAccount)
 					{
