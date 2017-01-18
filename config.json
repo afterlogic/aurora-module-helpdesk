@@ -1,20 +1,3 @@
 {
-	"Disabled": false,
-	"AdminEmailAccount": "",
-	"ClientIframeUrl": "",
-	"AgentIframeUrl": "",
-	"SiteName": "",
-	"StyleAllow": false,
-	"StyleImage": "",
-	"StyleText": "",
-	"FetcherType": 0,
-	"FacebookAllow": false,
-	"FacebookId": "",
-	"FacebookSecret": "",
-	"GoogleAllow": false,
-	"GoogleId": "",
-	"GoogleSecret": "",
-	"TwitterAllow": false,
-	"TwitterId": "",
-	"TwitterSecret": ""
+    "Disabled": true
 }
