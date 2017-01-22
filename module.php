@@ -39,7 +39,7 @@ class HelpDeskModule extends AApiModule
 //			)
 //		);
 		
-		$this->setObjectMap('CTenant', array(
+		$this->extendObject('CTenant', array(
 				'AdminEmail'		=> array('string', ''),
 				'AdminEmailAccount'	=> array('string', ''),
 				'ClientIframeUrl'	=> array('string', ''),
