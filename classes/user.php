@@ -55,6 +55,8 @@ class CHelpdeskUser extends api_AContainer
 
 		$oSettings =& CApi::GetSettings();
 
+		$oModuleManager = \CApi::GetModuleManager();
+		
 		$this->SetDefaults(array(
 			'IdHelpdeskUser'		=> 0,
 			'IdSystemUser'			=> 0,
@@ -69,9 +71,9 @@ class CHelpdeskUser extends api_AContainer
 			'SocialId'				=> '',
 			'SocialType'			=> '',
 			'ActivateHash'			=> md5(microtime(true).rand(1000, 9999)),
-			'Language'				=> $oSettings->GetConf('DefaultLanguage'),
+			'Language'				=> $oModuleManager->getModuleConfigValue('Core', 'Language'),
 			'DateFormat'			=> $oSettings->GetConf('DefaultDateFormat'),
-			'TimeFormat'			=> $oSettings->GetConf('DefaultTimeFormat'),
+			'TimeFormat'			=> $oModuleManager->getModuleConfigValue('Core', 'TimeFormat'),
 			'NotificationPassword'	=> '',
 			'PasswordHash'			=> '',
 			'PasswordSalt'			=> md5(microtime(true).rand(10000, 99999)),
