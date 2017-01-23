@@ -47,8 +47,6 @@ class CAccount extends \AEntity
 			/* moved from user */
 //			'IsAgent' => array('string', '')
 		));
-		
-		$this->SetDefaults();
 	}
 	
 	/**
