@@ -72,7 +72,7 @@ class CHelpdeskUser extends api_AContainer
 			'SocialType'			=> '',
 			'ActivateHash'			=> md5(microtime(true).rand(1000, 9999)),
 			'Language'				=> $oModuleManager->getModuleConfigValue('Core', 'Language'),
-			'DateFormat'			=> $oSettings->GetConf('DefaultDateFormat'),
+			'DateFormat'			=> $oModuleManager->getModuleConfigValue('Core', 'DateFormat'),
 			'TimeFormat'			=> $oModuleManager->getModuleConfigValue('Core', 'TimeFormat'),
 			'NotificationPassword'	=> '',
 			'PasswordHash'			=> '',

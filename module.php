@@ -206,7 +206,7 @@ class HelpDeskModule extends AApiModule
 				$oHelpdeskUser->Activated = true;
 				$oHelpdeskUser->IsAgent = true;
 				$oHelpdeskUser->Language = $oAccount->User->Language;
-				$oHelpdeskUser->DateFormat = $oAccount->User->DefaultDateFormat;
+				$oHelpdeskUser->DateFormat = $oAccount->User->DateFormat;
 				$oHelpdeskUser->TimeFormat = $oAccount->User->TimeFormat;
 
 				$oHelpdeskUser->setPassword($oAccount->IncomingMailPassword);
