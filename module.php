@@ -209,7 +209,7 @@ class HelpDeskModule extends AApiModule
 				$oHelpdeskUser->DateFormat = $oAccount->User->DateFormat;
 				$oHelpdeskUser->TimeFormat = $oAccount->User->TimeFormat;
 
-				$oHelpdeskUser->setPassword($oAccount->IncomingMailPassword);
+				$oHelpdeskUser->setPassword($oAccount->IncomingPassword);
 
 				if ($this->oMainManager->createUser($oHelpdeskUser))
 				{
