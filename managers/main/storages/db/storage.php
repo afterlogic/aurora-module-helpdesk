@@ -378,7 +378,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 		{
 			$oItem->IdHelpdeskThread = $oHelpdeskThread->IdHelpdeskThread;
 			$oItem->IdHelpdeskPost = $oHelpdeskPost->IdHelpdeskPost;
-			$oItem->IdOwner = $oUser->iId;
+			$oItem->IdOwner = $oUser->EntityId;
 		}
 
 		$bResult = $this->oConnection->Execute($this->oCommandCreator->addAttachments($aAttachments));
@@ -400,7 +400,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 		{
 			while (false !== ($oRow = $this->oConnection->GetNextRecord()))
 			{
-				if ((int) $oUser->iId !== (int) $oRow->id_owner)
+				if ((int) $oUser->EntityId !== (int) $oRow->id_owner)
 				{
 					$mResult = false;
 					break;
@@ -429,7 +429,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 		{
 			while (false !== ($oRow = $this->oConnection->GetNextRecord()))
 			{
-				if ((int) $oUser->iId !== (int) $oRow->id_owner)
+				if ((int) $oUser->EntityId !== (int) $oRow->id_owner)
 				{
 					$mResult = false;
 					break;
@@ -659,7 +659,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 			{
 				$oHelpdeskThread = new CHelpdeskThread();
 				$oHelpdeskThread->InitByDbRow($oRow);
-				$oHelpdeskThread->ItsMe = $oHelpdeskThread->IdOwner === $oUser->iId;
+				$oHelpdeskThread->ItsMe = $oHelpdeskThread->IdOwner === $oUser->EntityId;
 
 				$mResult[] = $oHelpdeskThread;
 			}
@@ -843,7 +843,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 				if ($oRow && isset($oRow->id_helpdesk_user) && isset($oRow->name) &&
 					isset($oRow->email))
 				{
-					if ((string) $oRow->id_helpdesk_user !== (string) $oUser->iId)
+					if ((string) $oRow->id_helpdesk_user !== (string) $oUser->EntityId)
 					{
 						$mResult[$oRow->id_helpdesk_user] = array((string) $oRow->name, (string) $oRow->email);
 					}
