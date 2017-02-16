@@ -2037,7 +2037,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 					$oPost->Type = EHelpdeskPostType::Normal;
 				}
 
-				if ($this->isAgent($oUser) && !$bIsNew && $oUser->iId !== $oThread->IdOwner)
+				if ($this->isAgent($oUser) && !$bIsNew && $oUser->EntityId !== $oThread->IdOwner)
 				{
 					if ($oPost->Type !== EHelpdeskPostType::Internal)
 					{

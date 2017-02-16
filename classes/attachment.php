@@ -62,7 +62,7 @@ class CHelpdeskAttachment extends api_AContainer
 		$this->Hash = \CApi::EncodeKeyValues(array(
 			'FilestorageFile' => true,
 			'HelpdeskTenantID' => $oUser->IdTenant,
-			'HelpdeskUserID' => $oUser->iId,
+			'HelpdeskUserID' => $oUser->EntityId,
 			'StorageType' => \EFileStorageTypeStr::Corporate,
 			'Name' => $this->FileName,
 			'Path' => $sThreadFolderName
@@ -107,7 +107,7 @@ class CHelpdeskAttachment extends api_AContainer
 			$oHelpdeskUserFromAttachment = null;
 			if (isset($aHash['HelpdeskUserID'], $aHash['HelpdeskTenantID']))
 			{
-				if ($oUser && $aHash['HelpdeskUserID'] === $oUser->iId)
+				if ($oUser && $aHash['HelpdeskUserID'] === $oUser->EntityId)
 				{
 					$oHelpdeskUserFromAttachment = $oUser;
 				}

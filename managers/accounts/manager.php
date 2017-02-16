@@ -257,7 +257,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 			{
 				foreach($aResults as $oItem)
 				{
-					$aResult[$oItem->iId] = array(
+					$aResult[$oItem->EntityId] = array(
 						$oItem->Login,
 						$oItem->Password,
 						$oItem->IdUser,
@@ -299,7 +299,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 			{
 				foreach($aResults as $oObject)
 				{
-					if ($oObject->iId !== $oAccount->iId)
+					if ($oObject->EntityId !== $oAccount->EntityId)
 					{
 						$bResult = true;
 						break;
@@ -398,7 +398,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 		$bResult = false;
 		try
 		{
-			$bResult = $this->oEavManager->deleteEntity($oAccount->iId);
+			$bResult = $this->oEavManager->deleteEntity($oAccount->EntityId);
 		}
 		catch (CApiBaseException $oException)
 		{
