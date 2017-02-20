@@ -32,7 +32,7 @@ class CAccount extends \AEntity
 	 * 
 	 * @return void
 	 */
-	public function __construct($sModule, $oParams)
+	public function __construct($sModule)
 	{
 		parent::__construct(get_class($this), $sModule);
 		
@@ -52,7 +52,7 @@ class CAccount extends \AEntity
 	 * 
 	 * @return bool
 	 */
-	public function isValid()
+	public function validate()
 	{
 		switch (true)
 		{
@@ -64,12 +64,7 @@ class CAccount extends \AEntity
 		return true;
 	}
 	
-	public static function createInstance($sModule = 'HelpDesk', $oParams = array())
-	{
-		return new CAccount($sModule, $oParams);
-	}
-	
-		/**
+	/**
 	 * @return string
 	 */
 	public function getNotificationEmail()
