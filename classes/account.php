@@ -25,7 +25,7 @@ namespace Modules\HelpDesk;
  * @package Users
  * @subpackage Classes
  */
-class CAccount extends \AEntity
+class CAccount extends \CEntity
 {
 	/**
 	 * Creates a new instance of the object.
