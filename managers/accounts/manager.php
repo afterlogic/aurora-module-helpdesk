@@ -51,13 +51,10 @@ class CApiHelpDeskAccountsManager extends AApiManager
 	}
 
 	/**
-	 * Retrieves information on particular WebMail Pro user. 
 	 * 
-	 * @todo not used
-	 * 
-	 * @param int $iUserId User identifier.
-	 * 
-	 * @return CUser | false
+	 * @param int $iAccountId
+	 * @return boolean|CAccount
+	 * @throws CApiBaseException
 	 */
 	public function getAccountById($iAccountId)
 	{
@@ -70,17 +67,6 @@ class CApiHelpDeskAccountsManager extends AApiManager
 				if (null === $oAccount)
 				{
 					$oAccount = $this->oEavManager->getEntity($iAccountId);
-					
-					if ($oAccount instanceof CHelpDeskAccount)
-					{
-						//TODO method needs to be refactored according to the new system of properties inheritance
-//						$oApiDomainsManager = CApi::GetCoreManager('domains');
-//						$oDomain = $oApiDomainsManager->getDefaultDomain();
-						
-//						$oAccount->setInheritedSettings(array(
-//							'domain' => $oDomain
-//						));
-					}
 				}
 			}
 			else
@@ -215,25 +201,19 @@ class CApiHelpDeskAccountsManager extends AApiManager
 	}
 
 	/**
-	 * Obtains list of information about users for specific domain. Domain identifier is used for look up.
-	 * The answer contains information only about default account of founded user.
-	 * 
-	 * @param int $iDomainId Domain identifier.
+	 * Obtains list of information about accounts.
 	 * @param int $iPage List page.
 	 * @param int $iUsersPerPage Number of users on a single page.
 	 * @param string $sOrderBy = 'email'. Field by which to sort.
-	 * @param bool $bAscOrderType = true. If **true** the sort order type is ascending.
+	 * @param int $iOrderType = \ESortOrder::ASC. If **\ESortOrder::ASC** the sort order type is ascending.
 	 * @param string $sSearchDesc = ''. If specified, the search goes on by substring in the name and email of default account.
-	 * 
-	 * @return array | false [IdAccount => [IsMailingList, Email, FriendlyName, IsDisabled, IdUser, StorageQuota, LastLogin]]
+	 * @return array | false
 	 */
 	public function getAccountList($iPage, $iUsersPerPage, $sOrderBy = 'Login', $iOrderType = \ESortOrder::ASC, $sSearchDesc = '')
 	{
 		$aResult = false;
 		try
 		{
-//			$aResult = $this->oStorage->getUserList($iDomainId, $iPage, $iUsersPerPage, $sOrderBy, $bAscOrderType, $sSearchDesc);
-			
 			$aFilters =  array();
 			
 			if ($sSearchDesc !== '')
@@ -387,10 +367,8 @@ class CApiHelpDeskAccountsManager extends AApiManager
 	}
 	
 	/**
-	 * @param CChannel $oChannel
-	 *
-	 * @throws $oException
-	 *
+	 * 
+	 * @param CAccount $oAccount
 	 * @return bool
 	 */
 	public function deleteAccount(CAccount $oAccount)
@@ -404,7 +382,6 @@ class CApiHelpDeskAccountsManager extends AApiManager
 		{
 			$this->setLastException($oException);
 		}
-
 		return $bResult;
 	}
 }
