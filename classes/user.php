@@ -53,7 +53,7 @@ class CHelpdeskUser extends api_AContainer
 
 		$this->SetLower(array('Email'));
 
-		$oSettings =& CApi::GetSettings();
+		$oSettings =&\CApi::GetSettings();
 
 		$oModuleManager = \CApi::GetModuleManager();
 		

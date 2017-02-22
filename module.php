@@ -1,8 +1,10 @@
 <?php
 
+namespace Aurora\Modules;
+
 use \Modules\HelpDesk\CAccount;
 
-class HelpDeskModule extends AApiModule
+class HelpDeskModule extends \AApiModule
 {
 	public $oCurrentAccount = null;
 	
@@ -18,7 +20,6 @@ class HelpDeskModule extends AApiModule
 	
 	public function init() 
 	{
-		//test
 		$this->incClass('account');
 		$this->incClass('enum');
 		$this->incClass('user');
@@ -104,7 +105,7 @@ class HelpDeskModule extends AApiModule
 	{
 		\CApi::checkUserRoleIsAtLeast(\EUserRole::NormalUser);
 		
-//		$oSettings =& CApi::GetSettings();
+//		$oSettings =&\CApi::GetSettings();
 //		$oMap = $this->getStaticMap();
 		
 //		if (isset($oMap['HelpdeskFacebookAllow'][2]) && !$oMap['HelpdeskFacebookAllow'][2])
@@ -175,7 +176,7 @@ class HelpDeskModule extends AApiModule
 	protected function getHelpdeskAccountFromMainAccount(&$oAccount)
 	{
 		$oResult = null;
-		$oApiUsers = CApi::GetSystemManager('users');
+		$oApiUsers = \CApi::GetSystemManager('users');
 		if ($oAccount && $oAccount->IsDefaultAccount && $this->oApiCapabilityManager->isHelpdeskSupported($oAccount))
 		{
 			if (0 < $oAccount->User->IdHelpdeskUser)
@@ -228,22 +229,22 @@ class HelpDeskModule extends AApiModule
 	{
 		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
-		setcookie('aft-cache-ctrl', '', time() - 3600);
+		\setcookie('aft-cache-ctrl', '', \time() - 3600);
 		$sTenantName = \CApi::getTenantName();
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 		{
-			$sEmail = trim($Login);
-			$Password = trim($Password);
+			$sEmail = \trim($Login);
+			$Password = \trim($Password);
 			$SignMe = '1' === (string) $SignMe;
 
-			if (0 === strlen($sEmail) || 0 === strlen($Password))
+			if (0 === \strlen($sEmail) || 0 === \strlen($Password))
 			{
 				throw new \System\Exceptions\AuroraApiException(\System\Notifications::InvalidInputParameter);
 			}
 			
 			$mIdTenant = $this->oCoreDecorator ? $this->oCoreDecorator->getTenantIdByName($sTenantName) : null;
 
-			if (!is_int($mIdTenant))
+			if (!\is_int($mIdTenant))
 			{
 				throw new \System\Exceptions\AuroraApiException(\System\Notifications::InvalidInputParameter);
 			}
@@ -271,7 +272,7 @@ class HelpDeskModule extends AApiModule
 					$mResult
 				);
 				
-				if (is_array($mResult))
+				if (\is_array($mResult))
 				{
 					$aAccountHashTable = $mResult;
 
@@ -320,7 +321,7 @@ class HelpDeskModule extends AApiModule
 	{
 		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
 		
-		setcookie('aft-cache-ctrl', '', time() - 3600);
+		\setcookie('aft-cache-ctrl', '', \time() - 3600);
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 		{
 			$oApiIntegrator = \CApi::GetSystemManager('integrator');
@@ -337,17 +338,17 @@ class HelpDeskModule extends AApiModule
 		$sTenantName = \CApi::getTenantName();
 //		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 //		{
-			$sLogin = trim($Email);
-			$sName = trim($Name);
-			$sPassword = trim($Password);
+			$sLogin = \trim($Email);
+			$sName = \trim($Name);
+			$sPassword = \trim($Password);
 
-			if (0 === strlen($sLogin) || 0 === strlen($sPassword))
+			if (0 === \strlen($sLogin) || 0 === \strlen($sPassword))
 			{
 				throw new \System\Exceptions\AuroraApiException(\System\Notifications::InvalidInputParameter);
 			}
 
 			$mIdTenant = $this->oCoreDecorator ? $this->oCoreDecorator->getTenantIdByName($sTenantName) : null;
-			if (!is_int($mIdTenant))
+			if (!\is_int($mIdTenant))
 			{
 				throw new \System\Exceptions\AuroraApiException(\System\Notifications::InvalidInputParameter);
 			}
@@ -444,16 +445,16 @@ class HelpDeskModule extends AApiModule
 		$sTenantName = \CApi::getTenantName();
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 		{
-			$Email = trim($Email);
+			$Email = \trim($Email);
 
-			if (0 === strlen($Email))
+			if (0 === \strlen($Email))
 			{
 				throw new \System\Exceptions\AuroraApiException(\System\Notifications::InvalidInputParameter);
 			}
 
 			$mIdTenant = $this->oCoreDecorator ? $this->oCoreDecorator->getTenantIdByName($sTenantName) : null;
 
-			if (!is_int($mIdTenant))
+			if (!\is_int($mIdTenant))
 			{
 				throw new \System\Exceptions\AuroraApiException(\System\Notifications::InvalidInputParameter);
 			}
@@ -516,14 +517,14 @@ class HelpDeskModule extends AApiModule
 			$sActivateHash = \trim($this->getParamValue('ActivateHash', ''));
 			$sNewPassword = \trim($this->getParamValue('NewPassword', ''));
 
-			if (0 === strlen($sNewPassword) || 0 === strlen($sActivateHash))
+			if (0 === \strlen($sNewPassword) || 0 === \strlen($sActivateHash))
 			{
 				throw new \System\Exceptions\AuroraApiException(\System\Notifications::InvalidInputParameter);
 			}
 
 			$oApiTenants = \CApi::GetSystemManager('tenants');
 			$mIdTenant = $oApiTenants->getTenantIdByName($sTenantName);
-			if (!is_int($mIdTenant))
+			if (!\is_int($mIdTenant))
 			{
 				throw new \System\Exceptions\AuroraApiException(\System\Notifications::InvalidInputParameter);
 			}
@@ -562,7 +563,7 @@ class HelpDeskModule extends AApiModule
 		
 		$bIsInternal = '1' === $IsInternal;
 		
-		if (0 === strlen($Text) || (0 === $ThreadId && 0 === strlen($Subject)))
+		if (0 === \strlen($Text) || (0 === $ThreadId && 0 === \strlen($Subject)))
 		{
 			throw new \System\Exceptions\AuroraApiException(\System\Notifications::InvalidInputParameter);
 		}
@@ -602,7 +603,7 @@ class HelpDeskModule extends AApiModule
 			$oPost->Text = $Text;
 
 			$aResultAttachment = array();
-			if (is_array($Attachments) && 0 < count($Attachments))
+			if (\is_array($Attachments) && 0 < \count($Attachments))
 			{
 				foreach ($Attachments as $sTempName => $sHash)
 				{
@@ -618,8 +619,8 @@ class HelpDeskModule extends AApiModule
 						$iFileSize = $this->ApiFileCache()->fileSize($oUser, $sTempName);
 
 						$sThreadID = (string) $oThread->IdHelpdeskThread;
-						$sThreadID = str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
-						$sThreadIDSubFolder = substr($sThreadID, 0, 2);
+						$sThreadID = \str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
+						$sThreadIDSubFolder = \substr($sThreadID, 0, 2);
 
 						$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
 
@@ -645,7 +646,7 @@ class HelpDeskModule extends AApiModule
 					}
 				}
 
-				if (is_array($aResultAttachment) && 0 < count($aResultAttachment))
+				if (\is_array($aResultAttachment) && 0 < \count($aResultAttachment))
 				{
 					$oPost->Attachments = $aResultAttachment;
 				}
@@ -721,7 +722,7 @@ class HelpDeskModule extends AApiModule
 		}
 
 		$mHelpdeskThreadId = $sThreadId ? $sThreadId : $this->oMainManager->getThreadIdByHash($oUser->IdTenant, $sThreadHash);
-		if (!is_int($mHelpdeskThreadId) || 1 > $mHelpdeskThreadId)
+		if (!\is_int($mHelpdeskThreadId) || 1 > $mHelpdeskThreadId)
 		{
 			throw new \System\Exceptions\AuroraApiException(\System\Notifications::InvalidInputParameter);
 		}
@@ -733,9 +734,9 @@ class HelpDeskModule extends AApiModule
 		}
 
 		$aUserInfo = $this->oMainManager->userInformation($oUser, array($oThread->IdOwner));
-		if (is_array($aUserInfo) && 0 < count($aUserInfo))
+		if (\is_array($aUserInfo) && 0 < \count($aUserInfo))
 		{
-			if (isset($aUserInfo[$oThread->IdOwner]) && is_array($aUserInfo[$oThread->IdOwner]))
+			if (isset($aUserInfo[$oThread->IdOwner]) && \is_array($aUserInfo[$oThread->IdOwner]))
 			{
 				$sEmail = isset($aUserInfo[$oThread->IdOwner][0]) ? $aUserInfo[$oThread->IdOwner][0] : '';
 				$sName = isset($aUserInfo[$oThread->IdOwner][1]) ? $aUserInfo[$oThread->IdOwner][1] : '';
@@ -745,7 +746,7 @@ class HelpDeskModule extends AApiModule
 					$sEmail = $aUserInfo[$oThread->IdOwner][3];
 				}
 
-				if (!$bIsAgent && 0 < strlen($sName))
+				if (!$bIsAgent && 0 < \strlen($sName))
 				{
 					$sEmail = '';
 				}
@@ -782,7 +783,7 @@ class HelpDeskModule extends AApiModule
 		$iExtPostsCount = $IsExt ? $this->oMainManager->getExtPostsCount($oUser, $oThread) : 0;
 
 		$aOwnerDataList = array();
-		if (is_array($aPostList) && 0 < count($aPostList))
+		if (\is_array($aPostList) && 0 < \count($aPostList))
 		{
 			foreach ($aPostList as &$oItem)
 			{
@@ -819,7 +820,7 @@ class HelpDeskModule extends AApiModule
 			}
 		}
 
-		if (0 < count($aOwnerDataList))
+		if (0 < \count($aOwnerDataList))
 		{
 //			$aIdList = array_values($aIdList);
 //			$aUserInfo = $this->oMainManager->userInformation($oUser, $aIdList);
@@ -831,7 +832,7 @@ class HelpDeskModule extends AApiModule
 				
 				foreach ($aPostList as &$oItem)
 				{
-					if ($oItem && isset($aOwnerDataList[$oItem->IdOwner]) && is_array($aOwnerDataList[$oItem->IdOwner]))
+					if ($oItem && isset($aOwnerDataList[$oItem->IdOwner]) && \is_array($aOwnerDataList[$oItem->IdOwner]))
 					{
 						$oItem->Owner = array(
 							isset($aOwnerDataList[$oItem->IdOwner]['Email']) ? $aOwnerDataList[$oItem->IdOwner]['Email'] : '',
@@ -843,7 +844,7 @@ class HelpDeskModule extends AApiModule
 							$oItem->Owner[0] = isset($aOwnerDataList[$oItem->IdOwner]['notification_email']) ? $aOwnerDataList[$oItem->IdOwner]['notification_email'] : '';
 						}
 
-						if (!$bIsAgent && 0 < strlen($oItem->Owner[1]))
+						if (!$bIsAgent && 0 < \strlen($oItem->Owner[1]))
 						{
 							$oItem->Owner[0] = '';
 						}
@@ -857,12 +858,12 @@ class HelpDeskModule extends AApiModule
 					}
 				}
 
-				if (isset($aOwnerDataList[$oThread->IdOwner]) && is_array($aOwnerDataList[$oThread->IdOwner]))
+				if (isset($aOwnerDataList[$oThread->IdOwner]) && \is_array($aOwnerDataList[$oThread->IdOwner]))
 				{
 					$sEmail = isset($aOwnerDataList[$oThread->IdOwner]['Email']) ? $aOwnerDataList[$oThread->IdOwner]['Email'] : '';
 					$sName = isset($aOwnerDataList[$oThread->IdOwner]['Name']) ? $aOwnerDataList[$oThread->IdOwner]['Name'] : '';
 
-					if (!$bIsAgent && 0 < strlen($sName))
+					if (!$bIsAgent && 0 < \strlen($sName))
 					{
 						$sEmail = '';
 					}
@@ -875,12 +876,12 @@ class HelpDeskModule extends AApiModule
 		if ($oThread->HasAttachments)
 		{
 			$aAttachments = $this->oMainManager->getAttachments($oUser, $oThread);
-			if (is_array($aAttachments))
+			if (\is_array($aAttachments))
 			{
 				foreach ($aPostList as &$oItem)
 				{
-					if (isset($aAttachments[$oItem->IdHelpdeskPost]) && is_array($aAttachments[$oItem->IdHelpdeskPost]) &&
-						0 < count($aAttachments[$oItem->IdHelpdeskPost]))
+					if (isset($aAttachments[$oItem->IdHelpdeskPost]) && \is_array($aAttachments[$oItem->IdHelpdeskPost]) &&
+						0 < \count($aAttachments[$oItem->IdHelpdeskPost]))
 					{
 						$oItem->Attachments = $aAttachments[$oItem->IdHelpdeskPost];
 
@@ -900,7 +901,7 @@ class HelpDeskModule extends AApiModule
 			'ThreadId' => $oThread->IdHelpdeskThread,
 			'StartFromId' => $StartFromId,
 			'Limit' => $Limit,
-			'ItemsCount' => $iExtPostsCount ? $iExtPostsCount : ($oThread->PostCount > count($aPostList) ? $oThread->PostCount : count($aPostList)),
+			'ItemsCount' => $iExtPostsCount ? $iExtPostsCount : ($oThread->PostCount > \count($aPostList) ? $oThread->PostCount : \count($aPostList)),
 			'List' => $aPostList
 		);
 	}
@@ -947,7 +948,7 @@ class HelpDeskModule extends AApiModule
 //		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
 //		$iThreadType = (int) $this->getParamValue('Type', \EHelpdeskThreadType::None);
 
-		if (1 > $ThreadId || !in_array($ThreadType, array(
+		if (1 > $ThreadId || !\in_array($ThreadType, array(
 			\EHelpdeskThreadType::Pending,
 			\EHelpdeskThreadType::Waiting,
 			\EHelpdeskThreadType::Answered,
@@ -1037,7 +1038,7 @@ class HelpDeskModule extends AApiModule
 		}
 
 		$aOwnerDataList = array();
-		if (is_array($aThreadsList) && 0 < count($aThreadsList))
+		if (\is_array($aThreadsList) && 0 < \count($aThreadsList))
 		{
 			foreach ($aThreadsList as &$oItem)
 			{
@@ -1063,7 +1064,7 @@ class HelpDeskModule extends AApiModule
 //			$aUserInfo = $this->oMainManager->userInformation($oUser, $aOwnerList);
 //			id_helpdesk_user, email, name, is_agent, notification_email
 			
-			if (is_array($aOwnerDataList) && 0 < count($aOwnerDataList))
+			if (\is_array($aOwnerDataList) && 0 < \count($aOwnerDataList))
 			{
 				$bIsAgent = $this->IsAgent($oUser);
 				
@@ -1079,7 +1080,7 @@ class HelpDeskModule extends AApiModule
 							$sEmail = $aOwnerDataList[$oItem->IdOwner]['NotificationEmail'];
 						}
 
-						if (!$bIsAgent && 0 < strlen($sName))
+						if (!$bIsAgent && 0 < \strlen($sName))
 						{
 							$sEmail = '';
 						}
@@ -1128,7 +1129,7 @@ class HelpDeskModule extends AApiModule
 		$sNewPassword = (string) $this->getParamValue('NewPassword', '');
 
 		$bResult = false;
-		if ($oUser && $oUser->validatePassword($sCurrentPassword) && 0 < strlen($sNewPassword))
+		if ($oUser && $oUser->validatePassword($sCurrentPassword) && 0 < \strlen($sNewPassword))
 		{
 			$oUser->setPassword($sNewPassword);
 			if (!$this->oMainManager->updateUser($oUser))
@@ -1147,7 +1148,7 @@ class HelpDeskModule extends AApiModule
 	{
 		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
 		
-		setcookie('aft-cache-ctrl', '', time() - 3600);
+		\setcookie('aft-cache-ctrl', '', \time() - 3600);
 		$oUser = \CApi::getAuthenticatedUser();
 
 		$sName = (string) $this->getParamValue('Name', $oUser->Name);
@@ -1157,8 +1158,8 @@ class HelpDeskModule extends AApiModule
 		$sDateFormat = (string) $this->getParamValue('DateFormat', $oUser->DateFormat);
 		$iTimeFormat = (int) $this->getParamValue('TimeFormat', $oUser->TimeFormat);
 
-		$oUser->Name = trim($sName);
-		$oUser->Language = trim($sLanguage);
+		$oUser->Name = \trim($sName);
+		$oUser->Language = \trim($sLanguage);
 		$oUser->DateFormat = $sDateFormat;
 		$oUser->TimeFormat = $iTimeFormat;
 		
@@ -1194,7 +1195,7 @@ class HelpDeskModule extends AApiModule
 		$oAccount = null; //$this->getAccountFromParam(); TODO:
 
 		$oAccount->User->AllowHelpdeskNotifications =  (bool) $this->getParamValue('AllowHelpdeskNotifications', $oAccount->User->AllowHelpdeskNotifications);
-		$oAccount->User->HelpdeskSignature = trim((string) $this->getParamValue('HelpdeskSignature', $oAccount->User->HelpdeskSignature));
+		$oAccount->User->HelpdeskSignature = \trim((string) $this->getParamValue('HelpdeskSignature', $oAccount->User->HelpdeskSignature));
 		$oAccount->User->HelpdeskSignatureEnable = (bool) $this->getParamValue('HelpdeskSignatureEnable', $oAccount->User->HelpdeskSignatureEnable);
 
 		$oApiUsers = \CApi::GetSystemManager('users');

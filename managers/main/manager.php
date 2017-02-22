@@ -62,7 +62,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 	{
 		if (null === $this->oApiUsers)
 		{
-			$this->oApiUsers = CApi::GetSystemManager('users');
+			$this->oApiUsers =\CApi::GetSystemManager('users');
 		}
 
 		return $this->oApiUsers;
@@ -1094,7 +1094,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 				try
 				{
 					$mResult = $this->oStorage->getNextHelpdeskIdForMonitoring(
-						(int) CApi::GetConf('helpdesk.fetcher-time-limit-in-min', 5));
+						(int)\CApi::GetConf('helpdesk.fetcher-time-limit-in-min', 5));
 					
 					if (0 >= $mResult)
 					{
