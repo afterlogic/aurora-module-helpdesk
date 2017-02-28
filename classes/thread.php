@@ -90,7 +90,7 @@ class CHelpdeskThread extends api_AContainer
 
 		if (0 < $this->IdTenant)
 		{
-			$sPath .= '='.substr(md5($this->IdTenant.CApi::$sSalt), 0, 8);
+			$sPath .= '='.substr(md5($this->IdTenant.\Aurora\System\Api::$sSalt), 0, 8);
 		}
 
 		return $sPath;
@@ -106,7 +106,7 @@ class CHelpdeskThread extends api_AContainer
 		switch (true)
 		{
 			case 0 < $this->IdOwner:
-				throw new CApiValidationException(Errs::Validation_ObjectNotComplete, null, array(
+				throw new \CApiValidationException(Errs::Validation_ObjectNotComplete, null, array(
 					'{{ClassName}}' => 'CHelpdeskPost', '{{ClassField}}' => 'IdOwner'));
 		}
 

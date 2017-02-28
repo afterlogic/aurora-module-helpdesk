@@ -59,7 +59,7 @@ class CHelpdeskAttachment extends api_AContainer
 	 */
 	public function encodeHash(\CUser $oUser, $sThreadFolderName)
 	{
-		$this->Hash = \CApi::EncodeKeyValues(array(
+		$this->Hash = \Aurora\System\Api::EncodeKeyValues(array(
 			'FilestorageFile' => true,
 			'HelpdeskTenantID' => $oUser->IdTenant,
 			'HelpdeskUserID' => $oUser->EntityId,
@@ -79,7 +79,7 @@ class CHelpdeskAttachment extends api_AContainer
 		switch (true)
 		{
 			case 0 >= $this->IdOwner:
-				throw new CApiValidationException(Errs::Validation_ObjectNotComplete, null, array(
+				throw new \CApiValidationException(Errs::Validation_ObjectNotComplete, null, array(
 					'{{ClassName}}' => 'CHelpdeskPost', '{{ClassField}}' => 'IdOwner'));
 		}
 
@@ -101,7 +101,7 @@ class CHelpdeskAttachment extends api_AContainer
 	 */
 	public function populateContent($oUser, $oApiHelpdesk, $oApiFilestorage)
 	{
-		$aHash = \CApi::DecodeKeyValues($this->Hash);
+		$aHash = \Aurora\System\Api::DecodeKeyValues($this->Hash);
 		if (isset($aHash['StorageType'], $aHash['Path'], $aHash['Name']) && $oApiHelpdesk && $oApiFilestorage)
 		{
 			$oHelpdeskUserFromAttachment = null;
@@ -163,9 +163,9 @@ class CHelpdeskAttachment extends api_AContainer
 			'SizeInBytes' => $this->SizeInBytes,
 			'FileName' => $this->FileName,
 			'MimeType' => \MailSo\Base\Utils::MimeContentType($this->FileName),
-			'Thumb' => \CApi::GetConf('labs.allow-thumbnail', true) &&
+			'Thumb' => \Aurora\System\Api::GetConf('labs.allow-thumbnail', true) &&
 				$this->SizeInBytes < $iThumbnailLimit &&
-				\api_Utils::IsGDImageMimeTypeSuppoted(
+				\Aurora\System\Utils::IsGDImageMimeTypeSuppoted(
 					\MailSo\Base\Utils::MimeContentType($this->FileName), $this->FileName),
 			'Hash' => $this->Hash,
 			'Content' => $this->Content,

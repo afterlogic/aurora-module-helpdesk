@@ -4,7 +4,7 @@ namespace Aurora\Modules;
 
 use \Modules\HelpDesk\CAccount;
 
-class HelpDeskModule extends \AApiModule
+class HelpDeskModule extends \Aurora\System\AbstractModule
 {
 	public $oCurrentAccount = null;
 	
@@ -30,8 +30,8 @@ class HelpDeskModule extends \AApiModule
 		$this->oMainManager = $this->GetManager('main');
 		$this->oAccountsManager = $this->GetManager('accounts');
 		
-		$this->oCoreDecorator = \CApi::GetModuleDecorator('Core');
-		$this->oAuthDecorator = \CApi::GetModuleDecorator('StandardAuth');
+		$this->oCoreDecorator = \Aurora\System\Api::GetModuleDecorator('Core');
+		$this->oAuthDecorator = \Aurora\System\Api::GetModuleDecorator('StandardAuth');
 		
 //		$this->setObjectMap('CUser', array(
 //				'HelpdeskSignature'					=> array('string', ''), //'helpdesk_signature'),
@@ -75,7 +75,7 @@ class HelpDeskModule extends \AApiModule
 	 */
 	public function GetSettings()
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
 		return array(
 			'ActivatedEmail' => '', // AppData.HelpdeskActivatedEmail
@@ -103,9 +103,9 @@ class HelpDeskModule extends \AApiModule
 	 */
 	public function setInheritedSettings()
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::NormalUser);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::NormalUser);
 		
-//		$oSettings =&\CApi::GetSettings();
+//		$oSettings =&\Aurora\System\Api::GetSettings();
 //		$oMap = $this->getStaticMap();
 		
 //		if (isset($oMap['HelpdeskFacebookAllow'][2]) && !$oMap['HelpdeskFacebookAllow'][2])
@@ -156,9 +156,9 @@ class HelpDeskModule extends \AApiModule
 	
 	protected function GetCurrentAccount()
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
-		$iUserId = \CApi::getAuthenticatedUserId();
+		$iUserId = \Aurora\System\Api::getAuthenticatedUserId();
 	
 		if (!$this->oCurrentAccount && $iUserId)
 		{
@@ -176,7 +176,7 @@ class HelpDeskModule extends \AApiModule
 	protected function getHelpdeskAccountFromMainAccount(&$oAccount)
 	{
 		$oResult = null;
-		$oApiUsers = \CApi::GetSystemManager('users');
+		$oApiUsers = \Aurora\System\Api::GetSystemManager('users');
 		if ($oAccount && $oAccount->IsDefaultAccount && $this->oApiCapabilityManager->isHelpdeskSupported($oAccount))
 		{
 			if (0 < $oAccount->User->IdHelpdeskUser)
@@ -227,10 +227,10 @@ class HelpDeskModule extends \AApiModule
 	
 	public function Login($Login = '', $Password = '', $SignMe = 0)
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
 		\setcookie('aft-cache-ctrl', '', \time() - 3600);
-		$sTenantName = \CApi::getTenantName();
+		$sTenantName = \Aurora\System\Api::getTenantName();
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 		{
 			$sEmail = \trim($Login);
@@ -251,7 +251,7 @@ class HelpDeskModule extends \AApiModule
 
 			try
 			{
-//				$oApiIntegrator = \CApi::GetCoreManager('integrator');
+//				$oApiIntegrator = \Aurora\System\Api::GetCoreManager('integrator');
 //				$oHelpdeskUser = $oApiIntegrator->loginToHelpdeskAccount($mIdTenant, $sEmail, $sPassword);
 //				if ($oHelpdeskUser && !$oHelpdeskUser->Blocked)
 //				{
@@ -277,11 +277,11 @@ class HelpDeskModule extends \AApiModule
 					$aAccountHashTable = $mResult;
 
 		//			$iTime = $bSignMe ? time() + 60 * 60 * 24 * 30 : 0;
-					$sAccountHashTable = \CApi::EncodeKeyValues($aAccountHashTable);
+					$sAccountHashTable = \Aurora\System\Api::EncodeKeyValues($aAccountHashTable);
 
 					$sAuthToken = \md5(\microtime(true).\rand(10000, 99999));
 
-					$sAuthToken = \CApi::Cacher()->Set('AUTHTOKEN:'.$sAuthToken, $sAccountHashTable) ? $sAuthToken : '';
+					$sAuthToken = \Aurora\System\Api::Cacher()->Set('AUTHTOKEN:'.$sAuthToken, $sAccountHashTable) ? $sAuthToken : '';
 
 					return array(
 						'AuthToken' => $sAuthToken
@@ -319,12 +319,12 @@ class HelpDeskModule extends \AApiModule
 
 	public function Logout()
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
 		
 		\setcookie('aft-cache-ctrl', '', \time() - 3600);
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 		{
-			$oApiIntegrator = \CApi::GetSystemManager('integrator');
+			$oApiIntegrator = \Aurora\System\Api::GetSystemManager('integrator');
 			$oApiIntegrator->logoutHelpdeskUser();
 		}
 
@@ -333,9 +333,9 @@ class HelpDeskModule extends \AApiModule
 	
 	public function Register($Email, $Password, $Name = '', $IsExt = false)
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
-		$sTenantName = \CApi::getTenantName();
+		$sTenantName = \Aurora\System\Api::getTenantName();
 //		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 //		{
 			$sLogin = \trim($Email);
@@ -357,7 +357,7 @@ class HelpDeskModule extends \AApiModule
 			try
 			{
 				$oEventResult = null;
-				$iUserId = \CApi::getAuthenticatedUserId();
+				$iUserId = \Aurora\System\Api::getAuthenticatedUserId();
 				
 				$aArgs = array(
 					'TenantId' => $mIdTenant,
@@ -433,16 +433,16 @@ class HelpDeskModule extends \AApiModule
 	 */
 	public function IsAgent(\CUser $oUser)
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
 		return $this->oMainManager->isAgent($oUser);
 	}	
 	
 	public function Forgot($Email = '', $IsExt = false)
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
-		$sTenantName = \CApi::getTenantName();
+		$sTenantName = \Aurora\System\Api::getTenantName();
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 		{
 			$Email = \trim($Email);
@@ -509,9 +509,9 @@ class HelpDeskModule extends \AApiModule
 	
 	public function ForgotChangePassword()
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
-		$sTenantName = \CApi::getTenantName();
+		$sTenantName = \Aurora\System\Api::getTenantName();
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
 		{
 			$sActivateHash = \trim($this->getParamValue('ActivateHash', ''));
@@ -522,7 +522,7 @@ class HelpDeskModule extends \AApiModule
 				throw new \System\Exceptions\AuroraApiException(\System\Notifications::InvalidInputParameter);
 			}
 
-			$oApiTenants = \CApi::GetSystemManager('tenants');
+			$oApiTenants = \Aurora\System\Api::GetSystemManager('tenants');
 			$mIdTenant = $oApiTenants->getTenantIdByName($sTenantName);
 			if (!\is_int($mIdTenant))
 			{
@@ -547,9 +547,9 @@ class HelpDeskModule extends \AApiModule
 	
 	public function CreatePost($ThreadId = 0, $IsInternal = '0', $Subject = '', $Text = '', $Cc = '', $Bcc = '', $Attachments = null, $IsExt = 0)
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
 		
-		$oUser = \CApi::getAuthenticatedUser();
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 		
 		/* @var $oAccount CAccount */
 
@@ -607,7 +607,7 @@ class HelpDeskModule extends \AApiModule
 			{
 				foreach ($Attachments as $sTempName => $sHash)
 				{
-					$aDecodeData = \CApi::DecodeKeyValues($sHash);
+					$aDecodeData = \Aurora\System\Api::DecodeKeyValues($sHash);
 					if (!isset($aDecodeData['HelpdeskUserID']))
 					{
 						continue;
@@ -671,9 +671,9 @@ class HelpDeskModule extends \AApiModule
 	 */
 	public function DeletePost($PostId = 0, $ThreadId = 0, $IsExt = 0)
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
 		
-		$oUser = \CApi::getAuthenticatedUser();
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
 		if (!$oUser)
 		{
@@ -707,10 +707,10 @@ class HelpDeskModule extends \AApiModule
 	 */
 	public function GetThreadByIdOrHash()
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
 		$oThread = false;
-		$oUser = \CApi::getAuthenticatedUser();
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
 		$bIsAgent = $this->IsAgent($oUser);
 
@@ -763,9 +763,9 @@ class HelpDeskModule extends \AApiModule
 	 */
 	public function GetPosts($ThreadId = 0, $StartFromId = 0, $Limit = 10, $IsExt = 1)
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
-		$oUser = \CApi::getAuthenticatedUser();
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 		
 
 		if (1 > $ThreadId || 0 > $StartFromId || 1 > $Limit)
@@ -911,9 +911,9 @@ class HelpDeskModule extends \AApiModule
 	 */
 	public function DeleteThread($ThreadId = 0, $IsExt = 0)
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
 		
-		$oUser = \CApi::getAuthenticatedUser();
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
 		if (!$oUser)
 		{
@@ -941,9 +941,9 @@ class HelpDeskModule extends \AApiModule
 	 */
 	public function ChangeThreadState($ThreadId = 0, $ThreadType = \EHelpdeskThreadType::None, $IsExt = 0)
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
 		
-		$oUser = \CApi::getAuthenticatedUser();
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
 //		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
 //		$iThreadType = (int) $this->getParamValue('Type', \EHelpdeskThreadType::None);
@@ -978,9 +978,9 @@ class HelpDeskModule extends \AApiModule
 
 	public function PingThread($ThreadId = 0)
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
-		$oUser = \CApi::getAuthenticatedUser();
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
 //		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
 
@@ -996,9 +996,9 @@ class HelpDeskModule extends \AApiModule
 	
 	public function SetThreadSeen($ThreadId = 0)
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
 		
-		$oUser = \CApi::getAuthenticatedUser();
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
 //		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
 
@@ -1021,9 +1021,9 @@ class HelpDeskModule extends \AApiModule
 	 */
 	public function GetThreads($Offset = 0, $Limit = 10, $Filter = \EHelpdeskThreadFilterType::All, $Search = '')
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
-		$oUser = \CApi::getAuthenticatedUser();
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 		
 		if (0 > $Offset || 1 > $Limit)
 		{
@@ -1103,9 +1103,9 @@ class HelpDeskModule extends \AApiModule
 	
 	public function GetThreadsPendingCount()
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
-		$oUser = \CApi::getAuthenticatedUser();
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
 		if (!($oUser instanceof \CHelpdeskUser))
 		{
@@ -1121,9 +1121,9 @@ class HelpDeskModule extends \AApiModule
 	 */
 	public function UpdateUserPassword()
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
 		
-		$oUser = \CApi::getAuthenticatedUser();
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
 		$sCurrentPassword = (string) $this->getParamValue('CurrentPassword', '');
 		$sNewPassword = (string) $this->getParamValue('NewPassword', '');
@@ -1146,10 +1146,10 @@ class HelpDeskModule extends \AApiModule
 	 */
 	public function UpdateSettings()
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
 		
 		\setcookie('aft-cache-ctrl', '', \time() - 3600);
-		$oUser = \CApi::getAuthenticatedUser();
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
 		$sName = (string) $this->getParamValue('Name', $oUser->Name);
 		$sLanguage = (string) $this->getParamValue('Language', $oUser->Language);
@@ -1171,7 +1171,7 @@ class HelpDeskModule extends \AApiModule
 	 */
 	public function UpdateUserSettings()
 	{
-		\CApi::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
 		
 		/*$oAccount = $this->getAccountFromParam();
 		$oHelpdeskUser = $this->GetHelpdeskAccountFromMainAccount($oAccount);
@@ -1198,7 +1198,7 @@ class HelpDeskModule extends \AApiModule
 		$oAccount->User->HelpdeskSignature = \trim((string) $this->getParamValue('HelpdeskSignature', $oAccount->User->HelpdeskSignature));
 		$oAccount->User->HelpdeskSignatureEnable = (bool) $this->getParamValue('HelpdeskSignatureEnable', $oAccount->User->HelpdeskSignatureEnable);
 
-		$oApiUsers = \CApi::GetSystemManager('users');
+		$oApiUsers = \Aurora\System\Api::GetSystemManager('users');
 		return $oApiUsers->UpdateAccount($oAccount);
 	}	
 	

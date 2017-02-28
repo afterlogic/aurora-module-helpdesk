@@ -23,7 +23,7 @@
  *
  * @package Helpdesk
  */
-class CApiHelpdeskMainManager extends AApiManagerWithStorage
+class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 {
 	/**
 	 * @var $oApiMail CApiMailManager
@@ -41,10 +41,10 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 	private $oApiTenants;
 	
 	/**
-	 * @param CApiGlobalManager &$oManager
+	 * @param \Aurora\System\GlobalManager &$oManager
 	 * @param string $sForcedStorage Default value is empty string.
 	 */
-	public function __construct(CApiGlobalManager &$oManager, $sForcedStorage = '', AApiModule $oModule = null)
+	public function __construct(\Aurora\System\GlobalManager &$oManager, $sForcedStorage = '', \Aurora\System\AbstractModule $oModule = null)
 	{
 		parent::__construct('main', $oManager, $sForcedStorage, $oModule);
 
@@ -62,7 +62,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 	{
 		if (null === $this->oApiUsers)
 		{
-			$this->oApiUsers =\CApi::GetSystemManager('users');
+			$this->oApiUsers =\Aurora\System\Api::GetSystemManager('users');
 		}
 
 		return $this->oApiUsers;
@@ -77,7 +77,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 	{
 		if (null === $this->oApiMail)
 		{
-			$this->oApiMail = \CApi::Manager('mail');
+			$this->oApiMail = \Aurora\System\Api::Manager('mail');
 		}
 		
 		return $this->oApiMail;
@@ -132,32 +132,32 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 			$sHelpdeskSiteName = strlen($sSiteName) === 0 ? 'Helpdesk' : $sSiteName;
 
 			return strtr($sData, array(
-				'{{HELPDESK/FORGOT_SUBJECT}}' => ':SUBJECT: ' . \CApi::ClientI18N('HELPDESK/MAIL_FORGOT_SUBJECT', null, array("SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/FORGOT_CONFIRM}}' => \CApi::ClientI18N('HELPDESK/MAIL_FORGOT_CONFIRM', null, array("EMAIL" => $oHelpdeskUser->resultEmail(), "SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/FORGOT_PROCEED_LINK}}' => \CApi::ClientI18N('HELPDESK/MAIL_FORGOT_PROCEED_LINK'),
+				'{{HELPDESK/FORGOT_SUBJECT}}' => ':SUBJECT: ' . \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_SUBJECT', null, array("SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/FORGOT_CONFIRM}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_CONFIRM', null, array("EMAIL" => $oHelpdeskUser->resultEmail(), "SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/FORGOT_PROCEED_LINK}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_PROCEED_LINK'),
 				'{{HELPDESK/FORGOT_LINK}}' => $oHelpdeskUser->forgotLink(),
-				'{{HELPDESK/FORGOT_DISREGARD}}' => \CApi::ClientI18N('HELPDESK/MAIL_FORGOT_DISREGARD', null, array("SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/FORGOT_NOT_REPLY}}' => \CApi::ClientI18N('HELPDESK/MAIL_FORGOT_NOT_REPLY'),
-				'{{HELPDESK/FORGOT_REGARDS}}' => \CApi::ClientI18N('HELPDESK/MAIL_FORGOT_REGARDS'),
-				'{{HELPDESK/FORGOT_SITE}}' => \CApi::ClientI18N('HELPDESK/MAIL_FORGOT_SITE', null, array("SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/REG_SUBJECT}}' => ':SUBJECT: ' . \CApi::ClientI18N('HELPDESK/MAIL_REG_SUBJECT', null, array("SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/REG_CONFIRM}}' => \CApi::ClientI18N('HELPDESK/MAIL_REG_CONFIRM', null, array("SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/REG_PROCEED_LINK}}' => \CApi::ClientI18N('HELPDESK/MAIL_REG_PROCEED_LINK'),
+				'{{HELPDESK/FORGOT_DISREGARD}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_DISREGARD', null, array("SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/FORGOT_NOT_REPLY}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_NOT_REPLY'),
+				'{{HELPDESK/FORGOT_REGARDS}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_REGARDS'),
+				'{{HELPDESK/FORGOT_SITE}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_SITE', null, array("SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/REG_SUBJECT}}' => ':SUBJECT: ' . \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_SUBJECT', null, array("SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/REG_CONFIRM}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_CONFIRM', null, array("SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/REG_PROCEED_LINK}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_PROCEED_LINK'),
 				'{{HELPDESK/REG_ACTIVATION_LINK}}' => $oHelpdeskUser->activationLink(),
-				'{{HELPDESK/REG_DISREGARD}}' => \CApi::ClientI18N('HELPDESK/MAIL_REG_DISREGARD'),
-				'{{HELPDESK/REG_NOT_REPLY}}' => \CApi::ClientI18N('HELPDESK/MAIL_REG_NOT_REPLY'),
-				'{{HELPDESK/REG_REGARDS}}' => \CApi::ClientI18N('HELPDESK/MAIL_REG_REGARDS'),
-				'{{HELPDESK/REG_SITE}}' => \CApi::ClientI18N('HELPDESK/MAIL_REG_SITE', null, array("SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/FETCHER_SUBJECT}}' => ':SUBJECT: ' . \CApi::ClientI18N('HELPDESK/MAIL_FETCHER_SUBJECT', null, array("SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/FETCHER_CONFIRM}}' => \CApi::ClientI18N('HELPDESK/MAIL_FETCHER_CONFIRM', null, array("EMAIL" => $oHelpdeskUser->resultEmail(), "FROM" => $sFrom, "SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/FETCHER_NAME}}' => \CApi::ClientI18N('HELPDESK/MAIL_FETCHER_NAME', null, array("EMAIL" => $oHelpdeskUser->resultEmail())),
-				'{{HELPDESK/FETCHER_PASSWORD}}' => \CApi::ClientI18N('HELPDESK/MAIL_FETCHER_PASSWORD', null, array("PASSWORD" => $oHelpdeskUser->NotificationPassword)),
-				'{{HELPDESK/FETCHER_PROCEED_LINK}}' => \CApi::ClientI18N('HELPDESK/MAIL_FETCHER_PROCEED_LINK'),
+				'{{HELPDESK/REG_DISREGARD}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_DISREGARD'),
+				'{{HELPDESK/REG_NOT_REPLY}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_NOT_REPLY'),
+				'{{HELPDESK/REG_REGARDS}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_REGARDS'),
+				'{{HELPDESK/REG_SITE}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_SITE', null, array("SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/FETCHER_SUBJECT}}' => ':SUBJECT: ' . \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_SUBJECT', null, array("SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/FETCHER_CONFIRM}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_CONFIRM', null, array("EMAIL" => $oHelpdeskUser->resultEmail(), "FROM" => $sFrom, "SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/FETCHER_NAME}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_NAME', null, array("EMAIL" => $oHelpdeskUser->resultEmail())),
+				'{{HELPDESK/FETCHER_PASSWORD}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_PASSWORD', null, array("PASSWORD" => $oHelpdeskUser->NotificationPassword)),
+				'{{HELPDESK/FETCHER_PROCEED_LINK}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_PROCEED_LINK'),
 				'{{HELPDESK/FETCHER_ACTIVATION_LINK}}' => $oHelpdeskUser->activationLink(),
-				'{{HELPDESK/FETCHER_HELPDESK_LINK}}' => \CApi::ClientI18N('HELPDESK/MAIL_FETCHER_HELPDESK_LINK', null, array("LINK" => $oHelpdeskUser->helpdeskLink())),
-				'{{HELPDESK/FETCHER_DISREGARD}}' => \CApi::ClientI18N('HELPDESK/MAIL_FETCHER_DISREGARD', null, array("FROM" => $sFrom)),
-				'{{HELPDESK/FETCHER_REGARDS}}' => \CApi::ClientI18N('HELPDESK/MAIL_FETCHER_REGARDS'),
-				'{{HELPDESK/FETCHER_SITE}}' => \CApi::ClientI18N('HELPDESK/MAIL_FETCHER_SITE', null, array("SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/FETCHER_HELPDESK_LINK}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_HELPDESK_LINK', null, array("LINK" => $oHelpdeskUser->helpdeskLink())),
+				'{{HELPDESK/FETCHER_DISREGARD}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_DISREGARD', null, array("FROM" => $sFrom)),
+				'{{HELPDESK/FETCHER_REGARDS}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_REGARDS'),
+				'{{HELPDESK/FETCHER_SITE}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_SITE', null, array("SITE" => $sHelpdeskSiteName)),
 			));
 		});
 		
@@ -217,33 +217,33 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 			$sThreadOwner = $oHelpdeskThreadOwnerUser && \strlen($oHelpdeskThreadOwnerUser->Name) > 0 ? ' '.$oHelpdeskThreadOwnerUser->Name : '';
 
 			return strtr($sData, array(
-				'{{HELPDESK/POST_AGENT_SUBJECT}}' => ':SUBJECT: ' . \CApi::ClientI18N('HELPDESK/MAIL_POST_AGENT_SUBJECT', null, array("OWNER" => $sPostOwner)),
+				'{{HELPDESK/POST_AGENT_SUBJECT}}' => ':SUBJECT: ' . \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_AGENT_SUBJECT', null, array("OWNER" => $sPostOwner)),
 				'{{HELPDESK/POST_AGENT_HTML}}' => $oPost ? \MailSo\Base\HtmlUtils::ConvertPlainToHtml($oPost->Text) : '',
 				'{{HELPDESK/POST_AGENT_ATTACHMENTS}}' => $sAttachments,
 				'{{HELPDESK/POST_AGENT_THREAD_LINK}}' => $oThread->threadLink(),
 				'{{HELPDESK/POST_USER_SUBJECT}}' => $sSubjectPrefix.$oThread->Subject,
-				'{{HELPDESK/POST_USER_GREET}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_USER_GREET', null, array("OWNER" => $sPostOwner)),
-				'{{HELPDESK/POST_USER_REMIND}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_USER_REMIND', null, array("SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/POST_USER_THREAD_SUBJECT_LABEL}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_USER_THREAD_SUBJECT_LABEL'),
+				'{{HELPDESK/POST_USER_GREET}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_USER_GREET', null, array("OWNER" => $sPostOwner)),
+				'{{HELPDESK/POST_USER_REMIND}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_USER_REMIND', null, array("SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/POST_USER_THREAD_SUBJECT_LABEL}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_USER_THREAD_SUBJECT_LABEL'),
 				'{{HELPDESK/POST_USER_THREAD_SUBJECT}}' => $oThread->Subject,
 				'{{HELPDESK/POST_USER_HTML}}' => $oPost ? \MailSo\Base\HtmlUtils::ConvertPlainToHtml($oPost->Text) : '',
-				'{{HELPDESK/POST_USER_NOT_REPLY}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_USER_NOT_REPLY'),
-				'{{HELPDESK/POST_USER_CLICK_LINK}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_USER_CLICK_LINK'),
+				'{{HELPDESK/POST_USER_NOT_REPLY}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_USER_NOT_REPLY'),
+				'{{HELPDESK/POST_USER_CLICK_LINK}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_USER_CLICK_LINK'),
 				'{{HELPDESK/POST_USER_THREAD_LINK}}' => $oThread->threadLink(),
-				'{{HELPDESK/POST_NEW_SUBJECT}}' => ':SUBJECT: ' . \CApi::ClientI18N('HELPDESK/MAIL_POST_NEW_SUBJECT'),
-				'{{HELPDESK/POST_NEW_GREET}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_NEW_GREET', null, array("OWNER" => $sThreadOwner)),
-				'{{HELPDESK/POST_NEW_REMIND}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_NEW_REMIND', null, array("SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/POST_NEW_SUBJECT}}' => ':SUBJECT: ' . \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_NEW_SUBJECT'),
+				'{{HELPDESK/POST_NEW_GREET}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_NEW_GREET', null, array("OWNER" => $sThreadOwner)),
+				'{{HELPDESK/POST_NEW_REMIND}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_NEW_REMIND', null, array("SITE" => $sHelpdeskSiteName)),
 				'{{HELPDESK/POST_NEW_HTML}}' => $oPost ? \MailSo\Base\HtmlUtils::ConvertPlainToHtml($oPost->Text) : '',
-				'{{HELPDESK/POST_NEW_NOT_REPLY}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_NEW_NOT_REPLY'),
-				'{{HELPDESK/POST_NEW_CLICK_LINK}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_NEW_CLICK_LINK'),
+				'{{HELPDESK/POST_NEW_NOT_REPLY}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_NEW_NOT_REPLY'),
+				'{{HELPDESK/POST_NEW_CLICK_LINK}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_NEW_CLICK_LINK'),
 				'{{HELPDESK/POST_NEW_THREAD_LINK}}' => $oThread->threadLink(),
-				'{{HELPDESK/POST_NOTIFICATION_SUBJECT}}' => ':SUBJECT: ' . \CApi::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_SUBJECT'),
-				'{{HELPDESK/POST_NOTIFICATION_GREET}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_GREET', null, array("OWNER" => $sThreadOwner)),
-				'{{HELPDESK/POST_NOTIFICATION_REMIND}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_REMIND', null, array("SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/POST_NOTIFICATION_QUESTIONS}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_QUESTIONS'),
-				'{{HELPDESK/POST_NOTIFICATION_CLOSE}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_CLOSE'),
-				'{{HELPDESK/POST_NOTIFICATION_NOT_REPLY}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_NOT_REPLY'),
-				'{{HELPDESK/POST_NOTIFICATION_CLICK_LINK}}' => \CApi::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_CLICK_LINK'),
+				'{{HELPDESK/POST_NOTIFICATION_SUBJECT}}' => ':SUBJECT: ' . \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_SUBJECT'),
+				'{{HELPDESK/POST_NOTIFICATION_GREET}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_GREET', null, array("OWNER" => $sThreadOwner)),
+				'{{HELPDESK/POST_NOTIFICATION_REMIND}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_REMIND', null, array("SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/POST_NOTIFICATION_QUESTIONS}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_QUESTIONS'),
+				'{{HELPDESK/POST_NOTIFICATION_CLOSE}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_CLOSE'),
+				'{{HELPDESK/POST_NOTIFICATION_NOT_REPLY}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_NOT_REPLY'),
+				'{{HELPDESK/POST_NOTIFICATION_CLICK_LINK}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_POST_NOTIFICATION_CLICK_LINK'),
 				'{{HELPDESK/POST_NOTIFICATION_THREAD_LINK}}' => $oThread->threadLink(),
 			));
 		});
@@ -289,7 +289,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 			$oMessage->SetReferences($sReferences);
 		}
 
-		$sXMailer = \CApi::GetConf('webmail.xmailer-value', '');
+		$sXMailer = \Aurora\System\Api::GetConf('webmail.xmailer-value', '');
 		if (0 < strlen($sXMailer))
 		{
 			$oMessage->SetXMailer($sXMailer);
@@ -441,7 +441,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 				{
 					if (!$this->oStorage->createUser($oHelpdeskUser))
 					{
-						throw new CApiManagerException(Errs::HelpdeskManager_UserCreateFailed);
+						throw new \CApiManagerException(Errs::HelpdeskManager_UserCreateFailed);
 					}
 					else if (!$oHelpdeskUser->Activated)
 					{
@@ -450,7 +450,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 				}
 				else
 				{
-					throw new CApiManagerException(Errs::HelpdeskManager_UserAlreadyExists);
+					throw new \CApiManagerException(Errs::HelpdeskManager_UserAlreadyExists);
 				}
 			}
 			
@@ -755,7 +755,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 				if (!$bResult)
 				{
 					$this->moveStorageExceptionToManager();
-					throw new CApiManagerException(Errs::HelpdeskManager_UserUpdateFailed);
+					throw new \CApiManagerException(Errs::HelpdeskManager_UserUpdateFailed);
 				}
 			}
 		}
@@ -1041,7 +1041,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 			if (!$bResult)
 			{
 				$this->moveStorageExceptionToManager();
-				throw new CApiManagerException(Errs::HelpdeskManager_ThreadCreateFailed);
+				throw new \CApiManagerException(Errs::HelpdeskManager_ThreadCreateFailed);
 			}
 		}
 		catch (CApiBaseException $oException)
@@ -1069,7 +1069,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 			if (!$bResult)
 			{
 				$this->moveStorageExceptionToManager();
-				throw new CApiManagerException(Errs::HelpdeskManager_ThreadUpdateFailed);
+				throw new \CApiManagerException(Errs::HelpdeskManager_ThreadUpdateFailed);
 			}
 		}
 		catch (CApiBaseException $oException)
@@ -1087,14 +1087,14 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 	public function getNextHelpdeskIdForMonitoring()
 	{
 		$mResult = false;
-		if (CApi::GetConf('helpdesk', false))
+		if (\Aurora\System\Api::GetConf('helpdesk', false))
 		{
-			if (CApi::GetConf('tenant', false))
+			if (\Aurora\System\Api::GetConf('tenant', false))
 			{
 				try
 				{
 					$mResult = $this->oStorage->getNextHelpdeskIdForMonitoring(
-						(int)\CApi::GetConf('helpdesk.fetcher-time-limit-in-min', 5));
+						(int)\Aurora\System\Api::GetConf('helpdesk.fetcher-time-limit-in-min', 5));
 					
 					if (0 >= $mResult)
 					{
@@ -1179,9 +1179,9 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 			$oApiUsers = $this->_getApiUsers();
 			$oApiMail = $this->_getApiMail();
 			
-			$oApiFileCache = /* @var $oApiFileCache \CApiFilecacheManager */ \CApi::GetSystemManager('filecache');
-			$oApiFilestorage = /* @var $oApiFileCache \CApiFilestorageManager */ \CApi::Manager('filestorage');
-			$oApiIntegrator = /* @var $oApiIntegrator \CApiIntegratorManager */ \CApi::GetSystemManager('integrator');
+			$oApiFileCache = /* @var $oApiFileCache \CApiFilecacheManager */ \Aurora\System\Api::GetSystemManager('filecache');
+			$oApiFilestorage = /* @var $oApiFileCache \CApiFilestorageManager */ \Aurora\System\Api::Manager('filestorage');
+			$oApiIntegrator = /* @var $oApiIntegrator \CApiIntegratorManager */ \Aurora\System\Api::GetSystemManager('integrator');
 			
 			if ($oApiUsers && $oApiMail && $oApiFileCache)
 			{
@@ -1371,8 +1371,8 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 		{
 			$oApiUsers = $this->_getApiUsers();
 			$oApiMail = $this->_getApiMail();
-			$oApiFileCache = /* @var $oApiFileCache \CApiFilecacheManager */ \CApi::GetSystemManager('filecache');
-			$oApiFilestorage = /* @var $oApiFileCache \CApiFilestorageManager */ \CApi::Manager('filestorage');
+			$oApiFileCache = /* @var $oApiFileCache \CApiFilecacheManager */ \Aurora\System\Api::GetSystemManager('filecache');
+			$oApiFilestorage = /* @var $oApiFileCache \CApiFilestorageManager */ \Aurora\System\Api::Manager('filestorage');
 
 			if ($oApiUsers && $oApiMail && $oApiFileCache)
 			{
@@ -2053,7 +2053,7 @@ class CApiHelpdeskMainManager extends AApiManagerWithStorage
 				if (!$bResult)
 				{
 					$this->moveStorageExceptionToManager();
-					throw new CApiManagerException(Errs::HelpdeskManager_PostCreateFailed);
+					throw new \CApiManagerException(Errs::HelpdeskManager_PostCreateFailed);
 				}
 				else
 				{

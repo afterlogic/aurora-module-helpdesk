@@ -25,7 +25,7 @@ use \Modules\HelpDesk\CAccount as CHelpDeskAccount;
  * 
  * @package Accounts
  */
-class CApiHelpDeskAccountsManager extends AApiManager
+class CApiHelpDeskAccountsManager extends \Aurora\System\AbstractManager
 {
 	/**
 	 * @var CApiEavManager
@@ -37,15 +37,15 @@ class CApiHelpDeskAccountsManager extends AApiManager
 	public $sAccountClassName = '';
 	
 	/**
-	 * @param CApiGlobalManager &$oManager
+	 * @param \Aurora\System\GlobalManager &$oManager
 	 */
-	public function __construct(CApiGlobalManager &$oManager, $sForcedStorage = '', AApiModule $oModule = null)
+	public function __construct(\Aurora\System\GlobalManager &$oManager, $sForcedStorage = '', \Aurora\System\AbstractModule $oModule = null)
 	{
 		parent::__construct('accounts', $oManager, $oModule);
 		
-		$this->oEavManager = \CApi::GetSystemManager('eav', 'db');
+		$this->oEavManager = \Aurora\System\Api::GetSystemManager('eav', 'db');
 		
-		$this->oCoreDecorator = \CApi::GetModuleDecorator('Core');
+		$this->oCoreDecorator = \Aurora\System\Api::GetModuleDecorator('Core');
 		
 		$this->sAccountClassName = 'Modules\HelpDesk\CAccount';
 	}
@@ -71,7 +71,7 @@ class CApiHelpDeskAccountsManager extends AApiManager
 			}
 			else
 			{
-				throw new CApiBaseException(Errs::Validation_InvalidParameters);
+				throw new \CApiBaseException(Errs::Validation_InvalidParameters);
 			}
 		}
 		catch (CApiBaseException $oException)
@@ -310,12 +310,12 @@ class CApiHelpDeskAccountsManager extends AApiManager
 				{
 					if (!$this->oEavManager->saveEntity($oAccount))
 					{
-						throw new CApiManagerException(Errs::UsersManager_UserCreateFailed);
+						throw new \CApiManagerException(Errs::UsersManager_UserCreateFailed);
 					}
 				}
 				else
 				{
-					throw new CApiManagerException(Errs::UsersManager_UserAlreadyExists);
+					throw new \CApiManagerException(Errs::UsersManager_UserAlreadyExists);
 				}
 			}
 
@@ -346,12 +346,12 @@ class CApiHelpDeskAccountsManager extends AApiManager
 //				{
 					if (!$this->oEavManager->saveEntity($oAccount))
 					{
-						throw new CApiManagerException(Errs::UsersManager_UserCreateFailed);
+						throw new \CApiManagerException(Errs::UsersManager_UserCreateFailed);
 					}
 //				}
 //				else
 //				{
-//					throw new CApiManagerException(Errs::UsersManager_UserAlreadyExists);
+//					throw new \CApiManagerException(Errs::UsersManager_UserAlreadyExists);
 //				}
 			}
 

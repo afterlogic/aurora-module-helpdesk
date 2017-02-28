@@ -80,7 +80,7 @@ class CHelpdeskPost extends api_AContainer
 		switch (true)
 		{
 			case 0 >= $this->IdOwner:
-				throw new CApiValidationException(Errs::Validation_ObjectNotComplete, null, array(
+				throw new \CApiValidationException(Errs::Validation_ObjectNotComplete, null, array(
 					'{{ClassName}}' => 'CHelpdeskPost', '{{ClassField}}' => 'IdOwner'));
 		}
 

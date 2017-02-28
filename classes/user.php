@@ -53,9 +53,9 @@ class CHelpdeskUser extends api_AContainer
 
 		$this->SetLower(array('Email'));
 
-		$oSettings =&\CApi::GetSettings();
+		$oSettings =&\Aurora\System\Api::GetSettings();
 
-		$oModuleManager = \CApi::GetModuleManager();
+		$oModuleManager = \Aurora\System\Api::GetModuleManager();
 		
 		$this->SetDefaults(array(
 			'IdHelpdeskUser'		=> 0,
@@ -123,8 +123,8 @@ class CHelpdeskUser extends api_AContainer
 		{
 			switch (true)
 			{
-				case (api_Validate::IsEmpty($this->NotificationEmail)) :
-					throw new CApiValidationException(Errs::Validation_FieldIsEmpty, null, array(
+				case (\Aurora\System\Validate::IsEmpty($this->NotificationEmail)) :
+					throw new \CApiValidationException(Errs::Validation_FieldIsEmpty, null, array(
 						'{{ClassName}}' => 'CHelpdeskUser', '{{NotificationEmail}}' => 'NotificationEmail'));
 			}
 		}
@@ -132,12 +132,12 @@ class CHelpdeskUser extends api_AContainer
 		{
 			switch (true)
 			{
-				case (api_Validate::IsEmpty($this->Email)) :
-					throw new CApiValidationException(Errs::Validation_FieldIsEmpty, null, array(
+				case (\Aurora\System\Validate::IsEmpty($this->Email)) :
+					throw new \CApiValidationException(Errs::Validation_FieldIsEmpty, null, array(
 						'{{ClassName}}' => 'CHelpdeskUser', '{{ClassField}}' => 'Email'));
 
-				case (api_Validate::IsEmpty($this->PasswordHash)) :
-					throw new CApiValidationException(Errs::Validation_FieldIsEmpty, null, array(
+				case (\Aurora\System\Validate::IsEmpty($this->PasswordHash)) :
+					throw new \CApiValidationException(Errs::Validation_FieldIsEmpty, null, array(
 						'{{ClassName}}' => 'CHelpdeskUser', '{{ClassField}}' => 'PasswordHash'));
 			}
 		}
@@ -159,7 +159,7 @@ class CHelpdeskUser extends api_AContainer
 
 		if (0 < $this->IdTenant)
 		{
-			$sHash = substr(md5($this->IdTenant.CApi::$sSalt), 0, 8);
+			$sHash = substr(md5($this->IdTenant.\Aurora\System\Api::$sSalt), 0, 8);
 			$sPath .= '='.$sHash;
 		}
 
@@ -180,7 +180,7 @@ class CHelpdeskUser extends api_AContainer
 
 		if (0 < $this->IdTenant)
 		{
-			$sHash = substr(md5($this->IdTenant.CApi::$sSalt), 0, 8);
+			$sHash = substr(md5($this->IdTenant.\Aurora\System\Api::$sSalt), 0, 8);
 			$sPath .= '='.$sHash;
 		}
 
@@ -203,7 +203,7 @@ class CHelpdeskUser extends api_AContainer
 
 		if (0 < $this->IdTenant)
 		{
-			$sHash = substr(md5($this->IdTenant.CApi::$sSalt), 0, 8);
+			$sHash = substr(md5($this->IdTenant.\Aurora\System\Api::$sSalt), 0, 8);
 			$sPath .= '='.$sHash;
 		}
 
