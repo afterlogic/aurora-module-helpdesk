@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2016, Afterlogic Corp.
+ * @copyright Copyright (c) 2017, Afterlogic Corp.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ namespace Modules\HelpDesk;
  * @package Users
  * @subpackage Classes
  */
-class CAccount extends \CEntity
+class CAccount extends \Aurora\System\EAV\Entity
 {
 	/**
 	 * Creates a new instance of the object.

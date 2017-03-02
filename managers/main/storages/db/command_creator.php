@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2016, Afterlogic Corp.
+ * @copyright Copyright (c) 2017, Afterlogic Corp.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
  * @package Helpdesk
  * @subpackage Storages
  */
-class CApiHelpdeskCommandCreator extends api_CommandCreator
+class CApiHelpdeskCommandCreator extends \Aurora\System\Db\CommandCreator
 {
 	/**
 	 * TODO remove CHelpdeskUser::getStaticMap call
@@ -34,7 +34,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 	 */
 	protected function _getUserByWhere($sWhere)
 	{
-		$aMap = api_AContainer::DbReadKeys(CHelpdeskUser::getStaticMap());
+		$aMap = \Aurora\System\AbstractContainer::DbReadKeys(CHelpdeskUser::getStaticMap());
 		$aMap = array_map(array($this, 'escapeColumn'), $aMap);
 
 		$sSql = 'SELECT %s FROM %sahd_users WHERE %s';
@@ -223,7 +223,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 	 */
 	public function createUser(\CUser $oUser)
 	{
-		$aResults = api_AContainer::DbInsertArrays($oUser, $this->oHelper);
+		$aResults = \Aurora\System\AbstractContainer::DbInsertArrays($oUser, $this->oHelper);
 
 		if (!empty($aResults[0]) && !empty($aResults[1]))
 		{
@@ -242,7 +242,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 	 */
 	public function updateUser(\CUser $oUser)
 	{
-		$aResult = api_AContainer::DbUpdateArray($oUser, $this->oHelper);
+		$aResult = \Aurora\System\AbstractContainer::DbUpdateArray($oUser, $this->oHelper);
 
 		$sSql = 'UPDATE %sahd_users SET %s WHERE %s = %d AND %s = %d';
 		return sprintf($sSql, $this->prefix(), implode(', ', $aResult),
@@ -394,7 +394,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 	 */
 	public function getThreadById(\CUser $oUser, $iIdThread)
 	{
-		$aMap = api_AContainer::DbReadKeys(CHelpdeskThread::getStaticMap());
+		$aMap = \Aurora\System\AbstractContainer::DbReadKeys(CHelpdeskThread::getStaticMap());
 		$aMap = array_map(array($this, 'escapeColumn'), $aMap);
 
 		return sprintf('SELECT %s FROM %sahd_threads WHERE %s = %d AND %s = %d',
@@ -412,7 +412,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 	 */
 	public function createThread(\CUser $oUser, CHelpdeskThread $oHelpdeskThread)
 	{
-		$aResults = api_AContainer::DbInsertArrays($oHelpdeskThread, $this->oHelper);
+		$aResults = \Aurora\System\AbstractContainer::DbInsertArrays($oHelpdeskThread, $this->oHelper);
 
 		if (!empty($aResults[0]) && !empty($aResults[1]))
 		{
@@ -431,7 +431,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 	 */
 	public function updateThread(\CUser $oUser, CHelpdeskThread $oHelpdeskThread)
 	{
-		$aResult = api_AContainer::DbUpdateArray($oHelpdeskThread, $this->oHelper);
+		$aResult = \Aurora\System\AbstractContainer::DbUpdateArray($oHelpdeskThread, $this->oHelper);
 
 		$sSql = 'UPDATE %sahd_threads SET %s WHERE %s = %d AND %s = %d';
 		return sprintf($sSql, $this->prefix(), implode(', ', $aResult),
@@ -589,7 +589,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 		$sSearch = trim($sSearch);
 
 		$aWhere = array();
-		$aMap = api_AContainer::DbReadKeys(CHelpdeskThread::getStaticMap());
+		$aMap = \Aurora\System\AbstractContainer::DbReadKeys(CHelpdeskThread::getStaticMap());
 		$aMap = array_map(array($this, 'escapeColumn'), $aMap);
 
 		$sSql = 'SELECT %s FROM %sahd_threads';
@@ -719,7 +719,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 	 */
 	public function getPosts(\CUser $oUser, $oThread, $iStartFromId = 0, $iLimit = 20)
 	{
-		$aMap = api_AContainer::DbReadKeys(CHelpdeskPost::getStaticMap());
+		$aMap = \Aurora\System\AbstractContainer::DbReadKeys(CHelpdeskPost::getStaticMap());
 		$aMap = array_map(array($this, 'escapeColumn'), $aMap);
 
 		$sSql = 'SELECT %s FROM %sahd_posts WHERE deleted = 0';
@@ -750,7 +750,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 	 */
 	public function getAttachments(\CUser $oUser, CHelpdeskThread $oHelpdeskThread)
 	{
-		$aMap = api_AContainer::DbReadKeys(CHelpdeskAttachment::getStaticMap());
+		$aMap = \Aurora\System\AbstractContainer::DbReadKeys(CHelpdeskAttachment::getStaticMap());
 		$aMap = array_map(array($this, 'escapeColumn'), $aMap);
 
 		$sSql = 'SELECT %s FROM %sahd_attachments';
@@ -777,7 +777,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 		$sSql = '';
 		foreach ($aAttachments as $oItem)
 		{
-			$aResults = api_AContainer::DbInsertArrays($oItem, $this->oHelper);
+			$aResults = \Aurora\System\AbstractContainer::DbInsertArrays($oItem, $this->oHelper);
 			
 			if (empty($sSql))
 			{
@@ -798,7 +798,7 @@ class CApiHelpdeskCommandCreator extends api_CommandCreator
 	 */
 	public function createPost(\CUser $oUser, CHelpdeskPost $oHelpdeskPost)
 	{
-		$aResults = api_AContainer::DbInsertArrays($oHelpdeskPost, $this->oHelper);
+		$aResults = \Aurora\System\AbstractContainer::DbInsertArrays($oHelpdeskPost, $this->oHelper);
 
 		if (!empty($aResults[0]) && !empty($aResults[1]))
 		{

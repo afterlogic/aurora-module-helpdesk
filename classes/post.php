@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2016, Afterlogic Corp.
+ * @copyright Copyright (c) 2017, Afterlogic Corp.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@
  * @package Helpdesk
  * @subpackage Classes
  */
-class CHelpdeskPost extends api_AContainer
+class CHelpdeskPost extends \Aurora\System\AbstractContainer
 {
 	/**
 	 * @var array
@@ -121,7 +121,7 @@ class CHelpdeskPost extends api_AContainer
 			'IdHelpdeskThread' => $this->IdHelpdeskThread,
 			'IdOwner' => $this->IdOwner,
 			'Owner' => $this->Owner,
-			'Attachments' => \CApiResponseManager::GetResponseObject($this->Attachments),
+			'Attachments' => \Aurora\System\ResponseManager::GetResponseObject($this->Attachments),
 			'IsThreadOwner' => $this->IsThreadOwner,
 			'ItsMe' => $this->ItsMe,
 			'Type' => $this->Type,

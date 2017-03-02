@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2016, Afterlogic Corp.
+ * @copyright Copyright (c) 2017, Afterlogic Corp.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@
  * @package Helpdesk
  * @subpackage Classes
  */
-class CHelpdeskThread extends api_AContainer
+class CHelpdeskThread extends \Aurora\System\AbstractContainer
 {
 	/**
 	 * @var array

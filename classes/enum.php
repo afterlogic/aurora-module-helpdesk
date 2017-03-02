@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c) 2016, Afterlogic Corp.
+ * @copyright Copyright (c) 2017, Afterlogic Corp.
  * @license AGPL-3.0
  *
  * This code is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
  * @package Helpdesk
  * @subpackage Enum
  */
-class EHelpdeskPostType extends AEnumeration
+class EHelpdeskPostType extends AbstractEnumeration
 {
 	const Normal = 0;
 	const Internal = 1;
@@ -33,7 +33,7 @@ class EHelpdeskPostType extends AEnumeration
  * @package Helpdesk
  * @subpackage Enum
  */
-class EHelpdeskPostSystemType extends AEnumeration
+class EHelpdeskPostSystemType extends AbstractEnumeration
 {
 	const None = 0;
 }
@@ -42,7 +42,7 @@ class EHelpdeskPostSystemType extends AEnumeration
  * @package Helpdesk
  * @subpackage Enum
  */
-class EHelpdeskThreadType extends AEnumeration
+class EHelpdeskThreadType extends AbstractEnumeration
 {
 	const None = 0;
 	const Pending = 1;
@@ -56,7 +56,7 @@ class EHelpdeskThreadType extends AEnumeration
  * @package Helpdesk
  * @subpackage Enum
  */
-class EHelpdeskThreadFilterType extends AEnumeration
+class EHelpdeskThreadFilterType extends AbstractEnumeration
 {
 	const All = 0;
 	const PendingOnly = 1;
