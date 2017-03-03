@@ -441,7 +441,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 				{
 					if (!$this->oStorage->createUser($oHelpdeskUser))
 					{
-						throw new \CApiManagerException(Errs::HelpdeskManager_UserCreateFailed);
+						throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_UserCreateFailed);
 					}
 					else if (!$oHelpdeskUser->Activated)
 					{
@@ -450,13 +450,13 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 				}
 				else
 				{
-					throw new \CApiManagerException(Errs::HelpdeskManager_UserAlreadyExists);
+					throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_UserAlreadyExists);
 				}
 			}
 			
 			$bResult = true;
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -478,7 +478,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$oUser = $this->oStorage->getUserById($iIdTenant, $iHelpdeskUserId);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$oUser = false;
 			$this->setLastException($oException);
@@ -498,7 +498,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$oUser = $this->oStorage->getUserByIdWithoutTenantID($iHelpdeskUserId);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$oUser = false;
 			$this->setLastException($oException);
@@ -519,7 +519,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$oUser = $this->oStorage->getUserByActivateHash($iIdTenant, $sActivateHash);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$oUser = false;
 			$this->setLastException($oException);
@@ -610,7 +610,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$aResult = $this->oStorage->getAgentsEmailsForNotification($iIdTenant, $aExcludeEmails);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
@@ -630,7 +630,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$oUser = $this->oStorage->getUserByEmail($iIdTenant, $sEmail);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$oUser = false;
 			$this->setLastException($oException);
@@ -651,7 +651,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$oUser = $this->oStorage->getUserByNotificationEmail($iIdTenant, $sEmail);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$oUser = false;
 			$this->setLastException($oException);
@@ -672,7 +672,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$oUser = $this->oStorage->getUserBySocialId($iIdTenant, $sSocialId);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$oUser = false;
 			$this->setLastException($oException);
@@ -707,7 +707,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 			{
 				$bResult = $this->oStorage->isUserExists($oHelpdeskUser);
 			}
-			catch (CApiBaseException $oException)
+			catch (\Aurora\System\Exceptions\BaseException $oException)
 			{
 				$bResult = false;
 				$this->setLastException($oException);
@@ -730,7 +730,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 //			$mResult = $this->oStorage->userInformation($oUser, $aIdList);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$mResult = false;
 			$this->setLastException($oException);
@@ -755,11 +755,11 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 				if (!$bResult)
 				{
 					$this->moveStorageExceptionToManager();
-					throw new \CApiManagerException(Errs::HelpdeskManager_UserUpdateFailed);
+					throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_UserUpdateFailed);
 				}
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -781,7 +781,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$bResult = $this->oStorage->setUserAsBlocked($iIdTenant, $iIdUser);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -807,7 +807,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 				//TODO
 			}*/
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -838,7 +838,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 				}
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -864,7 +864,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 				$bResult = $this->oStorage->verifyThreadIdsBelongToUser($oHelpdeskUser, $aThreadIds);
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -889,7 +889,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 				$bResult = $this->oStorage->verifyPostIdsBelongToUser($oHelpdeskUser, $aPostIds);
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -915,7 +915,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 				$bResult = $this->oStorage->archiveThreads($oHelpdeskUser, $aThreadIds, $bSetArchive);
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -933,7 +933,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$bResult = $this->oStorage->archiveOutdatedThreads();
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -965,7 +965,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 				}
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -996,7 +996,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 				}
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$oThread = false;
 			$this->setLastException($oException);
@@ -1017,7 +1017,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$iThreadID = $this->oStorage->getThreadIdByHash($iTenantID, $sHash);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$iThreadID = 0;
 			$this->setLastException($oException);
@@ -1041,10 +1041,10 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 			if (!$bResult)
 			{
 				$this->moveStorageExceptionToManager();
-				throw new \CApiManagerException(Errs::HelpdeskManager_ThreadCreateFailed);
+				throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_ThreadCreateFailed);
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -1069,10 +1069,10 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 			if (!$bResult)
 			{
 				$this->moveStorageExceptionToManager();
-				throw new \CApiManagerException(Errs::HelpdeskManager_ThreadUpdateFailed);
+				throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_ThreadUpdateFailed);
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -1101,7 +1101,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 						$mResult = false;
 					}
 				}
-				catch (CApiBaseException $oException)
+				catch (\Aurora\System\Exceptions\BaseException $oException)
 				{
 					$this->setLastException($oException);
 				}
@@ -1140,7 +1140,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$iResult = $this->oStorage->getHelpdeskMailboxLastUid($iIdTenant, $sEmail);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
@@ -1158,7 +1158,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$bResult = $this->oStorage->setHelpdeskMailboxLastUid($iIdTenant, $sEmail, $iLastUid);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
@@ -1532,7 +1532,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 			$iSearchOwner = $this->_getOwnerFromSearch($oUser->IdTenant, $sSearch);
 			$iResult = $this->oStorage->getThreadsCount($oUser, $bIsAgent, $iFilter, $sSearch, $iSearchOwner);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
@@ -1552,7 +1552,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$iResult = $this->oStorage->getThreadsPendingCount($iTenantId);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
@@ -1599,7 +1599,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 				}
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
@@ -1620,7 +1620,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$iResult = $this->oStorage->getPostsCount($oHelpdeskUser, $oThread);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
@@ -1641,7 +1641,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$mResult = $this->oStorage->getThreadsLastPostIds($oUser, $aThreadIds);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
@@ -1663,7 +1663,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$aResult = $this->oStorage->getAttachments($oHelpdeskUser, $oHelpdeskThread);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
@@ -1686,7 +1686,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$aResult = $this->oStorage->getPosts($oUser, $oThread, $iStartFromId, $iLimit);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
@@ -1708,7 +1708,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$aResult = $this->oStorage->getExtPostsCount($oHelpdeskUser, $oThread);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
@@ -1730,7 +1730,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 			{
 				$bResult = $this->oStorage->clearAllOnline($iTimeoutInMin);
 			}
-			catch (CApiBaseException $oException)
+			catch (\Aurora\System\Exceptions\BaseException $oException)
 			{
 				$this->setLastException($oException);
 			}
@@ -1754,7 +1754,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 			{
 				$aResult = $this->oStorage->getOnline($oUser, $iThreadID);
 			}
-			catch (CApiBaseException $oException)
+			catch (\Aurora\System\Exceptions\BaseException $oException)
 			{
 				$this->setLastException($oException);
 			}
@@ -1779,7 +1779,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 			{
 				$bResult = $this->oStorage->setOnline($oHelpdeskUser, $iThreadId);
 			}
-			catch (CApiBaseException $oException)
+			catch (\Aurora\System\Exceptions\BaseException $oException)
 			{
 				$this->setLastException($oException);
 			}
@@ -2053,7 +2053,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 				if (!$bResult)
 				{
 					$this->moveStorageExceptionToManager();
-					throw new \CApiManagerException(Errs::HelpdeskManager_PostCreateFailed);
+					throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_PostCreateFailed);
 				}
 				else
 				{
@@ -2088,7 +2088,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 				}
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			if ($oException->getCode() !== \Errs::Mail_MailboxUnavailable)
 			{
@@ -2118,7 +2118,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$bResult = $this->oStorage->setThreadSeen($oHelpdeskUser, $oHelpdeskThread);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -2137,7 +2137,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 		{
 			$mResult = $this->oStorage->clearUnregistredUsers();
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}

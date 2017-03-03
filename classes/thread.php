@@ -97,7 +97,7 @@ class CHelpdeskThread extends \Aurora\System\AbstractContainer
 	}
 
 	/**
-	 * @throws CApiValidationException 1106 Errs::Validation_ObjectNotComplete
+	 * @throws \Aurora\System\Exceptions\ValidationException 1106 Errs::Validation_ObjectNotComplete
 	 *
 	 * @return bool
 	 */
@@ -106,7 +106,7 @@ class CHelpdeskThread extends \Aurora\System\AbstractContainer
 		switch (true)
 		{
 			case 0 < $this->IdOwner:
-				throw new \CApiValidationException(Errs::Validation_ObjectNotComplete, null, array(
+				throw new \Aurora\System\Exceptions\ValidationException(Errs::Validation_ObjectNotComplete, null, array(
 					'{{ClassName}}' => 'CHelpdeskPost', '{{ClassField}}' => 'IdOwner'));
 		}
 

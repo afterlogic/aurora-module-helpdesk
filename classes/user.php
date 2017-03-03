@@ -113,7 +113,7 @@ class CHelpdeskUser extends \Aurora\System\AbstractContainer
 	}
 
 	/**
-	 * @throws CApiValidationException 1106 Errs::Validation_ObjectNotComplete
+	 * @throws \Aurora\System\Exceptions\ValidationException 1106 Errs::Validation_ObjectNotComplete
 	 *
 	 * @return bool
 	 */
@@ -124,7 +124,7 @@ class CHelpdeskUser extends \Aurora\System\AbstractContainer
 			switch (true)
 			{
 				case (\Aurora\System\Validate::IsEmpty($this->NotificationEmail)) :
-					throw new \CApiValidationException(Errs::Validation_FieldIsEmpty, null, array(
+					throw new \Aurora\System\Exceptions\ValidationException(Errs::Validation_FieldIsEmpty, null, array(
 						'{{ClassName}}' => 'CHelpdeskUser', '{{NotificationEmail}}' => 'NotificationEmail'));
 			}
 		}
@@ -133,11 +133,11 @@ class CHelpdeskUser extends \Aurora\System\AbstractContainer
 			switch (true)
 			{
 				case (\Aurora\System\Validate::IsEmpty($this->Email)) :
-					throw new \CApiValidationException(Errs::Validation_FieldIsEmpty, null, array(
+					throw new \Aurora\System\Exceptions\ValidationException(Errs::Validation_FieldIsEmpty, null, array(
 						'{{ClassName}}' => 'CHelpdeskUser', '{{ClassField}}' => 'Email'));
 
 				case (\Aurora\System\Validate::IsEmpty($this->PasswordHash)) :
-					throw new \CApiValidationException(Errs::Validation_FieldIsEmpty, null, array(
+					throw new \Aurora\System\Exceptions\ValidationException(Errs::Validation_FieldIsEmpty, null, array(
 						'{{ClassName}}' => 'CHelpdeskUser', '{{ClassField}}' => 'PasswordHash'));
 			}
 		}

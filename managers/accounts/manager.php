@@ -54,7 +54,7 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\AbstractManager
 	 * 
 	 * @param int $iAccountId
 	 * @return boolean|CAccount
-	 * @throws CApiBaseException
+	 * @throws \Aurora\System\Exceptions\BaseException
 	 */
 	public function getAccountById($iAccountId)
 	{
@@ -71,10 +71,10 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\AbstractManager
 			}
 			else
 			{
-				throw new \CApiBaseException(Errs::Validation_InvalidParameters);
+				throw new \Aurora\System\Exceptions\BaseException(Errs::Validation_InvalidParameters);
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$oAccount = false;
 			$this->setLastException($oException);
@@ -115,7 +115,7 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\AbstractManager
 				$oAccount = $aResults[0];
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$oAccount = false;
 			$this->setLastException($oException);
@@ -161,7 +161,7 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\AbstractManager
 				$oAccount = array_values($aResults)[0];
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$oAccount = false;
 			$this->setLastException($oException);
@@ -192,7 +192,7 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\AbstractManager
 				$oAccount = array_values($aResults)[0];
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$oAccount = false;
 			$this->setLastException($oException);
@@ -246,7 +246,7 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\AbstractManager
 				}
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$aResult = false;
 			$this->setLastException($oException);
@@ -287,7 +287,7 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\AbstractManager
 				}
 			}
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
@@ -310,18 +310,18 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\AbstractManager
 				{
 					if (!$this->oEavManager->saveEntity($oAccount))
 					{
-						throw new \CApiManagerException(Errs::UsersManager_UserCreateFailed);
+						throw new \Aurora\System\Exceptions\ManagerException(Errs::UsersManager_UserCreateFailed);
 					}
 				}
 				else
 				{
-					throw new \CApiManagerException(Errs::UsersManager_UserAlreadyExists);
+					throw new \Aurora\System\Exceptions\ManagerException(Errs::UsersManager_UserAlreadyExists);
 				}
 			}
 
 			$bResult = true;
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -346,18 +346,18 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\AbstractManager
 //				{
 					if (!$this->oEavManager->saveEntity($oAccount))
 					{
-						throw new \CApiManagerException(Errs::UsersManager_UserCreateFailed);
+						throw new \Aurora\System\Exceptions\ManagerException(Errs::UsersManager_UserCreateFailed);
 					}
 //				}
 //				else
 //				{
-//					throw new \CApiManagerException(Errs::UsersManager_UserAlreadyExists);
+//					throw new \Aurora\System\Exceptions\ManagerException(Errs::UsersManager_UserAlreadyExists);
 //				}
 			}
 
 			$bResult = true;
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$bResult = false;
 			$this->setLastException($oException);
@@ -378,7 +378,7 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\AbstractManager
 		{
 			$bResult = $this->oEavManager->deleteEntity($oAccount->EntityId);
 		}
-		catch (CApiBaseException $oException)
+		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
