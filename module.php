@@ -4,7 +4,7 @@ namespace Aurora\Modules;
 
 use \Modules\HelpDesk\CAccount;
 
-class HelpDeskModule extends \Aurora\System\AbstractModule
+class HelpDeskModule extends \Aurora\System\Module\AbstractModule
 {
 	public $oCurrentAccount = null;
 	
@@ -176,7 +176,7 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 	protected function getHelpdeskAccountFromMainAccount(&$oAccount)
 	{
 		$oResult = null;
-		$oApiUsers = \Aurora\System\Api::GetSystemManager('users');
+//		$oApiUsers = \Aurora\System\Api::GetSystemManager('users');
 		if ($oAccount && $oAccount->IsDefaultAccount && $this->oApiCapabilityManager->isHelpdeskSupported($oAccount))
 		{
 			if (0 < $oAccount->User->IdHelpdeskUser)
@@ -239,14 +239,14 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 
 			if (0 === \strlen($sEmail) || 0 === \strlen($Password))
 			{
-				throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 			}
 			
 			$mIdTenant = $this->oCoreDecorator ? $this->oCoreDecorator->getTenantIdByName($sTenantName) : null;
 
 			if (!\is_int($mIdTenant))
 			{
-				throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 			}
 
 			try
@@ -290,27 +290,27 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 			}
 			catch (\Exception $oException)
 			{
-				$iErrorCode = \System\Notifications::UnknownError;
+				$iErrorCode = \Aurora\System\Notifications::UnknownError;
 				if ($oException instanceof \CApiManagerException)
 				{
 					switch ($oException->getCode())
 					{
 						case \Errs::HelpdeskManager_AccountSystemAuthentication:
-							$iErrorCode = \System\Notifications::HelpdeskSystemUserExists;
+							$iErrorCode = \Aurora\System\Notifications::HelpdeskSystemUserExists;
 							break;
 						case \Errs::HelpdeskManager_AccountAuthentication:
-							$iErrorCode = \System\Notifications::AuthError;
+							$iErrorCode = \Aurora\System\Notifications::AuthError;
 							break;
 						case \Errs::HelpdeskManager_UnactivatedUser:
-							$iErrorCode = \System\Notifications::HelpdeskUnactivatedUser;
+							$iErrorCode = \Aurora\System\Notifications::HelpdeskUnactivatedUser;
 							break;
 						case \Errs::Db_ExceptionError:
-							$iErrorCode = \System\Notifications::DataBaseError;
+							$iErrorCode = \Aurora\System\Notifications::DataBaseError;
 							break;
 					}
 				}
 
-				throw new \System\Exceptions\ApiException($iErrorCode);
+				throw new \Aurora\System\Exceptions\ApiException($iErrorCode);
 			}
 		}
 
@@ -344,13 +344,13 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 
 			if (0 === \strlen($sLogin) || 0 === \strlen($sPassword))
 			{
-				throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 			}
 
 			$mIdTenant = $this->oCoreDecorator ? $this->oCoreDecorator->getTenantIdByName($sTenantName) : null;
 			if (!\is_int($mIdTenant))
 			{
-				throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 			}
 			
 			$bResult = false;
@@ -397,29 +397,29 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 				}
 				else
 				{
-					throw new \System\Exceptions\ApiException(\System\Notifications::NonUserPassed);
+					throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::NonUserPassed);
 				}
 			}
 			catch (\Exception $oException)
 			{
-				$iErrorCode = \System\Notifications::UnknownError;
+				$iErrorCode = \Aurora\System\Notifications::UnknownError;
 				if ($oException instanceof \CApiManagerException)
 				{
 					switch ($oException->getCode())
 					{
 						case \Errs::HelpdeskManager_UserAlreadyExists:
-							$iErrorCode = \System\Notifications::HelpdeskUserAlreadyExists;
+							$iErrorCode = \Aurora\System\Notifications::HelpdeskUserAlreadyExists;
 							break;
 						case \Errs::HelpdeskManager_UserCreateFailed:
-							$iErrorCode = \System\Notifications::CanNotCreateHelpdeskUser;
+							$iErrorCode = \Aurora\System\Notifications::CanNotCreateHelpdeskUser;
 							break;
 						case \Errs::Db_ExceptionError:
-							$iErrorCode = \System\Notifications::DataBaseError;
+							$iErrorCode = \Aurora\System\Notifications::DataBaseError;
 							break;
 					}
 				}
 
-				throw new \System\Exceptions\ApiException($iErrorCode);
+				throw new \Aurora\System\Exceptions\ApiException($iErrorCode);
 			}
 
 			return $bResult;
@@ -449,21 +449,21 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 
 			if (0 === \strlen($Email))
 			{
-				throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 			}
 
 			$mIdTenant = $this->oCoreDecorator ? $this->oCoreDecorator->getTenantIdByName($sTenantName) : null;
 
 			if (!\is_int($mIdTenant))
 			{
-				throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 			}
 
 			$oAccount = $this->oAccountsManager->getAccountByEmail($mIdTenant, $Email);
 			
 			if (!($oAccount instanceof \Modules\HelpDesk\CAccount))
 			{
-				throw new \System\Exceptions\ApiException(\System\Notifications::HelpdeskUnknownUser);
+				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::HelpdeskUnknownUser);
 			}
 
 //			return $this->oMainManager->forgotUser($oAccount);
@@ -519,20 +519,20 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 
 			if (0 === \strlen($sNewPassword) || 0 === \strlen($sActivateHash))
 			{
-				throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 			}
 
-			$oApiTenants = \Aurora\System\Api::GetSystemManager('tenants');
+//			$oApiTenants = \Aurora\System\Api::GetSystemManager('tenants');
 			$mIdTenant = $oApiTenants->getTenantIdByName($sTenantName);
 			if (!\is_int($mIdTenant))
 			{
-				throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 			}
 
 			$oUser = $this->oMainManager->getUserByActivateHash($mIdTenant, $sActivateHash);
 			if (!($oUser instanceof \CHelpdeskUser))
 			{
-				throw new \System\Exceptions\ApiException(\System\Notifications::HelpdeskUnknownUser);
+				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::HelpdeskUnknownUser);
 			}
 
 			$oUser->Activated = true;
@@ -565,7 +565,7 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 		
 		if (0 === \strlen($Text) || (0 === $ThreadId && 0 === \strlen($Subject)))
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
 		$mResult = false;
@@ -677,7 +677,7 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 
 		if (!$oUser)
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::AccessDenied);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
 		}
 
 		$ThreadId = (int) $ThreadId;
@@ -685,18 +685,18 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 		
 		if (0 >= $ThreadId || 0 >= $PostId)
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
 		$oThread = $this->oMainManager->getThreadById($oUser, $ThreadId);
 		if (!$oThread)
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
 		if (!$this->oMainManager->verifyPostIdsBelongToUser($oUser, array($PostId)))
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::AccessDenied);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
 		}
 
 		return $this->oMainManager->deletePosts($oUser, $oThread, array($PostId));
@@ -718,19 +718,19 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 		$sThreadHash = (string) $this->getParamValue('ThreadHash', '');
 		if (empty($sThreadHash) && $sThreadId === 0)
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
 		$mHelpdeskThreadId = $sThreadId ? $sThreadId : $this->oMainManager->getThreadIdByHash($oUser->IdTenant, $sThreadHash);
 		if (!\is_int($mHelpdeskThreadId) || 1 > $mHelpdeskThreadId)
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
 		$oThread = $this->oMainManager->getThreadById($oUser, $mHelpdeskThreadId);
 		if (!$oThread)
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
 		$aUserInfo = $this->oMainManager->userInformation($oUser, array($oThread->IdOwner));
@@ -770,13 +770,13 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 
 		if (1 > $ThreadId || 0 > $StartFromId || 1 > $Limit)
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 		
 		$oThread = $this->oMainManager->getThreadById($oUser, $ThreadId);
 		if (!$oThread)
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
 		$aPostList = $this->oMainManager->getPosts($oUser, $oThread, $StartFromId, $Limit);
@@ -917,14 +917,14 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 
 		if (!$oUser)
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::AccessDenied);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
 		}
 
 		$iThreadId = (int) $ThreadId;
 
 		if (0 < $iThreadId && !$this->IsAgent($oUser) && !$this->oMainManager->verifyThreadIdsBelongToUser($oUser, array($iThreadId)))
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::AccessDenied);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
 		}
 
 		$bResult = false;
@@ -956,12 +956,12 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 			\EHelpdeskThreadType::Deferred
 		)))
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
 		if (!$oUser || ($ThreadType !== \EHelpdeskThreadType::Resolved && !$this->IsAgent($oUser)))
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::AccessDenied);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
 		}
 
 		$bResult = false;
@@ -986,7 +986,7 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 
 		if (0 === $ThreadId)
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
 		$this->oMainManager->setOnline($oUser, $ThreadId);
@@ -1004,13 +1004,13 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 
 		if (0 === $ThreadId)
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
 		$oThread = $this->oMainManager->getThreadById($oUser, $ThreadId);
 		if (!$oThread)
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::AccessDenied);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
 		}
 
 		return $this->oMainManager->setThreadSeen($oUser, $oThread);
@@ -1027,7 +1027,7 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 		
 		if (0 > $Offset || 1 > $Limit)
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::InvalidInputParameter);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
 		$aThreadsList = array();
@@ -1109,7 +1109,7 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 
 		if (!($oUser instanceof \CHelpdeskUser))
 		{
-			throw new \System\Exceptions\ApiException(\System\Notifications::HelpdeskUnknownUser);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::HelpdeskUnknownUser);
 		}
 
 
@@ -1134,7 +1134,7 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 			$oUser->setPassword($sNewPassword);
 			if (!$this->oMainManager->updateUser($oUser))
 			{
-				throw new \System\Exceptions\ApiException(\System\Notifications::CanNotChangePassword);
+				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::CanNotChangePassword);
 			}
 		}
 
@@ -1198,7 +1198,7 @@ class HelpDeskModule extends \Aurora\System\AbstractModule
 		$oAccount->User->HelpdeskSignature = \trim((string) $this->getParamValue('HelpdeskSignature', $oAccount->User->HelpdeskSignature));
 		$oAccount->User->HelpdeskSignatureEnable = (bool) $this->getParamValue('HelpdeskSignatureEnable', $oAccount->User->HelpdeskSignatureEnable);
 
-		$oApiUsers = \Aurora\System\Api::GetSystemManager('users');
+//		$oApiUsers = \Aurora\System\Api::GetSystemManager('users');
 		return $oApiUsers->UpdateAccount($oAccount);
 	}	
 	

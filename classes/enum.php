@@ -22,7 +22,7 @@
  * @package Helpdesk
  * @subpackage Enum
  */
-class EHelpdeskPostType extends AbstractEnumeration
+class EHelpdeskPostType extends \AbstractEnumeration
 {
 	const Normal = 0;
 	const Internal = 1;
@@ -33,7 +33,7 @@ class EHelpdeskPostType extends AbstractEnumeration
  * @package Helpdesk
  * @subpackage Enum
  */
-class EHelpdeskPostSystemType extends AbstractEnumeration
+class EHelpdeskPostSystemType extends \AbstractEnumeration
 {
 	const None = 0;
 }
@@ -42,7 +42,7 @@ class EHelpdeskPostSystemType extends AbstractEnumeration
  * @package Helpdesk
  * @subpackage Enum
  */
-class EHelpdeskThreadType extends AbstractEnumeration
+class EHelpdeskThreadType extends \AbstractEnumeration
 {
 	const None = 0;
 	const Pending = 1;
@@ -56,7 +56,7 @@ class EHelpdeskThreadType extends AbstractEnumeration
  * @package Helpdesk
  * @subpackage Enum
  */
-class EHelpdeskThreadFilterType extends AbstractEnumeration
+class EHelpdeskThreadFilterType extends \AbstractEnumeration
 {
 	const All = 0;
 	const PendingOnly = 1;

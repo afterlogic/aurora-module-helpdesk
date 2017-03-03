@@ -44,7 +44,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 	 * @param \Aurora\System\GlobalManager &$oManager
 	 * @param string $sForcedStorage Default value is empty string.
 	 */
-	public function __construct(\Aurora\System\GlobalManager &$oManager, $sForcedStorage = '', \Aurora\System\AbstractModule $oModule = null)
+	public function __construct(\Aurora\System\GlobalManager &$oManager, $sForcedStorage = '', \Aurora\System\Module\AbstractModule $oModule = null)
 	{
 		parent::__construct('main', $oManager, $sForcedStorage, $oModule);
 
@@ -62,7 +62,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 	{
 		if (null === $this->oApiUsers)
 		{
-			$this->oApiUsers =\Aurora\System\Api::GetSystemManager('users');
+//			$this->oApiUsers =\Aurora\System\Api::GetSystemManager('users');
 		}
 
 		return $this->oApiUsers;
