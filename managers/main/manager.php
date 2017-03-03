@@ -1210,9 +1210,9 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 							$sSubject = $oMessage->getSubject();
 							if (
 								is_array($aFrom) && 0 < count($aFrom) && (
-								(EHelpdeskFetcherType::REPLY === $aMainSettingsData['HelpdeskFetcherType'] && !empty($sSubject) && preg_match('/\[#([a-zA-Z0-9]+)#\]/', $sSubject, $aMatch))
+								(\EHelpdeskFetcherType::REPLY === $aMainSettingsData['HelpdeskFetcherType'] && !empty($sSubject) && preg_match('/\[#([a-zA-Z0-9]+)#\]/', $sSubject, $aMatch))
 									||
-								(EHelpdeskFetcherType::ALL === $aMainSettingsData['HelpdeskFetcherType'])
+								(\EHelpdeskFetcherType::ALL === $aMainSettingsData['HelpdeskFetcherType'])
 							))
 							{
 								$sThreadHash = '';

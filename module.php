@@ -48,7 +48,7 @@ class HelpDeskModule extends \Aurora\System\Module\AbstractModule
 				'SiteName'			=> array('string', ''),
 				'StyleAllow'		=> array('bool', false),
 				'StyleImage'		=> array('string', ''),
-				'FetcherType'		=> array('int', EHelpdeskFetcherType::NONE),
+				'FetcherType'		=> array('int', \EHelpdeskFetcherType::NONE),
 				'StyleText'			=> array('string', ''),
 				'AllowFetcher'		=> array('bool', false),
 				'FetcherTimer' => array('int', 0)

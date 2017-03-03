@@ -24,7 +24,7 @@
  * @package Helpdesk
  * @subpackage Storages
  */
-class CApiHelpdeskCommandCreator extends \Aurora\System\Db\CommandCreator
+class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreator
 {
 	/**
 	 * TODO remove CHelpdeskUser::getStaticMap call
