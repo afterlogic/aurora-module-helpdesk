@@ -25,7 +25,7 @@ use \Modules\HelpDesk\CAccount as CHelpDeskAccount;
  * 
  * @package Accounts
  */
-class CApiHelpDeskAccountsManager extends \Aurora\System\AbstractManager
+class CApiHelpDeskAccountsManager extends \Aurora\System\Managers\AbstractManager
 {
 	/**
 	 * @var CApiEavManager
@@ -37,9 +37,9 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\AbstractManager
 	public $sAccountClassName = '';
 	
 	/**
-	 * @param \Aurora\System\GlobalManager &$oManager
+	 * @param \Aurora\System\Managers\GlobalManager &$oManager
 	 */
-	public function __construct(\Aurora\System\GlobalManager &$oManager, $sForcedStorage = '', \Aurora\System\Module\AbstractModule $oModule = null)
+	public function __construct(\Aurora\System\Managers\GlobalManager &$oManager, $sForcedStorage = '', \Aurora\System\Module\AbstractModule $oModule = null)
 	{
 		parent::__construct('accounts', $oManager, $oModule);
 		

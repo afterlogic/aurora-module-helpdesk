@@ -23,7 +23,7 @@
  *
  * @package Helpdesk
  */
-class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
+class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWithStorage
 {
 	/**
 	 * @var $oApiMail CApiMailManager
@@ -41,10 +41,10 @@ class CApiHelpdeskMainManager extends \Aurora\System\AbstractManagerWithStorage
 	private $oApiTenants;
 	
 	/**
-	 * @param \Aurora\System\GlobalManager &$oManager
+	 * @param \Aurora\System\Managers\GlobalManager &$oManager
 	 * @param string $sForcedStorage Default value is empty string.
 	 */
-	public function __construct(\Aurora\System\GlobalManager &$oManager, $sForcedStorage = '', \Aurora\System\Module\AbstractModule $oModule = null)
+	public function __construct(\Aurora\System\Managers\GlobalManager &$oManager, $sForcedStorage = '', \Aurora\System\Module\AbstractModule $oModule = null)
 	{
 		parent::__construct('main', $oManager, $sForcedStorage, $oModule);
 

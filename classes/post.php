@@ -121,7 +121,7 @@ class CHelpdeskPost extends \Aurora\System\AbstractContainer
 			'IdHelpdeskThread' => $this->IdHelpdeskThread,
 			'IdOwner' => $this->IdOwner,
 			'Owner' => $this->Owner,
-			'Attachments' => \Aurora\System\ResponseManager::GetResponseObject($this->Attachments),
+			'Attachments' => \Aurora\System\Managers\Response::GetResponseObject($this->Attachments),
 			'IsThreadOwner' => $this->IsThreadOwner,
 			'ItsMe' => $this->ItsMe,
 			'Type' => $this->Type,
