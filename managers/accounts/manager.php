@@ -28,7 +28,7 @@ use \Modules\HelpDesk\CAccount as CHelpDeskAccount;
 class CApiHelpDeskAccountsManager extends \Aurora\System\Managers\AbstractManager
 {
 	/**
-	 * @var CApiEavManager
+	 * @var \Aurora\System\Managers\Eav\Manager
 	 */
 	public $oEavManager = null;
 	

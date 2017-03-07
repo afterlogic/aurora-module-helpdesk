@@ -1179,9 +1179,9 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 			$oApiUsers = $this->_getApiUsers();
 			$oApiMail = $this->_getApiMail();
 			
-			$oApiFileCache = /* @var $oApiFileCache \CApiFilecacheManager */ \Aurora\System\Api::GetSystemManager('Filecache');
+			$oApiFileCache = /* @var $oApiFileCache \Aurora\System\Managers\Filecache\Manager */ \Aurora\System\Api::GetSystemManager('Filecache');
 			$oApiFilestorage = /* @var $oApiFileCache \CApiFilestorageManager */ \Aurora\System\Api::Manager('filestorage');
-			$oApiIntegrator = /* @var $oApiIntegrator \CApiIntegratorManager */ \Aurora\System\Api::GetSystemManager('integrator');
+			$oApiIntegrator = /* @var $oApiIntegrator \Aurora\System\Managers\Integrator\Manager */ \Aurora\System\Api::GetSystemManager('integrator');
 			
 			if ($oApiUsers && $oApiMail && $oApiFileCache)
 			{
@@ -1371,7 +1371,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 		{
 			$oApiUsers = $this->_getApiUsers();
 			$oApiMail = $this->_getApiMail();
-			$oApiFileCache = /* @var $oApiFileCache \CApiFilecacheManager */ \Aurora\System\Api::GetSystemManager('Filecache');
+			$oApiFileCache = /* @var $oApiFileCache \Aurora\System\Managers\Filecache\Manager */ \Aurora\System\Api::GetSystemManager('Filecache');
 			$oApiFilestorage = /* @var $oApiFileCache \CApiFilestorageManager */ \Aurora\System\Api::Manager('filestorage');
 
 			if ($oApiUsers && $oApiMail && $oApiFileCache)
