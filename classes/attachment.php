@@ -156,6 +156,7 @@ class CHelpdeskAttachment extends \Aurora\System\AbstractContainer
 	public function toResponseArray()
 	{
 		$iThumbnailLimit = 1024 * 1024 * 2; // 2MB TODO:
+		$oSettings =& \Aurora\System\Api::GetSettings();
 		return array(
 			'IdHelpdeskAttachment' => $this->IdHelpdeskAttachment,
 			'IdHelpdeskPost' => $this->IdHelpdeskPost,
@@ -163,7 +164,7 @@ class CHelpdeskAttachment extends \Aurora\System\AbstractContainer
 			'SizeInBytes' => $this->SizeInBytes,
 			'FileName' => $this->FileName,
 			'MimeType' => \MailSo\Base\Utils::MimeContentType($this->FileName),
-			'Thumb' => \Aurora\System\Api::GetConf('labs.allow-thumbnail', true) &&
+			'Thumb' => $oSettings->GetConf('AllowThumbnail', true) &&
 				$this->SizeInBytes < $iThumbnailLimit &&
 				\Aurora\System\Utils::IsGDImageMimeTypeSuppoted(
 					\MailSo\Base\Utils::MimeContentType($this->FileName), $this->FileName),

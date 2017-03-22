@@ -289,7 +289,8 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 			$oMessage->SetReferences($sReferences);
 		}
 
-		$sXMailer = \Aurora\System\Api::GetConf('webmail.xmailer-value', '');
+		$oMailModule = \Aurora\System\Api::GetModule('Mail'); 
+		$sXMailer = $oMailModule ? $oMailModule->getConfig('XMailerValue', '') : '';
 		if (0 < strlen($sXMailer))
 		{
 			$oMessage->SetXMailer($sXMailer);
@@ -1087,29 +1088,21 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	public function getNextHelpdeskIdForMonitoring()
 	{
 		$mResult = false;
-		if (\Aurora\System\Api::GetConf('helpdesk', false))
+		
+		try
 		{
-			if (\Aurora\System\Api::GetConf('tenant', false))
+			$oHelpDeskModule = $this->GetModule();
+			$iFetcherTimeLimitMinutes = $oHelpDeskModule ? (int) $oHelpDeskModule->getConfig('FetcherTimeLimitMinutes', 5) : 5;
+			$mResult = $this->oStorage->getNextHelpdeskIdForMonitoring($iFetcherTimeLimitMinutes);
+
+			if (0 >= $mResult)
 			{
-				try
-				{
-					$mResult = $this->oStorage->getNextHelpdeskIdForMonitoring(
-						(int)\Aurora\System\Api::GetConf('helpdesk.fetcher-time-limit-in-min', 5));
-					
-					if (0 >= $mResult)
-					{
-						$mResult = false;
-					}
-				}
-				catch (\Aurora\System\Exceptions\BaseException $oException)
-				{
-					$this->setLastException($oException);
-				}
+				$mResult = false;
 			}
-			else
-			{
-				$mResult = 0;
-			}
+		}
+		catch (\Aurora\System\Exceptions\BaseException $oException)
+		{
+			$this->setLastException($oException);
 		}
 
 		return $mResult;
