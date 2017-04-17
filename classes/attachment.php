@@ -153,8 +153,8 @@ class CHelpdeskAttachment extends \Aurora\System\AbstractContainer
 	
 	public function toResponseArray()
 	{
-		$iThumbnailLimit = 1024 * 1024 * 2; // 2MB TODO:
 		$oSettings =& \Aurora\System\Api::GetSettings();
+		$iThumbnailLimit = ((int) $oSettings->GetConf('ThumbnailMaxFileSizeMb', 5)) * 1024 * 1024;
 		return array(
 			'IdHelpdeskAttachment' => $this->IdHelpdeskAttachment,
 			'IdHelpdeskPost' => $this->IdHelpdeskPost,
