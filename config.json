@@ -2,5 +2,69 @@
     "Disabled": [
 		true,
 		"bool"
+	],
+    "ActivatedEmail": [
+		"",
+		"string"
+	],
+    "AllowEmailNotifications": [
+		false,
+		"bool"
+	],
+    "AllowFacebookAuth": [
+		true,
+		"bool"
+	],
+    "AllowGoogleAuth": [
+		true,
+		"bool"
+	],
+    "AllowTwitterAuth": [
+		true,
+		"bool"
+	],
+    "AfterThreadsReceivingAction": [
+		"add",
+		"string"
+	],
+    "ClientDetailsUrl": [
+		"",
+		"string"
+	],
+    "ClientSiteName": [
+		"",
+		"string"
+	],
+    "ForgotHash": [
+		"",
+		"string"
+	],
+    "LoginLogoUrl": [
+		"",
+		"string"
+	],
+    "SelectedThreadId": [
+		0,
+		"int"
+	],
+    "Signature": [
+		"",
+		"string"
+	],
+    "SocialEmail": [
+		"",
+		"string"
+	],
+    "ThreadsPerPage": [
+		10,
+		"int"
+	],
+    "UserEmail": [
+		"",
+		"string"
+	],
+    "UseSignature": [
+		true,
+		"bool"
 	]
 }

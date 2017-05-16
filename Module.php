@@ -44,13 +44,13 @@ class Module extends \Aurora\System\Module\AbstractModule
 		$this->oCoreDecorator = \Aurora\System\Api::GetModuleDecorator('Core');
 		$this->oAuthDecorator = \Aurora\System\Api::GetModuleDecorator('StandardAuth');
 		
-//		$this->setObjectMap('CUser', array(
-//				'HelpdeskSignature'					=> array('string', ''), //'helpdesk_signature'),
-//				'HelpdeskSignatureEnable'			=> array('bool', true), //'helpdesk_signature_enable'),
-//				'AllowHelpdeskNotifications'		=> array('bool', false), //'allow_helpdesk_notifications')
-//			)
-//		);
-		
+		$this->extendObject('CUser', array(
+				'AllowEmailNotifications'	=> array('bool', $this->getConfig('AllowEmailNotifications', false)),
+				'Signature'					=> array('bool', $this->getConfig('Signature', '')),
+				'UseSignature'				=> array('bool', $this->getConfig('UseSignature', false)),
+			)
+		);
+
 		$this->extendObject('CTenant', array(
 				'AdminEmail'		=> array('string', ''),
 				'AdminEmailAccount'	=> array('string', ''),
@@ -89,22 +89,24 @@ class Module extends \Aurora\System\Module\AbstractModule
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
 		return array(
-			'ActivatedEmail' => '', // AppData.HelpdeskActivatedEmail
-			'AllowEmailNotifications' => false, // AppData.User.AllowHelpdeskNotifications
-			'AllowFacebookAuth' => true, // AppData.SocialFacebook
-			'AllowGoogleAuth' => true, // AppData.SocialGoogle
-			'AllowTwitterAuth' => true, // AppData.SocialTwitter
-			'AfterThreadsReceivingAction' => 'add', // AppData.HelpdeskThreadAction - add, close
-			'ClientDetailsUrl' => '', // AppData.HelpdeskIframeUrl
-			'ClientSiteName' => '', // AppData.HelpdeskSiteName
-			'ForgotHash' => '', // AppData.HelpdeskForgotHash
-			'LoginLogoUrl' => '', // AppData.HelpdeskStyleImage
-			'SelectedThreadId' => 0, // AppData.HelpdeskThreadId
-			'Signature' => '', // AppData.User.HelpdeskSignature
-			'SocialEmail' => '', // AppData.SocialEmail
-			'ThreadsPerPage' => 10, // add to settings
-			'UserEmail' => '', // AppData.User.Email
-			'UseSignature' => true // AppData.User.HelpdeskSignatureEnable
+			'ActivatedEmail' => $this->getConfig('ActivatedEmail', ''),
+			'AllowEmailNotifications' => $this->getConfig('AllowEmailNotifications', false),
+			'AllowFacebookAuth' => $this->getConfig('AllowFacebookAuth', true),
+			'AllowGoogleAuth' => $this->getConfig('AllowGoogleAuth', true),
+			'AllowTwitterAuth' => $this->getConfig('AllowTwitterAuth', true),
+			'AfterThreadsReceivingAction' => $this->getConfig('AfterThreadsReceivingAction', 'add'), // add, close
+			'ClientDetailsUrl' => $this->getConfig('ClientDetailsUrl', ''),
+			'ClientSiteName' => $this->getConfig('ClientSiteName', ''),
+			'IsAgent' => false,
+			'ForgotHash' => $this->getConfig('ForgotHash', ''),
+			'LoginLogoUrl' => $this->getConfig('LoginLogoUrl', ''),
+			'SelectedThreadId' => $this->getConfig('SelectedThreadId', 0),
+			'Signature' => $this->getConfig('Signature', ''),
+			'SocialEmail' => $this->getConfig('SocialEmail', ''),
+			'SocialIsLoggedIn' => false,
+			'ThreadsPerPage' => $this->getConfig('ThreadsPerPage', 10),
+			'UserEmail' => $this->getConfig('UserEmail', ''), // AppData.User.Email
+			'UseSignature' => $this->getConfig('UseSignature', true),
 		);
 	}
 	
@@ -1178,39 +1180,34 @@ class Module extends \Aurora\System\Module\AbstractModule
 	}	
 	
 	/**
-	 * @return array
+	 * 
+	 * @param boolean $AllowEmailNotifications
+	 * @param string $Signature
+	 * @param boolean $UseSignature
+	 * @return boolean
 	 */
-	public function UpdateUserSettings()
+	public function UpdateUserSettings($AllowEmailNotifications, $Signature, $UseSignature)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
 		
-		/*$oAccount = $this->getAccountFromParam();
-		$oHelpdeskUser = $this->GetHelpdeskAccountFromMainAccount($oAccount);
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
+		if ($oUser)
+		{
+			if ($oUser->Role === \EUserRole::NormalUser)
+			{
+				$oCoreDecorator = \Aurora\System\Api::GetModuleDecorator('Core');
+				$oUser->{$this->GetName().'::AllowEmailNotifications'} = $AllowEmailNotifications;
+				$oUser->{$this->GetName().'::Signature'} = $Signature;
+				$oUser->{$this->GetName().'::UseSignature'} = $UseSignature;
+				return $oCoreDecorator->UpdateUserObject($oUser);
+			}
+			if ($oUser->Role === \EUserRole::SuperAdmin)
+			{
+				return true;
+			}
+		}
 		
-		$oAccount->User->AllowHelpdeskNotifications =  (bool) $this->getParamValue('AllowHelpdeskNotifications', $oAccount->User->AllowHelpdeskNotifications);
-		$oHelpdeskUser->Signature = trim((string) $this->getParamValue('Signature', $oHelpdeskUser->Signature));
-		$oHelpdeskUser->SignatureEnable = (bool) $this->getParamValue('SignatureEnable', $oHelpdeskUser->SignatureEnable);
-
-		$bResult = $this->oApiUsers->UpdateAccount($oAccount);
-		if ($bResult)
-		{
-			$bResult = $this->ApiHelpdesk()->updateUser($oHelpdeskUser);
-		}
-		else
-		{
-			$this->ApiHelpdesk()->updateUser($oHelpdeskUser);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $bResult);*/
-
-		$oAccount = null; //$this->getAccountFromParam(); TODO:
-
-		$oAccount->User->AllowHelpdeskNotifications =  (bool) $this->getParamValue('AllowHelpdeskNotifications', $oAccount->User->AllowHelpdeskNotifications);
-		$oAccount->User->HelpdeskSignature = \trim((string) $this->getParamValue('HelpdeskSignature', $oAccount->User->HelpdeskSignature));
-		$oAccount->User->HelpdeskSignatureEnable = (bool) $this->getParamValue('HelpdeskSignatureEnable', $oAccount->User->HelpdeskSignatureEnable);
-
-//		$oApiUsers = \Aurora\System\Api::GetSystemManager('users');
-		return $oApiUsers->UpdateAccount($oAccount);
+		return false;
 	}	
 	
 //	public function checkAuth($sLogin, $sPassword, &$mResult)
