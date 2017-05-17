@@ -10,8 +10,6 @@
 
 namespace Aurora\Modules\HelpDesk;
 
-use \Modules\HelpDesk\CAccount;
-
 /**
  * @package Modules
  */
@@ -217,10 +215,8 @@ class Module extends \Aurora\System\Module\AbstractModule
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
 		
 		$sTenantName = \Aurora\System\Api::getTenantName();
-		$sLogin = \trim($Email);
-		$sPassword = \trim($Password);
 
-		if (0 === \strlen($sLogin) || 0 === \strlen($sPassword))
+		if (0 === \strlen($Email) || 0 === \strlen($Password))
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
@@ -240,8 +236,8 @@ class Module extends \Aurora\System\Module\AbstractModule
 			$aArgs = array(
 				'TenantId' => $mIdTenant,
 				'UserId' => $iUserId,
-				'login' => $sLogin,
-				'password' => $sPassword
+				'login' => $Email,
+				'password' => $Password
 			);
 			$this->broadcastEvent(
 				'CreateAccount::before', 
@@ -254,15 +250,15 @@ class Module extends \Aurora\System\Module\AbstractModule
 				//Create account for auth
 				$oAuthAccount = \CAccount::createInstance('HelpDesk');
 				$oAuthAccount->IdUser = $oEventResult->EntityId;
-				$oAuthAccount->Login = $sLogin;
-				$oAuthAccount->Password = $sPassword;
+				$oAuthAccount->Login = $Email;
+				$oAuthAccount->Password = $Password;
 
 				if ($this->oAuthDecorator->SaveAccount($oAuthAccount))
 				{
 					//Create propertybag account
 					$oAccount = \Modules\HelpDesk\CAccount::createInstance();
 					$oAccount->IdUser = $oEventResult->EntityId;
-					$oAccount->NotificationEmail = $sLogin ? $sLogin : '';
+					$oAccount->NotificationEmail = $Email;
 
 					$bResult = $this->oAccountsManager->createAccount($oAccount);
 				}
