@@ -305,7 +305,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	protected function isAgent()
 	{
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
-		return $this->oMainManager->isAgent($oUser);
+		return $oUser ? $this->oMainManager->isAgent($oUser) : false;
 	}	
 	
 	/**
