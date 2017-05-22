@@ -653,7 +653,7 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 		
 		$aWhere[] = $this->escapeColumn('id_tenant').' = '.$oUser->IdTenant;
 
-		if (!$oUser->Role === \EUserRole::NormalUser || $oThread->IdOwner === $oUser->EntityId)
+		if (!$oUser->Role === \Aurora\System\Enums\UserRole::NormalUser || $oThread->IdOwner === $oUser->EntityId)
 		{
 			$aWhere[] = $this->escapeColumn('type').' <> '.EHelpdeskPostType::Internal;
 		}

@@ -413,7 +413,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	
 	public function isAgent(\CUser $oUser)
 	{
-		return !empty($oUser) && $oUser->Role === \EUserRole::NormalUser;
+		return !empty($oUser) && $oUser->Role === \Aurora\System\Enums\UserRole::NormalUser;
 	}
 	/**
 	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object

@@ -86,7 +86,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	public function GetSettings()
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		return array(
 			'ActivatedEmail' => $this->getConfig('ActivatedEmail', ''),
@@ -116,7 +116,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	public function setInheritedSettings()
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::NormalUser);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::NormalUser);
 		
 //		$oSettings =&\Aurora\System\Api::GetSettings();
 //		$oMap = $this->getStaticMap();
@@ -169,7 +169,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	
 	protected function GetCurrentAccount()
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$iUserId = \Aurora\System\Api::getAuthenticatedUserId();
 	
@@ -240,7 +240,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	
 	public function Login($Login = '', $Password = '', $SignMe = 0)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		\setcookie('aft-cache-ctrl', '', \time() - 3600);
 		$sTenantName = \Aurora\System\Api::getTenantName();
@@ -332,7 +332,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 
 	public function Logout()
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		\setcookie('aft-cache-ctrl', '', \time() - 3600);
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
@@ -346,7 +346,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	
 	public function Register($Email, $Password, $Name = '', $IsExt = false)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$sTenantName = \Aurora\System\Api::getTenantName();
 //		if ($this->oApiCapabilityManager->isHelpdeskSupported())
@@ -446,14 +446,14 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	public function IsAgent(\CUser $oUser)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		return $this->oMainManager->isAgent($oUser);
 	}	
 	
 	public function Forgot($Email = '', $IsExt = false)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$sTenantName = \Aurora\System\Api::getTenantName();
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
@@ -522,7 +522,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	
 	public function ForgotChangePassword()
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$sTenantName = \Aurora\System\Api::getTenantName();
 		if ($this->oApiCapabilityManager->isHelpdeskSupported())
@@ -560,7 +560,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	
 	public function CreatePost($ThreadId = 0, $IsInternal = '0', $Subject = '', $Text = '', $Cc = '', $Bcc = '', $Attachments = null, $IsExt = 0)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 		
@@ -684,7 +684,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	public function DeletePost($PostId = 0, $ThreadId = 0, $IsExt = 0)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
@@ -720,7 +720,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	public function GetThreadByIdOrHash()
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$oThread = false;
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
@@ -776,7 +776,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	public function GetPosts($ThreadId = 0, $StartFromId = 0, $Limit = 10, $IsExt = 1)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 		
@@ -924,7 +924,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	public function DeleteThread($ThreadId = 0, $IsExt = 0)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
@@ -954,7 +954,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	public function ChangeThreadState($ThreadId = 0, $ThreadType = \EHelpdeskThreadType::None, $IsExt = 0)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
@@ -991,7 +991,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 
 	public function PingThread($ThreadId = 0)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
@@ -1009,7 +1009,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	
 	public function SetThreadSeen($ThreadId = 0)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
@@ -1034,7 +1034,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	public function GetThreads($Offset = 0, $Limit = 10, $Filter = \EHelpdeskThreadFilterType::All, $Search = '')
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 		
@@ -1116,7 +1116,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	
 	public function GetThreadsPendingCount()
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
@@ -1134,7 +1134,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	public function UpdateUserPassword()
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
@@ -1159,7 +1159,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	public function UpdateSettings()
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		\setcookie('aft-cache-ctrl', '', \time() - 3600);
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
@@ -1188,12 +1188,12 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	public function UpdateUserSettings($AllowEmailNotifications, $Signature, $UseSignature)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\EUserRole::Customer);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 		if ($oUser)
 		{
-			if ($oUser->Role === \EUserRole::NormalUser)
+			if ($oUser->Role === \Aurora\System\Enums\UserRole::NormalUser)
 			{
 				$oCoreDecorator = \Aurora\System\Api::GetModuleDecorator('Core');
 				$oUser->{$this->GetName().'::AllowEmailNotifications'} = $AllowEmailNotifications;
@@ -1201,7 +1201,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 				$oUser->{$this->GetName().'::UseSignature'} = $UseSignature;
 				return $oCoreDecorator->UpdateUserObject($oUser);
 			}
-			if ($oUser->Role === \EUserRole::SuperAdmin)
+			if ($oUser->Role === \Aurora\System\Enums\UserRole::SuperAdmin)
 			{
 				return true;
 			}
