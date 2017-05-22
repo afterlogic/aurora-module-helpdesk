@@ -79,7 +79,7 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\Managers\AbstractManage
 	 * 
 	 * @param int $iUserId User identifier.
 	 * 
-	 * @return CUser | false
+	 * @return \CUser | false
 	 */
 	public function getAccountByCredentials($sLogin, $sPassword)
 	{

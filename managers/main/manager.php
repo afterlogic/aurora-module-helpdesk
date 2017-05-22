@@ -31,6 +31,11 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	private $oApiTenants;
 	
 	/**
+	 * @var \Aurora\System\Managers\Eav\Manager
+	 */
+	public $oEavManager = null;
+	
+	/**
 	 * @param \Aurora\System\Managers\GlobalManager &$oManager
 	 * @param string $sForcedStorage Default value is empty string.
 	 */
@@ -41,6 +46,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 		$this->oApiMail = null;
 		$this->oApiUsers = null;
 		$this->oApiTenants = null;
+		$this->oEavManager = \Aurora\System\Api::GetSystemManager('eav', 'db');
 	}
 
 	/**
@@ -107,25 +113,25 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	/**
 	 * @param string $sPath
 	 * @param \MailSo\Mime\Message $oMessage Message object
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
+	 * @param \CUser $oUser Helpdesk user object
 	 * @param string $sSiteName
 	 * @param string $sFrom
 	 */
-	private function _addHtmlBodyAndSubjectForUserMessage($sPath, &$oMessage, $oHelpdeskUser, $sSiteName, $sFrom)
+	private function _addHtmlBodyAndSubjectForUserMessage($sPath, &$oMessage, $oUser, $sSiteName, $sFrom)
 	{
 		$sSubject = '';
 		$oApiUsers = $this->_getApiUsers();
 		
-		$sData = $this->_getMessageTemplate($sPath, $sSubject, function ($sData) use ($oHelpdeskUser, $sSiteName, $sFrom, $oApiUsers) {
+		$sData = $this->_getMessageTemplate($sPath, $sSubject, function ($sData) use ($oUser, $sSiteName, $sFrom, $oApiUsers) {
 			
-			$oAccount = $oApiUsers->getAccountByEmail($oHelpdeskUser->resultEmail());
+			$oAccount = $oApiUsers->getAccountByEmail($oUser->resultEmail());
 			$sHelpdeskSiteName = strlen($sSiteName) === 0 ? 'Helpdesk' : $sSiteName;
 
 			return strtr($sData, array(
 				'{{HELPDESK/FORGOT_SUBJECT}}' => ':SUBJECT: ' . \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_SUBJECT', null, array("SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/FORGOT_CONFIRM}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_CONFIRM', null, array("EMAIL" => $oHelpdeskUser->resultEmail(), "SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/FORGOT_CONFIRM}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_CONFIRM', null, array("EMAIL" => $oUser->resultEmail(), "SITE" => $sHelpdeskSiteName)),
 				'{{HELPDESK/FORGOT_PROCEED_LINK}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_PROCEED_LINK'),
-				'{{HELPDESK/FORGOT_LINK}}' => $oHelpdeskUser->forgotLink(),
+				'{{HELPDESK/FORGOT_LINK}}' => $oUser->forgotLink(),
 				'{{HELPDESK/FORGOT_DISREGARD}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_DISREGARD', null, array("SITE" => $sHelpdeskSiteName)),
 				'{{HELPDESK/FORGOT_NOT_REPLY}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_NOT_REPLY'),
 				'{{HELPDESK/FORGOT_REGARDS}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FORGOT_REGARDS'),
@@ -133,18 +139,18 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 				'{{HELPDESK/REG_SUBJECT}}' => ':SUBJECT: ' . \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_SUBJECT', null, array("SITE" => $sHelpdeskSiteName)),
 				'{{HELPDESK/REG_CONFIRM}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_CONFIRM', null, array("SITE" => $sHelpdeskSiteName)),
 				'{{HELPDESK/REG_PROCEED_LINK}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_PROCEED_LINK'),
-				'{{HELPDESK/REG_ACTIVATION_LINK}}' => $oHelpdeskUser->activationLink(),
+				'{{HELPDESK/REG_ACTIVATION_LINK}}' => $oUser->activationLink(),
 				'{{HELPDESK/REG_DISREGARD}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_DISREGARD'),
 				'{{HELPDESK/REG_NOT_REPLY}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_NOT_REPLY'),
 				'{{HELPDESK/REG_REGARDS}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_REGARDS'),
 				'{{HELPDESK/REG_SITE}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_REG_SITE', null, array("SITE" => $sHelpdeskSiteName)),
 				'{{HELPDESK/FETCHER_SUBJECT}}' => ':SUBJECT: ' . \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_SUBJECT', null, array("SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/FETCHER_CONFIRM}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_CONFIRM', null, array("EMAIL" => $oHelpdeskUser->resultEmail(), "FROM" => $sFrom, "SITE" => $sHelpdeskSiteName)),
-				'{{HELPDESK/FETCHER_NAME}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_NAME', null, array("EMAIL" => $oHelpdeskUser->resultEmail())),
-				'{{HELPDESK/FETCHER_PASSWORD}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_PASSWORD', null, array("PASSWORD" => $oHelpdeskUser->NotificationPassword)),
+				'{{HELPDESK/FETCHER_CONFIRM}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_CONFIRM', null, array("EMAIL" => $oUser->resultEmail(), "FROM" => $sFrom, "SITE" => $sHelpdeskSiteName)),
+				'{{HELPDESK/FETCHER_NAME}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_NAME', null, array("EMAIL" => $oUser->resultEmail())),
+				'{{HELPDESK/FETCHER_PASSWORD}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_PASSWORD', null, array("PASSWORD" => $oUser->NotificationPassword)),
 				'{{HELPDESK/FETCHER_PROCEED_LINK}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_PROCEED_LINK'),
-				'{{HELPDESK/FETCHER_ACTIVATION_LINK}}' => $oHelpdeskUser->activationLink(),
-				'{{HELPDESK/FETCHER_HELPDESK_LINK}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_HELPDESK_LINK', null, array("LINK" => $oHelpdeskUser->helpdeskLink())),
+				'{{HELPDESK/FETCHER_ACTIVATION_LINK}}' => $oUser->activationLink(),
+				'{{HELPDESK/FETCHER_HELPDESK_LINK}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_HELPDESK_LINK', null, array("LINK" => $oUser->helpdeskLink())),
 				'{{HELPDESK/FETCHER_DISREGARD}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_DISREGARD', null, array("FROM" => $sFrom)),
 				'{{HELPDESK/FETCHER_REGARDS}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_REGARDS'),
 				'{{HELPDESK/FETCHER_SITE}}' => \Aurora\System\Api::ClientI18N('HELPDESK/MAIL_FETCHER_SITE', null, array("SITE" => $sHelpdeskSiteName)),
@@ -166,9 +172,9 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	/**
 	 * @param string $sPath
 	 * @param \MailSo\Mime\Message $oMessage Message object
-	 * @param CHelpdeskUser $oHelpdeskThreadOwnerUser Helpdesk user object
-	 * @param CHelpdeskUser $oHelpdeskPostOwnerUser Helpdesk user object
-	 * @param CHelpdeskThread $oThread Helpdesk thread object
+	 * @param \CUser $oHelpdeskThreadOwnerUser Helpdesk user object
+	 * @param \CUser $oHelpdeskPostOwnerUser Helpdesk user object
+	 * @param \CThread $oThread Helpdesk thread object
 	 * @param CHelpdeskPost $oPost Helpdesk post object
 	 * @param string $sSiteName
 	 */
@@ -240,7 +246,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 
 		if (0 < strlen($sSubject))
 		{
-			$oMessage->SetSubject($sSubject.' [#'.$oThread->StrHelpdeskThreadHash.'#]');
+			$oMessage->SetSubject($sSubject.' [#'.$oThread->ThreadHash.'#]');
 		}
 
 		if (is_string($sData) && 0 < strlen($sData))
@@ -313,7 +319,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskThread $oThread Helpdesk thread object
+	 * @param \CThread $oThread Helpdesk thread object
 	 * @param string $sMessageID
 	 * @param string $sReferences
 	 */
@@ -326,12 +332,12 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 			{
 				for ($iIndex = 1, $iLen = $oThread->PostCount; $iIndex < $iLen; $iIndex++)
 				{
-					$sReferences .= ' <'.md5($oThread->IdHelpdeskThread.$oThread->IdTenant.$iIndex).'@hdsystem>';
+					$sReferences .= ' <'.md5($oThread->IdThread.$oThread->IdTenant.$iIndex).'@hdsystem>';
 				}
 			}
 
 			$sReferences = trim($sReferences);
-			$sMessageID = '<'.md5($oThread->IdHelpdeskThread.$oThread->IdTenant.$oThread->PostCount).'@hdsystem>';
+			$sMessageID = '<'.md5($oThread->IdThread.$oThread->IdTenant.$oThread->PostCount).'@hdsystem>';
 		}
 	}
 
@@ -342,9 +348,9 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	 * @param string $sSubject
 	 * @param string $sCc
 	 * @param string $sBcc
-	 * @param CHelpdeskUser $oHelpdeskThreadOwnerUser Helpdesk user object
-	 * @param CHelpdeskUser $oHelpdeskPostOwnerUser Helpdesk user object
-	 * @param CHelpdeskThread $oThread Helpdesk thread object
+	 * @param \CUser $oHelpdeskThreadOwnerUser Helpdesk user object
+	 * @param \CUser $oHelpdeskPostOwnerUser Helpdesk user object
+	 * @param \CThread $oThread Helpdesk thread object
 	 * @param CHelpdeskPost $oPost Helpdesk post object
 	 * @param string $sSiteName
 	 *
@@ -371,16 +377,16 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	 * @param string $sSubject
 	 * @param string $sCc
 	 * @param string $sBcc
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
+	 * @param \CUser $oUser Helpdesk user object
 	 * @param string $sSiteName
 	 *
 	 * @return \MailSo\Mime\Message
 	 */
-	private function _buildUserMailMail($sPath, $sFrom, $sTo, $sSubject, $sCc, $sBcc, $oHelpdeskUser, $sSiteName)
+	private function _buildUserMailMail($sPath, $sFrom, $sTo, $sSubject, $sCc, $sBcc, $oUser, $sSiteName)
 	{
 		$oMessage = $this->_buildMail($sFrom, $sTo, $sSubject, $sCc, $sBcc);
 		
-		$this->_addHtmlBodyAndSubjectForUserMessage($sPath, $oMessage, $oHelpdeskUser, $sSiteName, $sFrom);
+		$this->_addHtmlBodyAndSubjectForUserMessage($sPath, $oMessage, $oUser, $sSiteName, $sFrom);
 
 		return $oMessage;
 	}
@@ -393,20 +399,20 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	 */
 	private function _getOwnerFromSearch($iIdTenant, &$sSearch)
 	{
-		$aMatch = array();
-		$sSearch = trim($sSearch);
-		if (0 < strlen($sSearch) && preg_match('/owner:[\s]?([^\s]+@[^\s]+)/', $sSearch, $aMatch) && !empty($aMatch[0]) && !empty($aMatch[1]))
-		{
-			$sSearch = trim(str_replace($aMatch[0], '', $sSearch));
-			$sEmail = trim($aMatch[1]);
-			$oUser = $this->getUserByEmail($iIdTenant, $sEmail);
-			if (!$oUser)
-			{
-				$oUser = $this->getUserByNotificationEmail($iIdTenant, $sEmail);
-			}
-
-			return $oUser ? $oUser->iObjectId : 0;
-		}
+//		$aMatch = array();
+//		$sSearch = trim($sSearch);
+//		if (0 < strlen($sSearch) && preg_match('/owner:[\s]?([^\s]+@[^\s]+)/', $sSearch, $aMatch) && !empty($aMatch[0]) && !empty($aMatch[1]))
+//		{
+//			$sSearch = trim(str_replace($aMatch[0], '', $sSearch));
+//			$sEmail = trim($aMatch[1]);
+//			$oUser = $this->getUserByEmail($iIdTenant, $sEmail);
+//			if (!$oUser)
+//			{
+//				$oUser = $this->getUserByNotificationEmail($iIdTenant, $sEmail);
+//			}
+//
+//			return $oUser ? $oUser->iObjectId : 0;
+//		}
 
 		return 0;
 	}
@@ -415,28 +421,29 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	{
 		return !empty($oUser) && $oUser->Role === \Aurora\System\Enums\UserRole::NormalUser;
 	}
+	
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
+	 * @param \CUser $oUser Helpdesk user object
 	 * @param bool $bCreateFromFetcher Default value is **false**.
 	 * 
 	 * @return bool
 	 */
-	public function createUser(CUser &$oHelpdeskUser, $bCreateFromFetcher = false)
+	public function createUser(\CUser &$oUser, $bCreateFromFetcher = false)
 	{
 		$bResult = false;
 		try
 		{
-			if ($oHelpdeskUser->validate())
+			if ($oUser->validate())
 			{
-				if (!$this->isUserExists($oHelpdeskUser))
+				if (!$this->isUserExists($oUser))
 				{
-					if (!$this->oStorage->createUser($oHelpdeskUser))
+					if (!$this->oStorage->createUser($oUser))
 					{
 						throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_UserCreateFailed);
 					}
-					else if (!$oHelpdeskUser->Activated)
+					else if (!$oUser->Activated)
 					{
-						$this->NotifyRegistration($oHelpdeskUser, $bCreateFromFetcher);
+						$this->NotifyRegistration($oUser, $bCreateFromFetcher);
 					}
 				}
 				else
@@ -460,7 +467,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	 * @param int $iIdTenant
 	 * @param int $iHelpdeskUserId
 	 * 
-	 * @return CHelpdeskUser|false
+	 * @return \CUser|false
 	 */
 	public function getUserById($iIdTenant, $iHelpdeskUserId)
 	{
@@ -480,7 +487,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	/**
 	 * @param int $iHelpdeskUserId
 	 *
-	 * @return CHelpdeskUser|false
+	 * @return \CUser|false
 	 */
 	public function getUserByIdWithoutTenantID($iHelpdeskUserId)
 	{
@@ -501,7 +508,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	 * @param int $iIdTenant
 	 * @param string $sActivateHash
 	 *
-	 * @return CHelpdeskUser|false
+	 * @return \CUser|false
 	 */
 	public function getUserByActivateHash($iIdTenant, $sActivateHash)
 	{
@@ -521,7 +528,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	/**
 	 * @param int $iIdTenant
 	 *
-	 * @return CHelpdeskUser|false
+	 * @return \CUser|false
 	 */
 	public function getHelpdeskMainSettings($iIdTenant)
 	{
@@ -612,7 +619,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	 * @param int $iIdTenant
 	 * @param string $sEmail
 	 * 
-	 * @return CHelpdeskUser|null|false
+	 * @return \CUser|null|false
 	 */
 	public function getUserByEmail($iIdTenant, $sEmail)
 	{
@@ -633,7 +640,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	 * @param int $iIdTenant
 	 * @param string $sEmail
 	 *
-	 * @return CHelpdeskUser|null|false
+	 * @return \CUser|null|false
 	 */
 	public function getUserByNotificationEmail($iIdTenant, $sEmail)
 	{
@@ -654,7 +661,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	 * @param int $iIdTenant
 	 * @param string $sSocialId
 	 *
-	 * @return CHelpdeskUser|null|false
+	 * @return \CUser|null|false
 	 */
 	public function getUserBySocialId($iIdTenant, $sSocialId)
 	{
@@ -672,7 +679,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser
+	 * @param \CUser $oUser
 	 *
 	 * @return bool
 	 */
@@ -684,19 +691,18 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 //	}
 	
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
+	 * @param \CUser $oUser Helpdesk user object
 	 *
 	 * @return bool
 	 */
-//	public function isUserExists(CHelpdeskUser $oHelpdeskUser)
-	public function isUserExists(CUser $oHelpdeskUser)
+	public function isUserExists(\CUser $oUser)
 	{
 		$bResult = false;
-		if(!$oHelpdeskUser->SocialId)
+		if(!$oUser->SocialId)
 		{
 			try
 			{
-				$bResult = $this->oStorage->isUserExists($oHelpdeskUser);
+				$bResult = $this->oStorage->isUserExists($oUser);
 			}
 			catch (\Aurora\System\Exceptions\BaseException $oException)
 			{
@@ -708,13 +714,12 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CUser $oUser Helpdesk user object
+	 * @param \CUser $oUser Helpdesk user object
 	 * @param array $aIdList
 	 *
 	 * @return array|bool
 	 */
-//	public function userInformation(CHelpdeskUser $oUser, $aIdList)
-	public function userInformation(CUser $oUser, $aIdList)
+	public function userInformation(\CUser $oUser, $aIdList)
 	{
 		$mResult = false;
 		try
@@ -730,22 +735,21 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
+	 * @param \CUser $oUser Helpdesk user object
      *
 	 * @return bool
 	 */
-//	public function updateUser(CHelpdeskUser $oHelpdeskUser)
-	public function updateUser(CUser $oHelpdeskUser)
+	public function updateUser(\CUser $oUser)
 	{
 		$bResult = false;
 		try
 		{
-			if ($oHelpdeskUser->validate())
+			if ($oUser->validate())
 			{
-				$bResult = $this->oStorage->updateUser($oHelpdeskUser);
+				$bResult = $this->oStorage->updateUser($oUser);
 				if (!$bResult)
 				{
-					$this->moveStorageExceptionToManager();
+//					$this->moveStorageExceptionToManager();
 					throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_UserUpdateFailed);
 				}
 			}
@@ -808,24 +812,24 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
-	 * @param CHelpdeskThread $oThread Helpdesk thread object
+	 * @param \CUser $oUser Helpdesk user object
+	 * @param \CThread $oThread Helpdesk thread object
 	 * @param array $aPostIds
 	 *
 	 * @return bool
 	 */
-	public function deletePosts(CUser $oHelpdeskUser, $oThread, $aPostIds)
+	public function deletePosts(\CUser $oUser, $oThread, $aPostIds)
 	{
 		$bResult = false;
 		try
 		{
-			if ($oThread instanceof CHelpdeskThread && 0 < count($aPostIds))
+			if ($oThread instanceof \CThread && 0 < count($aPostIds))
 			{
-				$bResult = $this->oStorage->deletePosts($oHelpdeskUser, $oThread, $aPostIds);
+				$bResult = $this->oStorage->deletePosts($oUser, $oThread, $aPostIds);
 				if ($bResult)
 				{
-					$oThread->PostCount = $this->getPostsCount($oHelpdeskUser, $oThread);
-					$bResult = $this->updateThread($oHelpdeskUser, $oThread);
+					$oThread->PostCount = $this->getPostsCount($oThread);
+					$bResult = $this->updateThread($oThread);
 				}
 			}
 		}
@@ -839,20 +843,19 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
+	 * @param \CUser $oUser Helpdesk user object
 	 * @param array $aThreadIds
 	 *
 	 * @return bool
 	 */
-//	public function verifyThreadIdsBelongToUser(CHelpdeskUser $oHelpdeskUser, $aThreadIds)
-	public function verifyThreadIdsBelongToUser(CUser $oHelpdeskUser, $aThreadIds)
+	public function verifyThreadIdsBelongToUser(\CUser $oUser, $aThreadIds)
 	{
 		$bResult = false;
 		try
 		{
 			if (0 < count($aThreadIds))
 			{
-				$bResult = $this->oStorage->verifyThreadIdsBelongToUser($oHelpdeskUser, $aThreadIds);
+				$bResult = $this->oStorage->verifyThreadIdsBelongToUser($oUser, $aThreadIds);
 			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
@@ -864,20 +867,19 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
+	 * @param \CUser $oUser Helpdesk user object
 	 * @param array $aPostIds
 	 *
 	 * @return bool
 	 */
-//	public function verifyPostIdsBelongToUser(CHelpdeskUser $oHelpdeskUser, $aPostIds)
-	public function verifyPostIdsBelongToUser(CUser $oHelpdeskUser, $aPostIds)
+	public function verifyPostIdsBelongToUser(\CUser $oUser, $aPostIds)
 	{
 		$bResult = false;
 		try
 		{
 			if (0 < count($aPostIds))
 			{
-				$bResult = $this->oStorage->verifyPostIdsBelongToUser($oHelpdeskUser, $aPostIds);
+				$bResult = $this->oStorage->verifyPostIdsBelongToUser($oUser, $aPostIds);
 			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
@@ -889,21 +891,20 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
+	 * @param \CUser $oUser Helpdesk user object
 	 * @param array $aThreadIds
 	 * @param bool $bSetArchive = true
 	 *
 	 * @return bool
 	 */
-//	public function archiveThreads(CHelpdeskUser $oHelpdeskUser, $aThreadIds, $bSetArchive = true)
-	public function archiveThreads(CUser $oHelpdeskUser, $aThreadIds, $bSetArchive = true)
+	public function archiveThreads(\CUser $oUser, $aThreadIds, $bSetArchive = true)
 	{
 		$bResult = false;
 		try
 		{
 			if (0 < count($aThreadIds))
 			{
-				$bResult = $this->oStorage->archiveThreads($oHelpdeskUser, $aThreadIds, $bSetArchive);
+				$bResult = $this->oStorage->archiveThreads($oUser, $aThreadIds, $bSetArchive);
 			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
@@ -942,13 +943,13 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 		try
 		{
 			$iIdOwner = 0;
-			$iIdHelpdeskThread = $this->oStorage->notificateOutdatedThreadID($iIdOwner);
-			if ($iIdHelpdeskThread && $iIdOwner)
+			$iThreadId = $this->oStorage->notificateOutdatedThreadID($iIdOwner);
+			if ($iThreadId && $iIdOwner)
 			{
-				$oHelpdeskUser = $this->getUserByIdWithoutTenantID($iIdOwner);
-				if ($oHelpdeskUser)
+				$oUser = $this->getUserByIdWithoutTenantID($iIdOwner);
+				if ($oUser)
 				{
-					$oThread = $this->getThreadById($oHelpdeskUser, $iIdHelpdeskThread);
+					$oThread = $this->getThread($iThreadId);
 					if ($oThread)
 					{
 						$this->notifyOutdated($oThread);
@@ -966,22 +967,20 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param \CUser $oUser Core user object
-	 * @param int $iIdThread
-	 *
-	 * @return CHelpdeskThread|false
+	 * @param int $iThreadId
+	 * @return \CThread|false
 	 */
-	public function getThreadById(\CUser $oUser, $iIdThread)
+	public function getThread($iThreadId)
 	{
-		$oThread = null;
+		$oThread = false;
 		try
 		{
-			$oThread = $this->oStorage->getThreadById($oUser, $iIdThread);
+			$oThread = $this->oEavManager->getEntity($iThreadId);
 			if ($oThread)
 			{
-				$aThreadLastPostIds = $this->getThreadsLastPostIds($oUser, array($oThread->IdHelpdeskThread));
-				if (isset($aThreadLastPostIds[$oThread->IdHelpdeskThread]) &&
-					$oThread->LastPostId === $aThreadLastPostIds[$oThread->IdHelpdeskThread])
+				$aThreadLastPostIds = $this->getThreadsLastPostIds(array($oThread->IdThread));
+				if (is_array($aThreadLastPostIds) && isset($aThreadLastPostIds[$oThread->IdThread]) &&
+					$oThread->LastPostId === $aThreadLastPostIds[$oThread->IdThread])
 				{
 					$oThread->IsRead = true;
 				}
@@ -989,7 +988,6 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
-			$oThread = false;
 			$this->setLastException($oException);
 		}
 		return $oThread;
@@ -1017,21 +1015,19 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
-	 * @param CHelpdeskThread $oHelpdeskThread Helpdesk thread object
+	 * @param \CThread $oThread Helpdesk thread object
 	 *
 	 * @return bool
 	 */
-//	public function createThread(CHelpdeskUser $oHelpdeskUser, CHelpdeskThread &$oHelpdeskThread)
-	public function createThread(CUser $oHelpdeskUser, CHelpdeskThread &$oHelpdeskThread)
+	public function createThread(\CThread &$oThread)
 	{
 		$bResult = false;
 		try
 		{
-			$bResult = $this->oStorage->createThread($oHelpdeskUser, $oHelpdeskThread);
+			$bResult = $this->oEavManager->saveEntity($oThread);
 			if (!$bResult)
 			{
-				$this->moveStorageExceptionToManager();
+//				$this->moveStorageExceptionToManager();
 				throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_ThreadCreateFailed);
 			}
 		}
@@ -1045,27 +1041,23 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
-	 * @param CHelpdeskThread $oHelpdeskThread Helpdesk thread object
-	 *
+	 * @param \CThread $oThread Helpdesk thread object
 	 * @return bool
 	 */
-//	public function updateThread(CHelpdeskUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
-	public function updateThread(CUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
+	public function updateThread(\CThread $oThread)
 	{
 		$bResult = false;
 		try
 		{
-			$bResult = $this->oStorage->updateThread($oHelpdeskUser, $oHelpdeskThread);
+			$bResult = $this->oEavManager->saveEntity($oThread);
 			if (!$bResult)
 			{
-				$this->moveStorageExceptionToManager();
+//				$this->moveStorageExceptionToManager();
 				throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_ThreadUpdateFailed);
 			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
-			$bResult = false;
 			$this->setLastException($oException);
 		}
 
@@ -1207,37 +1199,37 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 
 								$oEmail = $aFrom[0];
 								$sEmail = $oEmail ? $oEmail->GetEmail() : '';
-								$oHelpdeskUser = null;
+								$oUser = null;
 								
 								if (0 < \strlen($sEmail))
 								{
-									$oHelpdeskUser = $this->getUserByEmail($iIdTenant, $sEmail);
-									if (!$oHelpdeskUser)
+									$oUser = $this->getUserByEmail($iIdTenant, $sEmail);
+									if (!$oUser)
 									{
 										$sPassword = md5(microtime(true));
-										$oHelpdeskUser = $oApiIntegrator->registerHelpdeskAccount($iIdTenant, $sEmail, '', $sPassword, true);
+										$oUser = $oApiIntegrator->registerHelpdeskAccount($iIdTenant, $sEmail, '', $sPassword, true);
 									}
 								
-									if ($oHelpdeskUser)
+									if ($oUser)
 									{
 										$oThread = null;
 										if (!empty($sThreadHash))
 										{
-											$iThreadID = $this->getThreadIdByHash($iIdTenant, $sThreadHash);
-											if (0 < $iThreadID)
+											$iThreadId = $this->getThreadIdByHash($iIdTenant, $sThreadHash);
+											if (0 < $iThreadId)
 											{
-												$oThread = $this->getThreadById($oHelpdeskUser, $iThreadID);
+												$oThread = $this->getThread($iThreadId);
 											}
 										}
 										else
 										{
-											$oThread = new \CHelpdeskThread();
+											$oThread = \CThread::createInstance('CThread', $this->GetModule()->GetName());
 											$oThread->IdTenant = $iIdTenant;
-											$oThread->IdOwner = $oHelpdeskUser->iObjectId;
+											$oThread->IdOwner = $oUser->iObjectId;
 											$oThread->Type = \EHelpdeskThreadType::Pending;
 											$oThread->Subject = $sSubject;
 
-											if (!$this->createThread($oHelpdeskUser, $oThread))
+											if (!$this->createThread($oUser, $oThread))
 											{
 												$oThread = null;
 											}
@@ -1256,9 +1248,9 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 											}
 
 											$oPost = new \CHelpdeskPost();
-											$oPost->IdTenant = $oHelpdeskUser->IdTenant;
-											$oPost->IdOwner = $oHelpdeskUser->iObjectId;
-											$oPost->IdHelpdeskThread = $oThread->IdHelpdeskThread;
+											$oPost->IdTenant = $oUser->IdTenant;
+											$oPost->IdOwner = $oUser->iObjectId;
+											$oPost->IdThread = $oThread->IdThread;
 											$oPost->Type = \EHelpdeskPostType::Normal;
 											$oPost->SystemType = \EHelpdeskPostSystemType::None;
 											$oPost->Text = $sText;
@@ -1272,9 +1264,9 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 													$sTempName = md5($sUploadName.rand(1000, 9999));
 
 													$oApiMail->directMessageToStream($oAccount,
-														function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($oHelpdeskUser, &$sTempName, $oApiFileCache) {
+														function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($oUser, &$sTempName, $oApiFileCache) {
 
-															if (!$oApiFileCache->putFile($oHelpdeskUser, $sTempName, $rResource))
+															if (!$oApiFileCache->putFile($oUser, $sTempName, $rResource))
 															{
 																$sTempName = '';
 															}
@@ -1282,21 +1274,21 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 														}, $oAttachment->getFolder(), $oAttachment->getUid(), $oAttachment->MimeIndex());
 
 
-													$rData = 0 < \strlen($sTempName) ? $oApiFileCache->getFile($oHelpdeskUser, $sTempName) : null;
+													$rData = 0 < \strlen($sTempName) ? $oApiFileCache->getFile($oUser, $sTempName) : null;
 													if ($rData)
 													{
-														$iFileSize = $oApiFileCache->fileSize($oHelpdeskUser, $sTempName);
+														$iFileSize = $oApiFileCache->fileSize($oUser, $sTempName);
 
-														$sThreadID = (string) $oThread->IdHelpdeskThread;
+														$sThreadID = (string) $oThread->IdThread;
 														$sThreadID = str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
 														$sThreadIDSubFolder = substr($sThreadID, 0, 2);
 
 														$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
 
-														$oApiFilestorage->createFolder($oHelpdeskUser, \EFileStorageTypeStr::Corporate, '',
+														$oApiFilestorage->createFolder($oUser, \EFileStorageTypeStr::Corporate, '',
 															$sThreadFolderName);
 
-														$oApiFilestorage->createFile($oHelpdeskUser,
+														$oApiFilestorage->createFile($oUser,
 															\EFileStorageTypeStr::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
 
 														if (is_resource($rData))
@@ -1304,17 +1296,17 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 															@fclose($rData);
 														}
 
-														$oAttachment = new \CHelpdeskAttachment();
-														$oAttachment->IdHelpdeskThread = $oThread->IdHelpdeskThread;
-														$oAttachment->IdHelpdeskPost = $oPost->IdHelpdeskPost;
-														$oAttachment->IdOwner = $oHelpdeskUser->iObjectId;
-														$oAttachment->IdTenant = $oHelpdeskUser->IdTenant;
+														$oAttachment = \CHelpdeskAttachment::createInstance('CHelpdeskAttachment', $this->GetModule()->GetName());
+														$oAttachment->IdThread = $oThread->IdThread;
+														$oAttachment->IdPost = $oPost->IdPost;
+														$oAttachment->IdOwner = $oUser->iObjectId;
+														$oAttachment->IdTenant = $oUser->IdTenant;
 
 														$oAttachment->FileName = $sUploadName;
 														$oAttachment->SizeInBytes = $iFileSize;
-														$oAttachment->encodeHash($oHelpdeskUser, $sThreadFolderName);
+														$oAttachment->encodeHash($oUser, $sThreadFolderName);
 
-														$oApiFileCache->clear($oHelpdeskUser, $sTempName);
+														$oApiFileCache->clear($oUser, $sTempName);
 
 														$aResultAttachment[] = $oAttachment;
 													}
@@ -1326,7 +1318,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 												}
 											}
 
-											$this->createPost($oHelpdeskUser, $oThread, $oPost, false, false);
+											$this->createPost($oUser, $oThread, $oPost, false, false);
 										}
 									}
 								}
@@ -1389,16 +1381,16 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 								$sEmail = $oEmail ? $oEmail->GetEmail() : '';
 								if (0 < \strlen($sEmail))
 								{
-									$oHelpdeskUser = $this->getUserByEmail($iIdTenant, $sEmail);
-									if ($oHelpdeskUser)
+									$oUser = $this->getUserByEmail($iIdTenant, $sEmail);
+									if ($oUser)
 									{
 										$sThreadHash = (string) $aMatch[1];
 										if (!empty($sThreadHash))
 										{
-											$iThreadID = $this->getThreadIdByHash($iIdTenant, $sThreadHash);
-											if (0 < $iThreadID)
+											$iThreadId = $this->getThreadIdByHash($iIdTenant, $sThreadHash);
+											if (0 < $iThreadId)
 											{
-												$oThread = $this->getThreadById($oHelpdeskUser, $iThreadID);
+												$oThread = $this->getThread($iThreadId);
 												if ($oThread)
 												{
 													$sText = trim($oMessage->getHtml());
@@ -1412,9 +1404,9 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 													}
 
 													$oPost = new \CHelpdeskPost();
-													$oPost->IdTenant = $oHelpdeskUser->IdTenant;
-													$oPost->IdOwner = $oHelpdeskUser->iObjectId;
-													$oPost->IdHelpdeskThread = $oThread->IdHelpdeskThread;
+													$oPost->IdTenant = $oUser->IdTenant;
+													$oPost->IdOwner = $oUser->iObjectId;
+													$oPost->IdThread = $oThread->IdThread;
 													$oPost->Type = \EHelpdeskPostType::Normal;
 													$oPost->SystemType = \EHelpdeskPostSystemType::None;
 													$oPost->Text = $sText;
@@ -1428,9 +1420,9 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 															$sTempName = md5($sUploadName.rand(1000, 9999));
 
 															$oApiMail->directMessageToStream($oAccount,
-																function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($oHelpdeskUser, &$sTempName, $oApiFileCache) {
+																function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($oUser, &$sTempName, $oApiFileCache) {
 
-																	if (!$oApiFileCache->putFile($oHelpdeskUser, $sTempName, $rResource))
+																	if (!$oApiFileCache->putFile($oUser, $sTempName, $rResource))
 																	{
 																		$sTempName = '';
 																	}
@@ -1438,21 +1430,21 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 																}, $oAttachment->getFolder(), $oAttachment->getUid(), $oAttachment->MimeIndex());
 
 
-															$rData = 0 < \strlen($sTempName) ? $oApiFileCache->getFile($oHelpdeskUser, $sTempName) : null;
+															$rData = 0 < \strlen($sTempName) ? $oApiFileCache->getFile($oUser, $sTempName) : null;
 															if ($rData)
 															{
-																$iFileSize = $oApiFileCache->fileSize($oHelpdeskUser, $sTempName);
+																$iFileSize = $oApiFileCache->fileSize($oUser, $sTempName);
 
-																$sThreadID = (string) $oThread->IdHelpdeskThread;
+																$sThreadID = (string) $oThread->IdThread;
 																$sThreadID = str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
 																$sThreadIDSubFolder = substr($sThreadID, 0, 2);
 
 																$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
 
-																$oApiFilestorage->createFolder($oHelpdeskUser, \EFileStorageType::Corporate, '',
+																$oApiFilestorage->createFolder($oUser, \EFileStorageType::Corporate, '',
 																	$sThreadFolderName);
 
-																$oApiFilestorage->createFile($oHelpdeskUser,
+																$oApiFilestorage->createFile($oUser,
 																	\EFileStorageTypeStr::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
 
 																if (is_resource($rData))
@@ -1460,17 +1452,17 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 																	@fclose($rData);
 																}
 
-																$oAttachment = new \CHelpdeskAttachment();
-																$oAttachment->IdHelpdeskThread = $oThread->IdHelpdeskThread;
-																$oAttachment->IdHelpdeskPost = $oPost->IdHelpdeskPost;
-																$oAttachment->IdOwner = $oHelpdeskUser->iObjectId;
-																$oAttachment->IdTenant = $oHelpdeskUser->IdTenant;
+																$oAttachment = \CHelpdeskAttachment::createInstance('CHelpdeskAttachment', $this->GetModule()->GetName());
+																$oAttachment->IdThread = $oThread->IdThread;
+																$oAttachment->IdPost = $oPost->IdPost;
+																$oAttachment->IdOwner = $oUser->iObjectId;
+																$oAttachment->IdTenant = $oUser->IdTenant;
 
 																$oAttachment->FileName = $sUploadName;
 																$oAttachment->SizeInBytes = $iFileSize;
-																$oAttachment->encodeHash($oHelpdeskUser, $sThreadFolderName);
+																$oAttachment->encodeHash($oUser, $sThreadFolderName);
 
-																$oApiFileCache->clear($oHelpdeskUser, $sTempName);
+																$oApiFileCache->clear($oUser, $sTempName);
 
 																$aResultAttachment[] = $oAttachment;
 															}
@@ -1482,7 +1474,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 														}
 													}
 
-													$this->createPost($oHelpdeskUser, $oThread, $oPost, false, false);
+													$this->createPost($oUser, $oThread, $oPost, false, false);
 												}
 											}
 										}
@@ -1511,9 +1503,9 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	{
 		$iResult = 0;
 		try
-		{	$bIsAgent = $this->isAgent($oUser);
-			$iSearchOwner = $this->_getOwnerFromSearch($oUser->IdTenant, $sSearch);
-			$iResult = $this->oStorage->getThreadsCount($oUser, $bIsAgent, $iFilter, $sSearch, $iSearchOwner);
+		{
+			$aFilters = $this->_getFilters($oUser, $iFilter, $sSearch);
+			return $this->oEavManager->getEntitiesCount('CThread', $aFilters);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1543,6 +1535,63 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 		return $iResult;
 	}
 
+	protected function _getFilters(\CUser $oUser, $iFilter = EHelpdeskThreadFilterType::All, $sSearch = '')
+	{
+		$bIsAgent = $this->isAgent($oUser);
+		$iSearchOwner = $this->_getOwnerFromSearch($oUser->IdTenant, $sSearch);
+		
+		$aFilters = array(
+			'IdTenant' => $oUser->IdTenant,
+			'IsArchived' => EHelpdeskThreadFilterType::Archived === $iFilter,
+		);
+
+		if (EHelpdeskThreadFilterType::Archived !== $iFilter)
+		{
+			switch ($iFilter)
+			{
+				case EHelpdeskThreadFilterType::PendingOnly:
+					$aFilters['Type'] = array(array(EHelpdeskThreadType::Pending, EHelpdeskThreadType::Deferred), 'IN');
+					break;
+				case EHelpdeskThreadFilterType::ResolvedOnly:
+					$aFilters['Type'] = array(EHelpdeskThreadType::Resolved, '=');
+					break;
+				case EHelpdeskThreadFilterType::Open:
+					if ($bIsAgent)
+					{
+						$aFilters['$OR'] = array(
+							'Type' => array(array(EHelpdeskThreadType::Pending, EHelpdeskThreadType::Deferred, EHelpdeskThreadType::Waiting), 'IN'),
+							'$AND' => array(
+								'IdOwner' => array($oUser->EntityId, '='),
+								'Type' => array(EHelpdeskThreadType::Answered, '='),
+							)
+						);
+					}
+					else
+					{
+						$aFilters['Type'] = array(array(EHelpdeskThreadType::Waiting, EHelpdeskThreadType::Answered, EHelpdeskThreadType::Pending, EHelpdeskThreadType::Deferred), 'IN');
+					}
+					break;
+				case EHelpdeskThreadFilterType::InWork:
+					$aFilters['Type'] = array(array(EHelpdeskThreadType::Waiting, EHelpdeskThreadType::Answered, EHelpdeskThreadType::Pending, EHelpdeskThreadType::Deferred), 'IN');
+					break;
+			}
+		}
+
+		if (!$bIsAgent)
+		{
+			$aFilters['IdOwner'] = array($oUser->EntityId, '=');
+		}
+
+		if (0 < $iSearchOwner)
+		{
+			$aFilters['IdOwner'] = array($iSearchOwner, '=');
+		}
+
+		// TODO: search
+
+		return array('$AND' => $aFilters);
+	}
+	
 	/**
 	 * @param \CUser $oUser Core user object
 	 * @param int $iOffset Default value is **0**.
@@ -1557,24 +1606,25 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 		$aResult = null;
 		try
 		{
-			$bIsAgent = $this->isAgent($oUser);
-			$iSearchOwner = $this->_getOwnerFromSearch($oUser->IdTenant, $sSearch);
-			$aResult = $this->oStorage->getThreads($oUser, $bIsAgent, $iOffset, $iLimit, $iFilter, $sSearch, $iSearchOwner);
+			$sOrderBy = 'Created';
+			$iOrderType = \ESortOrder::ASC;
+			$aFilters = $this->_getFilters($oUser, $iFilter, $sSearch);
+			$aResult = $this->oEavManager->getEntities('CThread', array(), $iOffset, $iLimit, $aFilters, $sOrderBy, $iOrderType);
 			if (is_array($aResult) && 0 < count($aResult))
 			{
 				$aThreadsIdList = array();
 				foreach ($aResult as $oItem)
 				{
-					$aThreadsIdList[] = $oItem->IdHelpdeskThread;
+					$aThreadsIdList[] = $oItem->IdThread;
 				}
 				
-				$aThreadLastPostIds = $this->getThreadsLastPostIds($oUser, $aThreadsIdList);
+				$aThreadLastPostIds = $this->getThreadsLastPostIds($aThreadsIdList);
 				if (is_array($aThreadLastPostIds) && 0 < count($aThreadLastPostIds))
 				{
 					foreach ($aResult as &$oItem)
 					{
-						if (isset($aThreadLastPostIds[$oItem->IdHelpdeskThread]) &&
-							$oItem->LastPostId === $aThreadLastPostIds[$oItem->IdHelpdeskThread])
+						if (isset($aThreadLastPostIds[$oItem->IdThread]) &&
+							$oItem->LastPostId === $aThreadLastPostIds[$oItem->IdThread])
 						{
 							$oItem->IsRead = true;
 						}
@@ -1591,17 +1641,15 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 	
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
-	 * @param CHelpdeskThread $oThread Helpdesk thread object
-	 *
+	 * @param \CThread $oThread Helpdesk thread object
 	 * @return int
 	 */
-	public function getPostsCount(CUser $oHelpdeskUser, $oThread)
+	public function getPostsCount($oThread)
 	{
 		$iResult = 0;
 		try
 		{
-			$iResult = $this->oStorage->getPostsCount($oHelpdeskUser, $oThread);
+			$iResult = $this->oEavManager->getEntitiesCount('CPost', array('IdThread' => $oThread->EntityId));
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1612,17 +1660,25 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param \CUser $oUser Core user object
 	 * @param array $aThreadIds
-	 *
 	 * @return array|bool
 	 */
-	public function getThreadsLastPostIds(\CUser $oUser, $aThreadIds)
+	public function getThreadsLastPostIds($aThreadIds)
 	{
 		$mResult = false;
 		try
 		{
-			$mResult = $this->oStorage->getThreadsLastPostIds($oUser, $aThreadIds);
+			$sOrderBy = 'Created';
+			$iOrderType = \ESortOrder::ASC;
+			$mThreads = $this->oEavManager->getEntities('CThread', array('LastPostId'), 0, 0, array(), $sOrderBy, $iOrderType, $aThreadIds);
+			if (is_array($mThreads))
+			{
+				$mResult = array();
+				foreach ($mThreads as $oThread)
+				{
+					$mResult[$oThread->EntityId] = $oThread->LastPostId;
+				}
+			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1633,18 +1689,17 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
-	 * @param CHelpdeskThread $oHelpdeskThread Helpdesk thread object
+	 * @param \CUser $oUser Helpdesk user object
+	 * @param \CThread $oThread Helpdesk thread object
 	 *
 	 * @return array|bool
 	 */
-//	public function getAttachments(CHelpdeskUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
-	public function getAttachments(CUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
+	public function getAttachments(CUser $oUser, \CThread $oThread)
 	{
 		$aResult = null;
 		try
 		{
-			$aResult = $this->oStorage->getAttachments($oHelpdeskUser, $oHelpdeskThread);
+			$aResult = $this->oStorage->getAttachments($oUser, $oThread);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1656,18 +1711,19 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 
 	/**
 	 * @param \CUser $oUser Core user object
-	 * @param CHelpdeskThread $oThread Helpdesk thread object
+	 * @param \CThread $oThread Helpdesk thread object
 	 * @param int $iStartFromId Default value is **0**.
 	 * @param int $iLimit Default value is **20**.
 	 *
 	 * @return array|bool
 	 */
-	public function getPosts(\CUser $oUser, $oThread, $iStartFromId = 0, $iLimit = 20)
+	public function getPosts($oThread, $iOffset = 0, $iLimit = 20)
 	{
 		$aResult = null;
 		try
 		{
-			$aResult = $this->oStorage->getPosts($oUser, $oThread, $iStartFromId, $iLimit);
+			$aFilters = array('IdThread' => array($oThread->EntityId, '='));
+			$aResult = $this->oEavManager->getEntities('CPost', array(), $iOffset, $iLimit, $aFilters, 'Created');
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1678,18 +1734,17 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
-	 * @param CHelpdeskThread $oThread Helpdesk thread object
+	 * @param \CUser $oUser Helpdesk user object
+	 * @param \CThread $oThread Helpdesk thread object
 	 *
 	 * @return array|bool
 	 */
-//	public function getExtPostsCount(CHelpdeskUser $oHelpdeskUser, $oThread)
-	public function getExtPostsCount(CUser $oHelpdeskUser, $oThread)
+	public function getExtPostsCount(CUser $oUser, $oThread)
 	{
 		$aResult = null;
 		try
 		{
-			$aResult = $this->oStorage->getExtPostsCount($oHelpdeskUser, $oThread);
+			$aResult = $this->oStorage->getExtPostsCount($oUser, $oThread);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1747,20 +1802,19 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
-	 * @param int $iThreadID
+	 * @param \CUser $oUser Helpdesk user object
+	 * @param int $iThreadId
 	 *
 	 * @return bool
 	 */
-//	public function setOnline(CHelpdeskUser $oHelpdeskUser, $iThreadID)
-	public function setOnline(CUser $oHelpdeskUser, $iThreadId)
+	public function setOnline(CUser $oUser, $iThreadId)
 	{
 		$bResult = false;
-		if ($oHelpdeskUser)
+		if ($oUser)
 		{
 			try
 			{
-				$bResult = $this->oStorage->setOnline($oHelpdeskUser, $iThreadId);
+				$bResult = $this->oStorage->setOnline($oUser, $iThreadId);
 			}
 			catch (\Aurora\System\Exceptions\BaseException $oException)
 			{
@@ -1772,7 +1826,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
+	 * @param \CUser $oUser Helpdesk user object
 	 */
 	//MOVED TO THE MAIN MODULE CLASS
 //	public function NotifyForgot($oHelpdeskAccount)
@@ -1817,7 +1871,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 //	}
 	
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
+	 * @param \CUser $oUser Helpdesk user object
 	 * @param bool $bCreateFromFetcher Default value is **false**.
 	 *
 	 * @return bool
@@ -1861,7 +1915,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskThread $oThread Helpdesk thread object
+	 * @param \CThread $oThread Helpdesk thread object
 	 * @param CHelpdeskPost $oPost Helpdesk post object
 	 * @param bool $bIsNew Default value is **false**.
 	 * @param string $sCc Default value is empty string.
@@ -1944,7 +1998,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskThread $oThread Helpdesk thread object
+	 * @param \CThread $oThread Helpdesk thread object
 	 */
 	public function notifyOutdated($oThread)
 	{
@@ -1999,8 +2053,8 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 
 	/**
 	 * @param \CUser $oUser Core user object
-	 * @param CHelpdeskThread $oThread Helpdesk thread object
-	 * @param CHelpdeskPost $oPost Helpdesk post object
+	 * @param \CThread $oThread Helpdesk thread object
+	 * @param \CPost $oPost Helpdesk post object
 	 * @param bool $bIsNew Default value is **false**.
 	 * @param bool $bSendNotify Default value is **true**.
 	 * @param string $sCc Default value is empty string.
@@ -2008,67 +2062,63 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	 *
 	 * @return bool
 	 */
-	public function createPost(\CUser $oUser, $oThread, CHelpdeskPost $oPost, $bIsNew = false, $bSendNotify = true, $sCc = '', $sBcc = '')
+	public function createPost(\CUser $oUser, $oThread, \CPost $oPost, $bIsNew = false, $bSendNotify = true, $sCc = '', $sBcc = '')
 	{
 		$bResult = false;
 		try
 		{
-			if ($oPost->validate())
+			if ($oPost->Type === EHelpdeskPostType::Internal && !$this->isAgent($oUser))
 			{
-				if ($oPost->Type === EHelpdeskPostType::Internal && !$this->isAgent($oUser))
+				$oPost->Type = EHelpdeskPostType::Normal;
+			}
+
+			if ($this->isAgent($oUser) && !$bIsNew && $oUser->EntityId !== $oThread->IdOwner)
+			{
+				if ($oPost->Type !== EHelpdeskPostType::Internal)
 				{
-					$oPost->Type = EHelpdeskPostType::Normal;
+					$oThread->Type = EHelpdeskThreadType::Answered;
+				}
+			}
+			else
+			{
+				$oThread->Type = EHelpdeskThreadType::Pending;
+			}
+
+			$bResult = $this->oEavManager->saveEntity($oPost);
+			if (!$bResult)
+			{
+//				$this->moveStorageExceptionToManager();
+				throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_PostCreateFailed);
+			}
+			else
+			{
+//				if (is_array($oPost->Attachments) && 0 < count($oPost->Attachments))
+//				{
+//					$this->oStorage->addAttachments($oUser, $oThread, $oPost, $oPost->Attachments);
+//				}
+
+				$oThread->Updated = date('Y-m-d H:i:s');
+				$oThread->PostCount = $this->getPostsCount($oThread);
+				$oThread->LastPostId = $oPost->EntityId;
+				$oThread->LastPostOwnerId = $oPost->IdOwner;
+				$oThread->Notificated = false;
+
+				if (!$oThread->HasAttachments)
+				{
+					$oThread->HasAttachments = is_array($oPost->Attachments) && 0 < count($oPost->Attachments);
 				}
 
-				if ($this->isAgent($oUser) && !$bIsNew && $oUser->EntityId !== $oThread->IdOwner)
-				{
-					if ($oPost->Type !== EHelpdeskPostType::Internal)
-					{
-						$oThread->Type = EHelpdeskThreadType::Answered;
-					}
-				}
-				else
-				{
-					$oThread->Type = EHelpdeskThreadType::Pending;
-				}
+				$bResult = $this->updateThread($oThread);
 
-				$bResult = $this->oStorage->createPost($oUser, $oPost);
-				if (!$bResult)
-				{
-					$this->moveStorageExceptionToManager();
-					throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_PostCreateFailed);
-				}
-				else
-				{
-					if (is_array($oPost->Attachments) && 0 < count($oPost->Attachments))
-					{
-						$this->oStorage->addAttachments($oUser, $oThread, $oPost, $oPost->Attachments);
-					}
-
-					$oThread->Updated = time();
-					$oThread->PostCount = $this->getPostsCount($oUser, $oThread);
-					$oThread->LastPostId = $oPost->IdHelpdeskPost;
-					$oThread->LastPostOwnerId = $oPost->IdOwner;
-					$oThread->Notificated = false;
-
-					if (!$oThread->HasAttachments)
-					{
-						$oThread->HasAttachments = is_array($oPost->Attachments) && 0 < count($oPost->Attachments);
-					}
-
-					$bResult = $this->updateThread($oUser, $oThread);
-					$this->setThreadSeen($oUser, $oThread);
-
-					if ($bSendNotify)
-					{
-						$this->sendPostNotify($oThread, $oPost, $bIsNew, $sCc, $sBcc);
-					}
-
-					if (!empty($sCc) || !empty($sBcc))
-					{
-						//$this->sendPostCopy($oThread, $oPost, $bIsNew, $sCc, $sBcc);
-					}
-				}
+//				if ($bSendNotify)
+//				{
+//					$this->sendPostNotify($oThread, $oPost, $bIsNew, $sCc, $sBcc);
+//				}
+//
+//				if (!empty($sCc) || !empty($sBcc))
+//				{
+//					//$this->sendPostCopy($oThread, $oPost, $bIsNew, $sCc, $sBcc);
+//				}
 			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
@@ -2088,18 +2138,17 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param CHelpdeskUser $oHelpdeskUser Helpdesk user object
-	 * @param CHelpdeskThread $oHelpdeskThread Helpdesk thread object
+	 * @param \CUser $oUser Helpdesk user object
+	 * @param \CThread $oThread Helpdesk thread object
 	 *
 	 * @return bool
 	 */
-//	public function setThreadSeen(CHelpdeskUser $oHelpdeskUser, $oHelpdeskThread)
-	public function setThreadSeen(CUser $oHelpdeskUser, $oHelpdeskThread)
+	public function setThreadSeen(CUser $oUser, $oThread)
 	{
 		$bResult = false;
 		try
 		{
-			$bResult = $this->oStorage->setThreadSeen($oHelpdeskUser, $oHelpdeskThread);
+			$bResult = $this->oStorage->setThreadSeen($oUser, $oThread);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{

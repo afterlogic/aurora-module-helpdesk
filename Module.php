@@ -10,8 +10,6 @@
 
 namespace Aurora\Modules\HelpDesk;
 
-use \Modules\HelpDesk\CAccount;
-
 /**
  * @package Modules
  */
@@ -33,7 +31,6 @@ class Module extends \Aurora\System\Module\AbstractModule
 	{
 		$this->incClass('account');
 		$this->incClass('enum');
-		$this->incClass('user');
 		$this->incClass('attachment');
 		$this->incClass('post');
 		$this->incClass('thread');
@@ -62,17 +59,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 				'FetcherType'		=> array('int', \EHelpdeskFetcherType::NONE),
 				'StyleText'			=> array('string', ''),
 				'AllowFetcher'		=> array('bool', false),
-				'FetcherTimer' => array('int', 0)
-			
-//			'HelpdeskFacebookAllow'		=> array('bool', false, false), //!!$oSettings->GetConf('Helpdesk/FacebookAllow')
-//			'HelpdeskFacebookId'		=> array('string', '', false), //(string) $oSettings->GetConf('Helpdesk/FacebookId')
-//			'HelpdeskFacebookSecret'	=> array('string', '', false), //(string) $oSettings->GetConf('Helpdesk/FacebookSecret')
-//			'HelpdeskGoogleAllow'		=> array('bool', false, false), //!!$oSettings->GetConf('Helpdesk/GoogleAllow')
-//			'HelpdeskGoogleId'			=> array('string', '', false), //(string) $oSettings->GetConf('Helpdesk/GoogleId')
-//			'HelpdeskGoogleSecret'		=> array('string', '', false), //(string) $oSettings->GetConf('Helpdesk/GoogleSecret')
-//			'HelpdeskTwitterAllow'		=> array('bool', false, false), //!!$oSettings->GetConf('Helpdesk/TwitterAllow')
-//			'HelpdeskTwitterId'			=> array('string', '', false), //(string) $oSettings->GetConf('Helpdesk/TwitterId')
-//			'HelpdeskTwitterSecret'		=> array('string', '', false), //(string) $oSettings->GetConf('Helpdesk/TwitterSecret')
+				'FetcherTimer'		=> array('int', 0)
 			)
 		);
 		
@@ -97,7 +84,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 			'AfterThreadsReceivingAction' => $this->getConfig('AfterThreadsReceivingAction', 'add'), // add, close
 			'ClientDetailsUrl' => $this->getConfig('ClientDetailsUrl', ''),
 			'ClientSiteName' => $this->getConfig('ClientSiteName', ''),
-			'IsAgent' => false,
+			'IsAgent' => $this->isAgent(),
 			'ForgotHash' => $this->getConfig('ForgotHash', ''),
 			'LoginLogoUrl' => $this->getConfig('LoginLogoUrl', ''),
 			'SelectedThreadId' => $this->getConfig('SelectedThreadId', 0),
@@ -111,6 +98,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	}
 	
 	/**
+<<<<<<< HEAD
 	 * TODO it must set extended properties of tenant
 	 * temp method
 	 */
@@ -183,148 +171,96 @@ class Module extends \Aurora\System\Module\AbstractModule
 	
 	/**
 	 * @param \CAccount $oAccount
+=======
+>>>>>>> e92ca74ce3b6cf31ef8d2fb48d8e0d1f9864edf7
 	 * 
-	 * @return \CHelpdeskUser|null
+	 * @param string $Login
+	 * @param string $Password
+	 * @param boolean $SignMe
+	 * @return boolean
+	 * @throws \Aurora\System\Exceptions\ApiException
 	 */
-	protected function getHelpdeskAccountFromMainAccount(&$oAccount)
-	{
-		$oResult = null;
-//		$oApiUsers = \Aurora\System\Api::GetSystemManager('users');
-		if ($oAccount && $oAccount->IsDefaultAccount && $this->oApiCapabilityManager->isHelpdeskSupported($oAccount))
-		{
-			if (0 < $oAccount->User->IdHelpdeskUser)
-			{
-				$oHelpdeskUser = $this->oMainManager->getUserById($oAccount->IdTenant, $oAccount->User->IdHelpdeskUser);
-				$oResult = $oHelpdeskUser instanceof \CHelpdeskUser ? $oHelpdeskUser : null;
-			}
-
-			if (!($oResult instanceof \CHelpdeskUser))
-			{
-				$oHelpdeskUser = $this->oMainManager->getUserByEmail($oAccount->IdTenant, $oAccount->Email);
-				$oResult = $oHelpdeskUser instanceof \CHelpdeskUser ? $oHelpdeskUser : null;
-				
-				if ($oResult instanceof \CHelpdeskUser)
-				{
-					$oAccount->User->IdHelpdeskUser = $oHelpdeskUser->IdHelpdeskUser;
-					$oApiUsers->updateAccount($oAccount);
-				}
-			}
-
-			if (!($oResult instanceof \CHelpdeskUser))
-			{
-				$oHelpdeskUser = new \CHelpdeskUser();
-				$oHelpdeskUser->Email = $oAccount->Email;
-				$oHelpdeskUser->Name = $oAccount->FriendlyName;
-				$oHelpdeskUser->IdSystemUser = $oAccount->IdUser;
-				$oHelpdeskUser->IdTenant = $oAccount->IdTenant;
-				$oHelpdeskUser->Activated = true;
-				$oHelpdeskUser->IsAgent = true;
-				$oHelpdeskUser->Language = $oAccount->User->Language;
-				$oHelpdeskUser->DateFormat = $oAccount->User->DateFormat;
-				$oHelpdeskUser->TimeFormat = $oAccount->User->TimeFormat;
-
-				$oHelpdeskUser->setPassword($oAccount->IncomingPassword);
-
-				if ($this->oMainManager->createUser($oHelpdeskUser))
-				{
-					$oAccount->User->IdHelpdeskUser = $oHelpdeskUser->IdHelpdeskUser;
-					$oApiUsers->updateAccount($oAccount);
-
-					$oResult = $oHelpdeskUser;
-				}
-			}
-		}
-
-		return $oResult;
-	}	
-	
-	public function Login($Login = '', $Password = '', $SignMe = 0)
+	public function Login($Login = '', $Password = '', $SignMe = false)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		\setcookie('aft-cache-ctrl', '', \time() - 3600);
 		$sTenantName = \Aurora\System\Api::getTenantName();
-		if ($this->oApiCapabilityManager->isHelpdeskSupported())
+
+		if (0 === \strlen($Login) || 0 === \strlen($Password))
 		{
-			$sEmail = \trim($Login);
-			$Password = \trim($Password);
-			$SignMe = '1' === (string) $SignMe;
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
+		}
 
-			if (0 === \strlen($sEmail) || 0 === \strlen($Password))
-			{
-				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
-			}
-			
-			$mIdTenant = $this->oCoreDecorator ? $this->oCoreDecorator->getTenantIdByName($sTenantName) : null;
+		$mIdTenant = $this->oCoreDecorator->GetTenantIdByName($sTenantName);
 
-			if (!\is_int($mIdTenant))
-			{
-				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
-			}
+		if (!\is_int($mIdTenant))
+		{
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
+		}
 
-			try
-			{
+		try
+		{
 //				$oApiIntegrator = \Aurora\System\Api::GetCoreManager('integrator');
-//				$oHelpdeskUser = $oApiIntegrator->loginToHelpdeskAccount($mIdTenant, $sEmail, $sPassword);
-//				if ($oHelpdeskUser && !$oHelpdeskUser->Blocked)
+//				$oUser = $oApiIntegrator->loginToHelpdeskAccount($mIdTenant, $sEmail, $sPassword);
+//				if ($oUser && !$oUser->Blocked)
 //				{
-//					$oApiIntegrator->setHelpdeskUserAsLoggedIn($oHelpdeskUser, $bSignMe);
+//					$oApiIntegrator->setHelpdeskUserAsLoggedIn($oUser, $bSignMe);
 //					return true;
 //				}
-				
-				$mResult = null;
-				
-				$aArgs = array(
-					'Login' => $Login,
-					'Password' => $Password,
-					'SignMe' => $SignMe
-				);
-				$this->broadcastEvent(
-					'Login', 
-					$aArgs,
-					$mResult
-				);
-				
-				if (\is_array($mResult))
-				{
-					$aAccountHashTable = $mResult;
 
-		//			$iTime = $bSignMe ? time() + 60 * 60 * 24 * 30 : 0;
-					$sAccountHashTable = \Aurora\System\Api::EncodeKeyValues($aAccountHashTable);
+			$mResult = null;
 
-					$sAuthToken = \md5(\microtime(true).\rand(10000, 99999));
+			$aArgs = array(
+				'Login' => $Login,
+				'Password' => $Password,
+				'SignMe' => $SignMe
+			);
+			$this->broadcastEvent(
+				'Login', 
+				$aArgs,
+				$mResult
+			);
 
-					$sAuthToken = \Aurora\System\Api::Cacher()->Set('AUTHTOKEN:'.$sAuthToken, $sAccountHashTable) ? $sAuthToken : '';
-
-					return array(
-						'AuthToken' => $sAuthToken
-					);
-				}
-			}
-			catch (\Exception $oException)
+			if (\is_array($mResult))
 			{
-				$iErrorCode = \Aurora\System\Notifications::UnknownError;
-				if ($oException instanceof \Aurora\System\Exceptions\ManagerException)
-				{
-					switch ($oException->getCode())
-					{
-						case \Errs::HelpdeskManager_AccountSystemAuthentication:
-							$iErrorCode = \Aurora\System\Notifications::HelpdeskSystemUserExists;
-							break;
-						case \Errs::HelpdeskManager_AccountAuthentication:
-							$iErrorCode = \Aurora\System\Notifications::AuthError;
-							break;
-						case \Errs::HelpdeskManager_UnactivatedUser:
-							$iErrorCode = \Aurora\System\Notifications::HelpdeskUnactivatedUser;
-							break;
-						case \Errs::Db_ExceptionError:
-							$iErrorCode = \Aurora\System\Notifications::DataBaseError;
-							break;
-					}
-				}
+				$aAccountHashTable = $mResult;
 
-				throw new \Aurora\System\Exceptions\ApiException($iErrorCode);
+	//			$iTime = $bSignMe ? time() + 60 * 60 * 24 * 30 : 0;
+				$sAccountHashTable = \Aurora\System\Api::EncodeKeyValues($aAccountHashTable);
+
+				$sAuthToken = \md5(\microtime(true).\rand(10000, 99999));
+
+				$sAuthToken = \Aurora\System\Api::Cacher()->Set('AUTHTOKEN:'.$sAuthToken, $sAccountHashTable) ? $sAuthToken : '';
+
+				return array(
+					'AuthToken' => $sAuthToken
+				);
 			}
+		}
+		catch (\Exception $oException)
+		{
+			$iErrorCode = \Aurora\System\Notifications::UnknownError;
+			if ($oException instanceof \Aurora\System\Exceptions\ManagerException)
+			{
+				switch ($oException->getCode())
+				{
+					case \Errs::HelpdeskManager_AccountSystemAuthentication:
+						$iErrorCode = \Aurora\System\Notifications::HelpdeskSystemUserExists;
+						break;
+					case \Errs::HelpdeskManager_AccountAuthentication:
+						$iErrorCode = \Aurora\System\Notifications::AuthError;
+						break;
+					case \Errs::HelpdeskManager_UnactivatedUser:
+						$iErrorCode = \Aurora\System\Notifications::HelpdeskUnactivatedUser;
+						break;
+					case \Errs::Db_ExceptionError:
+						$iErrorCode = \Aurora\System\Notifications::DataBaseError;
+						break;
+				}
+			}
+
+			throw new \Aurora\System\Exceptions\ApiException($iErrorCode);
 		}
 
 		return false;
@@ -335,184 +271,188 @@ class Module extends \Aurora\System\Module\AbstractModule
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		\setcookie('aft-cache-ctrl', '', \time() - 3600);
-		if ($this->oApiCapabilityManager->isHelpdeskSupported())
-		{
-			$oApiIntegrator = \Aurora\System\Api::GetSystemManager('integrator');
-			$oApiIntegrator->logoutHelpdeskUser();
-		}
+		$oApiIntegrator = \Aurora\System\Api::GetSystemManager('integrator');
+		$oApiIntegrator->logoutHelpdeskUser();
 
 		return true;
 	}	
 	
-	public function Register($Email, $Password, $Name = '', $IsExt = false)
+	/**
+	 * 
+	 * @param string $Email
+	 * @param string $Password
+	 * @return boolean
+	 * @throws \Aurora\System\Exceptions\ApiException
+	 */
+	public function Register($Email, $Password)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$sTenantName = \Aurora\System\Api::getTenantName();
-//		if ($this->oApiCapabilityManager->isHelpdeskSupported())
-//		{
-			$sLogin = \trim($Email);
-			$sName = \trim($Name);
-			$sPassword = \trim($Password);
 
-			if (0 === \strlen($sLogin) || 0 === \strlen($sPassword))
-			{
-				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
-			}
+		if (0 === \strlen($Email) || 0 === \strlen($Password))
+		{
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
+		}
 
-			$mIdTenant = $this->oCoreDecorator ? $this->oCoreDecorator->getTenantIdByName($sTenantName) : null;
-			if (!\is_int($mIdTenant))
+		$mIdTenant = $this->oCoreDecorator->GetTenantIdByName($sTenantName);
+		if (!\is_int($mIdTenant))
+		{
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
+		}
+
+		$bResult = false;
+		try
+		{
+			$oEventResult = null;
+			$iUserId = \Aurora\System\Api::getAuthenticatedUserId();
+
+			$aArgs = array(
+				'TenantId' => $mIdTenant,
+				'UserId' => $iUserId,
+				'login' => $Email,
+				'password' => $Password
+			);
+			$this->broadcastEvent(
+				'CreateAccount::before', 
+				$aArgs,
+				$oEventResult
+			);
+
+			if ($oEventResult instanceOf \CUser)
 			{
-				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
-			}
-			
-			$bResult = false;
-			try
-			{
-				$oEventResult = null;
-				$iUserId = \Aurora\System\Api::getAuthenticatedUserId();
-				
-				$aArgs = array(
-					'TenantId' => $mIdTenant,
-					'UserId' => $iUserId,
-					'login' => $sLogin,
-					'password' => $sPassword
-				);
-				$this->broadcastEvent(
-					'CreateAccount::before', 
-					$aArgs,
-					$oEventResult
-				);
-				
-				if ($oEventResult instanceOf \CUser)
+				//Create account for auth
+				$oAuthAccount = \CAccount::createInstance('HelpDesk');
+				$oAuthAccount->IdUser = $oEventResult->EntityId;
+				$oAuthAccount->Login = $Email;
+				$oAuthAccount->Password = $Password;
+
+				if ($this->oAuthDecorator->SaveAccount($oAuthAccount))
 				{
-					//Create account for auth
-					$oAuthAccount = \CAccount::createInstance('HelpDesk');
-					$oAuthAccount->IdUser = $oEventResult->EntityId;
-					$oAuthAccount->Login = $sLogin;
-					$oAuthAccount->Password = $sPassword;
-					
-					if ($this->oAuthDecorator->SaveAccount($oAuthAccount))
-					{
-						//Create propertybag account
-						$oAccount = \Modules\HelpDesk\CAccount::createInstance();
-						$oAccount->IdUser = $oEventResult->EntityId;
-						$oAccount->NotificationEmail = $sLogin ? $sLogin : '';
+					//Create propertybag account
+					$oAccount = \Modules\HelpDesk\CAccount::createInstance();
+					$oAccount->IdUser = $oEventResult->EntityId;
+					$oAccount->NotificationEmail = $Email;
 
-						$bResult = $this->oAccountsManager->createAccount($oAccount);
-					}
-					else
-					{
-						$this->oAuthDecorator->DeleteAccount($oAuthAccount);
-					}
-
-					return $bResult;
+					$bResult = $this->oAccountsManager->createAccount($oAccount);
 				}
 				else
 				{
-					throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::NonUserPassed);
+					$this->oAuthDecorator->DeleteAccount($oAuthAccount);
 				}
+
+				return $bResult;
 			}
-			catch (\Exception $oException)
+			else
 			{
-				$iErrorCode = \Aurora\System\Notifications::UnknownError;
-				if ($oException instanceof \Aurora\System\Exceptions\ManagerException)
+				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::NonUserPassed);
+			}
+		}
+		catch (\Exception $oException)
+		{
+			$iErrorCode = \Aurora\System\Notifications::UnknownError;
+			if ($oException instanceof \Aurora\System\Exceptions\ManagerException)
+			{
+				switch ($oException->getCode())
 				{
-					switch ($oException->getCode())
-					{
-						case \Errs::HelpdeskManager_UserAlreadyExists:
-							$iErrorCode = \Aurora\System\Notifications::HelpdeskUserAlreadyExists;
-							break;
-						case \Errs::HelpdeskManager_UserCreateFailed:
-							$iErrorCode = \Aurora\System\Notifications::CanNotCreateHelpdeskUser;
-							break;
-						case \Errs::Db_ExceptionError:
-							$iErrorCode = \Aurora\System\Notifications::DataBaseError;
-							break;
-					}
+					case \Errs::HelpdeskManager_UserAlreadyExists:
+						$iErrorCode = \Aurora\System\Notifications::HelpdeskUserAlreadyExists;
+						break;
+					case \Errs::HelpdeskManager_UserCreateFailed:
+						$iErrorCode = \Aurora\System\Notifications::CanNotCreateHelpdeskUser;
+						break;
+					case \Errs::Db_ExceptionError:
+						$iErrorCode = \Aurora\System\Notifications::DataBaseError;
+						break;
 				}
-
-				throw new \Aurora\System\Exceptions\ApiException($iErrorCode);
 			}
 
-			return $bResult;
-//		}
+			throw new \Aurora\System\Exceptions\ApiException($iErrorCode);
+		}
 
-//		return false;
+		return $bResult;
 	}	
 	
 	/**
 	 * @return array
 	 */
-	public function IsAgent(\CUser $oUser)
+	protected function isAgent()
 	{
+<<<<<<< HEAD
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		return $this->oMainManager->isAgent($oUser);
+=======
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
+		return $oUser ? $this->oMainManager->isAgent($oUser) : false;
+>>>>>>> e92ca74ce3b6cf31ef8d2fb48d8e0d1f9864edf7
 	}	
 	
-	public function Forgot($Email = '', $IsExt = false)
+	/**
+	 * 
+	 * @param string $Email
+	 * @return boolean
+	 * @throws \Aurora\System\Exceptions\ApiException
+	 */
+	public function Forgot($Email = '')
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$sTenantName = \Aurora\System\Api::getTenantName();
-		if ($this->oApiCapabilityManager->isHelpdeskSupported())
+		$Email = \trim($Email);
+
+		if (0 === \strlen($Email))
 		{
-			$Email = \trim($Email);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
+		}
 
-			if (0 === \strlen($Email))
-			{
-				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
-			}
+		$mIdTenant = $this->oCoreDecorator->GetTenantIdByName($sTenantName);
 
-			$mIdTenant = $this->oCoreDecorator ? $this->oCoreDecorator->getTenantIdByName($sTenantName) : null;
+		if (!\is_int($mIdTenant))
+		{
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
+		}
 
-			if (!\is_int($mIdTenant))
-			{
-				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
-			}
+		$oAccount = $this->oAccountsManager->getAccountByEmail($mIdTenant, $Email);
 
-			$oAccount = $this->oAccountsManager->getAccountByEmail($mIdTenant, $Email);
-			
-			if (!($oAccount instanceof \Modules\HelpDesk\CAccount))
-			{
-				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::HelpdeskUnknownUser);
-			}
+		if (!($oAccount instanceof \Modules\HelpDesk\CAccount))
+		{
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::HelpdeskUnknownUser);
+		}
 
 //			return $this->oMainManager->forgotUser($oAccount);
-			
-			$oFromAccount = null;
-			
-			$aData = $this->oMainManager->getHelpdeskMainSettings($mIdTenant);
 
-			if (!empty($aData['AdminEmailAccount']))
+		$oFromAccount = null;
+
+		$aData = $this->oMainManager->getHelpdeskMainSettings($mIdTenant);
+
+		if (!empty($aData['AdminEmailAccount']))
+		{
+			$oApiUsers = $this->_getApiUsers();
+			if ($oApiUsers)
 			{
-				$oApiUsers = $this->_getApiUsers();
-				if ($oApiUsers)
-				{
-					$oFromAccount = $oApiUsers->getAccountByEmail($aData['AdminEmailAccount']);
-				}
+				$oFromAccount = $oApiUsers->getAccountByEmail($aData['AdminEmailAccount']);
 			}
+		}
 
-			$sSiteName = isset($aData['SiteName']) ? $aData['SiteName'] : '';
+		$sSiteName = isset($aData['SiteName']) ? $aData['SiteName'] : '';
 
-			if ($oFromAccount)
+		if ($oFromAccount)
+		{
+			$oApiMail = $this->oMainManager->_getApiMail();
+			if ($oApiMail)
 			{
-				$oApiMail = $this->oMainManager->_getApiMail();
-				if ($oApiMail)
+				$Email = $oAccount->getNotificationEmail();
+				if (!empty($Email))
 				{
-					$Email = $oAccount->getNotificationEmail();
-					if (!empty($Email))
-					{
-						$oFromEmail = \MailSo\Mime\Email::NewInstance($oFromAccount->Email, $sSiteName);
-						$oToEmail = \MailSo\Mime\Email::NewInstance($Email, $oAccount->Name);
+					$oFromEmail = \MailSo\Mime\Email::NewInstance($oFromAccount->Email, $sSiteName);
+					$oToEmail = \MailSo\Mime\Email::NewInstance($Email, $oAccount->Name);
 
-						$oUserMessage = $this->oMainManager->_buildUserMailMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.forgot.html',
-							$oFromEmail->ToString(), $oToEmail->ToString(),
-							'Forgot', '', '', $oAccount, $sSiteName);
+					$oUserMessage = $this->oMainManager->_buildUserMailMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.forgot.html',
+						$oFromEmail->ToString(), $oToEmail->ToString(),
+						'Forgot', '', '', $oAccount, $sSiteName);
 
-						$oApiMail->sendMessage($oFromAccount, $oUserMessage);
-					}
+					$oApiMail->sendMessage($oFromAccount, $oUserMessage);
 				}
 			}
 		}
@@ -520,61 +460,60 @@ class Module extends \Aurora\System\Module\AbstractModule
 		return false;
 	}	
 	
-	public function ForgotChangePassword()
+	/**
+	 * 
+	 * @param string $ActivateHash
+	 * @param string $NewPassword
+	 * @return boolean
+	 * @throws \Aurora\System\Exceptions\ApiException
+	 */
+	public function ForgotChangePassword($ActivateHash, $NewPassword)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$sTenantName = \Aurora\System\Api::getTenantName();
-		if ($this->oApiCapabilityManager->isHelpdeskSupported())
+
+		if (0 === \strlen($NewPassword) || 0 === \strlen($ActivateHash))
 		{
-			$sActivateHash = \trim($this->getParamValue('ActivateHash', ''));
-			$sNewPassword = \trim($this->getParamValue('NewPassword', ''));
-
-			if (0 === \strlen($sNewPassword) || 0 === \strlen($sActivateHash))
-			{
-				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
-			}
-
-//			$oApiTenants = \Aurora\System\Api::GetSystemManager('tenants');
-			$mIdTenant = $oApiTenants->getTenantIdByName($sTenantName);
-			if (!\is_int($mIdTenant))
-			{
-				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
-			}
-
-			$oUser = $this->oMainManager->getUserByActivateHash($mIdTenant, $sActivateHash);
-			if (!($oUser instanceof \CHelpdeskUser))
-			{
-				throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::HelpdeskUnknownUser);
-			}
-
-			$oUser->Activated = true;
-			$oUser->setPassword($sNewPassword);
-			$oUser->regenerateActivateHash();
-
-			return $this->oMainManager->updateUser($oUser);
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		return false;
+		$mIdTenant = $this->oCoreDecorator->GetTenantIdByName($sTenantName);
+		if (!\is_int($mIdTenant))
+		{
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
+		}
+
+		$oUser = $this->oMainManager->getUserByActivateHash($mIdTenant, $ActivateHash);
+		if (!($oUser instanceof \CUser))
+		{
+			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::HelpdeskUnknownUser);
+		}
+
+		$oUser->Activated = true;
+		$oUser->setPassword($NewPassword);
+		$oUser->regenerateActivateHash();
+
+		return $this->oMainManager->updateUser($oUser);
 	}	
 	
-	public function CreatePost($ThreadId = 0, $IsInternal = '0', $Subject = '', $Text = '', $Cc = '', $Bcc = '', $Attachments = null, $IsExt = 0)
+	/**
+	 * 
+	 * @param int $ThreadId
+	 * @param boolean $IsInternal
+	 * @param string $Subject
+	 * @param string $Text
+	 * @param string $Cc
+	 * @param string $Bcc
+	 * @param array $Attachments
+	 * @return boolean
+	 * @throws \Aurora\System\Exceptions\ApiException
+	 */
+	public function CreatePost($ThreadId = 0, $IsInternal = false, $Subject = '', $Text = '', $Cc = '', $Bcc = '', $Attachments = null)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
-		
-		/* @var $oAccount CAccount */
-
-//		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
-//		$sSubject = trim((string) $this->getParamValue('Subject', ''));
-//		$sText = trim((string) $this->getParamValue('Text', ''));
-//		$sCc = trim((string) $this->getParamValue('Cc', ''));
-//		$sBcc = trim((string) $this->getParamValue('Bcc', ''));
-//		$bIsInternal = '1' === (string) $this->getParamValue('IsInternal', '0');
-//		$mAttachments = $this->getParamValue('Attachments', null);
-		
-		$bIsInternal = '1' === $IsInternal;
 		
 		if (0 === \strlen($Text) || (0 === $ThreadId && 0 === \strlen($Subject)))
 		{
@@ -589,88 +528,88 @@ class Module extends \Aurora\System\Module\AbstractModule
 		{
 			$bIsNew = true;
 			
-			$oThread = new \CHelpdeskThread();
+			$oThread = \CThread::createInstance('CThread', $this->GetName());
 			$oThread->IdTenant = $oUser->IdTenant;
 			$oThread->IdOwner = $oUser->EntityId;
 			$oThread->Type = \EHelpdeskThreadType::Pending;
 			$oThread->Subject = $Subject;
-
-			if (!$this->oMainManager->createThread($oUser, $oThread))
+			
+			if (!$this->oMainManager->createThread($oThread))
 			{
 				$oThread = null;
 			}
 		}
 		else
 		{
-			$oThread = $this->oMainManager->getThreadById($oUser, $ThreadId);
+			$oThread = $this->oMainManager->getThread($ThreadId);
 		}
 
-		if ($oThread && 0 < $oThread->IdHelpdeskThread)
+		if ($oThread && 0 < $oThread->EntityId)
 		{
-			$oPost = new \CHelpdeskPost();
+			$oPost = \CPost::createInstance('CPost', $this->GetName());
 			$oPost->IdTenant = $oUser->IdTenant;
 			$oPost->IdOwner = $oUser->EntityId;
-			$oPost->IdHelpdeskThread = $oThread->IdHelpdeskThread;
-			$oPost->Type = $bIsInternal ? \EHelpdeskPostType::Internal : \EHelpdeskPostType::Normal;
+			$oPost->IdThread = $oThread->EntityId;
+			$oPost->Type = $IsInternal ? \EHelpdeskPostType::Internal : \EHelpdeskPostType::Normal;
 			$oPost->SystemType = \EHelpdeskPostSystemType::None;
 			$oPost->Text = $Text;
 
-			$aResultAttachment = array();
-			if (\is_array($Attachments) && 0 < \count($Attachments))
-			{
-				foreach ($Attachments as $sTempName => $sHash)
-				{
-					$aDecodeData = \Aurora\System\Api::DecodeKeyValues($sHash);
-					if (!isset($aDecodeData['HelpdeskUserID']))
-					{
-						continue;
-					}
-
-					$rData = $this->ApiFileCache()->getFile($oUser, $sTempName);
-					if ($rData)
-					{
-						$iFileSize = $this->ApiFileCache()->fileSize($oUser, $sTempName);
-
-						$sThreadID = (string) $oThread->IdHelpdeskThread;
-						$sThreadID = \str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
-						$sThreadIDSubFolder = \substr($sThreadID, 0, 2);
-
-						$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
-
-						$this->oApiFilestorage->createFolder($oUser, \EFileStorageTypeStr::Corporate, '',
-							$sThreadFolderName);
-
-						$sUploadName = isset($aDecodeData['Name']) ? $aDecodeData['Name'] : $sTempName;
-
-						$this->oApiFilestorage->createFile($oUser,
-							\EFileStorageTypeStr::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
-
-						$oAttachment = new \CHelpdeskAttachment();
-						$oAttachment->IdHelpdeskThread = $oThread->IdHelpdeskThread;
-						$oAttachment->IdHelpdeskPost = $oPost->IdHelpdeskPost;
-						$oAttachment->IdOwner = $oUser->EntityId;
-						$oAttachment->IdTenant = $oUser->IdTenant;
-
-						$oAttachment->FileName = $sUploadName;
-						$oAttachment->SizeInBytes = $iFileSize;
-						$oAttachment->encodeHash($oUser, $sThreadFolderName);
-						
-						$aResultAttachment[] = $oAttachment;
-					}
-				}
-
-				if (\is_array($aResultAttachment) && 0 < \count($aResultAttachment))
-				{
-					$oPost->Attachments = $aResultAttachment;
-				}
-			}
+//			$aResultAttachment = array();
+//			if (\is_array($Attachments) && 0 < \count($Attachments))
+//			{
+//				foreach ($Attachments as $sTempName => $sHash)
+//				{
+//					$aDecodeData = \Aurora\System\Api::DecodeKeyValues($sHash);
+//					if (!isset($aDecodeData['HelpdeskUserID']))
+//					{
+//						continue;
+//					}
+//
+//					$rData = $this->ApiFileCache()->getFile($oUser, $sTempName);
+//					if ($rData)
+//					{
+//						$iFileSize = $this->ApiFileCache()->fileSize($oUser, $sTempName);
+//
+//						$sThreadID = (string) $oThread->IdThread;
+//						$sThreadID = \str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
+//						$sThreadIDSubFolder = \substr($sThreadID, 0, 2);
+//
+//						$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
+//
+//						$this->oApiFilestorage->createFolder($oUser, \EFileStorageTypeStr::Corporate, '',
+//							$sThreadFolderName);
+//
+//						$sUploadName = isset($aDecodeData['Name']) ? $aDecodeData['Name'] : $sTempName;
+//
+//						$this->oApiFilestorage->createFile($oUser,
+//							\EFileStorageTypeStr::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
+//
+//						$oAttachment = \CHelpdeskAttachment::createInstance('CHelpdeskAttachment', $this->GetName());
+//						$oAttachment->IdThread = $oThread->IdThread;
+//						$oAttachment->IdPost = $oPost->IdPost;
+//						$oAttachment->IdOwner = $oUser->EntityId;
+//						$oAttachment->IdTenant = $oUser->IdTenant;
+//
+//						$oAttachment->FileName = $sUploadName;
+//						$oAttachment->SizeInBytes = $iFileSize;
+//						$oAttachment->encodeHash($oUser, $sThreadFolderName);
+//						
+//						$aResultAttachment[] = $oAttachment;
+//					}
+//				}
+//
+//				if (\is_array($aResultAttachment) && 0 < \count($aResultAttachment))
+//				{
+//					$oPost->Attachments = $aResultAttachment;
+//				}
+//			}
 
 			$mResult = $this->oMainManager->createPost($oUser, $oThread, $oPost, $bIsNew, true, $Cc, $Bcc);
 
 			if ($mResult)
 			{
 				$mResult = array(
-					'ThreadId' => $oThread->IdHelpdeskThread,
+					'ThreadId' => $oThread->EntityId,
 					'ThreadIsNew' => $bIsNew
 				);
 			}
@@ -680,9 +619,13 @@ class Module extends \Aurora\System\Module\AbstractModule
 	}	
 	
 	/**
-	 * @return array
+	 * 
+	 * @param int $PostId
+	 * @param int $ThreadId
+	 * @return boolean
+	 * @throws \Aurora\System\Exceptions\ApiException
 	 */
-	public function DeletePost($PostId = 0, $ThreadId = 0, $IsExt = 0)
+	public function DeletePost($PostId = 0, $ThreadId = 0)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
@@ -701,7 +644,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		$oThread = $this->oMainManager->getThreadById($oUser, $ThreadId);
+		$oThread = $this->oMainManager->getThread($ThreadId);
 		if (!$oThread)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
@@ -716,31 +659,31 @@ class Module extends \Aurora\System\Module\AbstractModule
 	}	
 	
 	/**
-	 * @return array
+	 * 
+	 * @param int $ThreadId
+	 * @param string $ThreadHash
+	 * @return \CThread
+	 * @throws \Aurora\System\Exceptions\ApiException
 	 */
-	public function GetThreadByIdOrHash()
+	public function GetThreadByIdOrHash($ThreadId = 0, $ThreadHash = '')
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$oThread = false;
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
-		$bIsAgent = $this->IsAgent($oUser);
-
-		$sThreadId = (int) $this->getParamValue('ThreadId', 0);
-		$sThreadHash = (string) $this->getParamValue('ThreadHash', '');
-		if (empty($sThreadHash) && $sThreadId === 0)
+		if (empty($ThreadHash) && $ThreadId === 0)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		$mHelpdeskThreadId = $sThreadId ? $sThreadId : $this->oMainManager->getThreadIdByHash($oUser->IdTenant, $sThreadHash);
-		if (!\is_int($mHelpdeskThreadId) || 1 > $mHelpdeskThreadId)
+		$iThreadId = $ThreadId ? $ThreadId : $this->oMainManager->getThreadIdByHash($oUser->IdTenant, $ThreadHash);
+		if (!\is_int($iThreadId) || 1 > $iThreadId)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		$oThread = $this->oMainManager->getThreadById($oUser, $mHelpdeskThreadId);
+		$oThread = $this->oMainManager->getThread($iThreadId);
 		if (!$oThread)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
@@ -759,7 +702,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 					$sEmail = $aUserInfo[$oThread->IdOwner][3];
 				}
 
-				if (!$bIsAgent && 0 < \strlen($sName))
+				if (!$this->isAgent() && 0 < \strlen($sName))
 				{
 					$sEmail = '';
 				}
@@ -772,9 +715,14 @@ class Module extends \Aurora\System\Module\AbstractModule
 	}	
 	
 	/**
+	 * 
+	 * @param int $ThreadId
+	 * @param int $StartFromId
+	 * @param int $Limit
 	 * @return array
+	 * @throws \Aurora\System\Exceptions\ApiException
 	 */
-	public function GetPosts($ThreadId = 0, $StartFromId = 0, $Limit = 10, $IsExt = 1)
+	public function GetPosts($ThreadId = 0, $StartFromId = 0, $Limit = 10)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
@@ -786,14 +734,15 @@ class Module extends \Aurora\System\Module\AbstractModule
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 		
-		$oThread = $this->oMainManager->getThreadById($oUser, $ThreadId);
+		$oThread = $this->oMainManager->getThread($ThreadId);
 		if (!$oThread)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		$aPostList = $this->oMainManager->getPosts($oUser, $oThread, $StartFromId, $Limit);
-		$iExtPostsCount = $IsExt ? $this->oMainManager->getExtPostsCount($oUser, $oThread) : 0;
+		$aPostList = $this->oMainManager->getPosts($oThread, $StartFromId, $Limit);
+		$bIsAgent = $this->isAgent();
+		$iExtPostsCount = !$bIsAgent ? $this->oMainManager->getExtPostsCount($oUser, $oThread) : 0;
 
 		$aOwnerDataList = array();
 		if (\is_array($aPostList) && 0 < \count($aPostList))
@@ -841,8 +790,6 @@ class Module extends \Aurora\System\Module\AbstractModule
 
 //			if (is_array($aUserInfo) && 0 < count($aUserInfo))
 //			{
-				$bIsAgent = $this->IsAgent($oUser);
-				
 				foreach ($aPostList as &$oItem)
 				{
 					if ($oItem && isset($aOwnerDataList[$oItem->IdOwner]) && \is_array($aOwnerDataList[$oItem->IdOwner]))
@@ -893,10 +840,10 @@ class Module extends \Aurora\System\Module\AbstractModule
 			{
 				foreach ($aPostList as &$oItem)
 				{
-					if (isset($aAttachments[$oItem->IdHelpdeskPost]) && \is_array($aAttachments[$oItem->IdHelpdeskPost]) &&
-						0 < \count($aAttachments[$oItem->IdHelpdeskPost]))
+					if (isset($aAttachments[$oItem->IdPost]) && \is_array($aAttachments[$oItem->IdPost]) &&
+						0 < \count($aAttachments[$oItem->IdPost]))
 					{
-						$oItem->Attachments = $aAttachments[$oItem->IdHelpdeskPost];
+						$oItem->Attachments = $aAttachments[$oItem->IdPost];
 
 						foreach ($oItem->Attachments as $oAttachment)
 						{
@@ -911,7 +858,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 		}
 
 		return array(
-			'ThreadId' => $oThread->IdHelpdeskThread,
+			'ThreadId' => $oThread->EntityId,
 			'StartFromId' => $StartFromId,
 			'Limit' => $Limit,
 			'ItemsCount' => $iExtPostsCount ? $iExtPostsCount : ($oThread->PostCount > \count($aPostList) ? $oThread->PostCount : \count($aPostList)),
@@ -920,9 +867,12 @@ class Module extends \Aurora\System\Module\AbstractModule
 	}
 	
 	/**
-	 * @return array
+	 * 
+	 * @param int $ThreadId
+	 * @return boolean
+	 * @throws \Aurora\System\Exceptions\ApiException
 	 */
-	public function DeleteThread($ThreadId = 0, $IsExt = 0)
+	public function DeleteThread($ThreadId = 0)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
@@ -935,7 +885,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 
 		$iThreadId = (int) $ThreadId;
 
-		if (0 < $iThreadId && !$this->IsAgent($oUser) && !$this->oMainManager->verifyThreadIdsBelongToUser($oUser, array($iThreadId)))
+		if (0 < $iThreadId && !$this->isAgent() && !$this->oMainManager->verifyThreadIdsBelongToUser($oUser, array($iThreadId)))
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
 		}
@@ -950,16 +900,17 @@ class Module extends \Aurora\System\Module\AbstractModule
 	}	
 	
 	/**
-	 * @return array
+	 * 
+	 * @param int $ThreadId
+	 * @param int $ThreadType
+	 * @return boolean
+	 * @throws \Aurora\System\Exceptions\ApiException
 	 */
-	public function ChangeThreadState($ThreadId = 0, $ThreadType = \EHelpdeskThreadType::None, $IsExt = 0)
+	public function ChangeThreadState($ThreadId = 0, $ThreadType = \EHelpdeskThreadType::None)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
-
-//		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
-//		$iThreadType = (int) $this->getParamValue('Type', \EHelpdeskThreadType::None);
 
 		if (1 > $ThreadId || !\in_array($ThreadType, array(
 			\EHelpdeskThreadType::Pending,
@@ -972,30 +923,33 @@ class Module extends \Aurora\System\Module\AbstractModule
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		if (!$oUser || ($ThreadType !== \EHelpdeskThreadType::Resolved && !$this->IsAgent($oUser)))
+		if (!$oUser || ($ThreadType !== \EHelpdeskThreadType::Resolved && !$this->isAgent()))
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
 		}
 
 		$bResult = false;
-		$oThread = $this->oMainManager->getThreadById($oUser, $ThreadId);
+		$oThread = $this->oMainManager->getThread($ThreadId);
 		if ($oThread)
 		{
 			$oThread->Type = $ThreadType;
-			$bResult = $this->oMainManager->updateThread($oUser, $oThread);
+			$bResult = $this->oMainManager->updateThread($oThread);
 		}
 		
 		return $bResult;
 	}	
 	
-
+	/**
+	 * 
+	 * @param int $ThreadId
+	 * @return boolean
+	 * @throws \Aurora\System\Exceptions\ApiException
+	 */
 	public function PingThread($ThreadId = 0)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
-
-//		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
 
 		if (0 === $ThreadId)
 		{
@@ -1007,20 +961,24 @@ class Module extends \Aurora\System\Module\AbstractModule
 		return $this->oMainManager->getOnline($oUser, $ThreadId);
 	}
 	
+	/**
+	 * 
+	 * @param int $ThreadId
+	 * @return boolean
+	 * @throws \Aurora\System\Exceptions\ApiException
+	 */
 	public function SetThreadSeen($ThreadId = 0)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
-//		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
-
 		if (0 === $ThreadId)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		$oThread = $this->oMainManager->getThreadById($oUser, $ThreadId);
+		$oThread = $this->oMainManager->getThread($ThreadId);
 		if (!$oThread)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
@@ -1030,7 +988,13 @@ class Module extends \Aurora\System\Module\AbstractModule
 	}	
 	
 	/**
+	 * 
+	 * @param int $Offset
+	 * @param int $Limit
+	 * @param int $Filter
+	 * @param string $Search
 	 * @return array
+	 * @throws \Aurora\System\Exceptions\ApiException
 	 */
 	public function GetThreads($Offset = 0, $Limit = 10, $Filter = \EHelpdeskThreadFilterType::All, $Search = '')
 	{
@@ -1050,59 +1014,57 @@ class Module extends \Aurora\System\Module\AbstractModule
 			$aThreadsList = $this->oMainManager->getThreads($oUser, $Offset, $Limit, $Filter, $Search);
 		}
 
-		$aOwnerDataList = array();
-		if (\is_array($aThreadsList) && 0 < \count($aThreadsList))
-		{
-			foreach ($aThreadsList as &$oItem)
-			{
-//				$aOwnerList[$oItem->IdOwner] = (int) $oItem->IdOwner;
-				$oOwnerUser = $this->oCoreDecorator->GetUser($oItem->IdOwner);
-				$oOwnerAccount = $this->oAccountsManager->getAccountByUserId($oItem->IdOwner);
-				
-				if ($oOwnerUser)
-				{
-					$aOwnerDataList[$oOwnerUser->EntityId] = array(
-						'Email' => '', //actualy, it's a User Login stored in Auth account
-						'Name' => $oOwnerUser->Name,
-						'NotificationEmail' => isset($oOwnerAccount) ? $oOwnerAccount->NotificationEmail : ''
-					);
-				}
-			}
-		}
-
-		if (0 < count($aOwnerDataList))
-		{
-//			$aOwnerList = array_values($aOwnerList);
-			
-//			$aUserInfo = $this->oMainManager->userInformation($oUser, $aOwnerList);
-//			id_helpdesk_user, email, name, is_agent, notification_email
-			
-			if (\is_array($aOwnerDataList) && 0 < \count($aOwnerDataList))
-			{
-				$bIsAgent = $this->IsAgent($oUser);
-				
-				foreach ($aThreadsList as &$oItem)
-				{
-					if ($oItem && isset($aOwnerDataList[$oItem->IdOwner]))
-					{
-						$sEmail = isset($aOwnerDataList[$oItem->IdOwner]['Email']) ? $aOwnerDataList[$oItem->IdOwner]['Email'] : '';
-						$sName = isset($aOwnerDataList[$oItem->IdOwner]['Name']) ? $aOwnerDataList[$oItem->IdOwner]['Name'] : '';
-
-						if (empty($sEmail) && !empty($aOwnerDataList[$oItem->IdOwner]['NotificationEmail']))
-						{
-							$sEmail = $aOwnerDataList[$oItem->IdOwner]['NotificationEmail'];
-						}
-
-						if (!$bIsAgent && 0 < \strlen($sName))
-						{
-							$sEmail = '';
-						}
-						
-						$oItem->Owner = array($sEmail, $sName);
-					}
-				}
-			}
-		}
+//		$aOwnerDataList = array();
+//		if (\is_array($aThreadsList) && 0 < \count($aThreadsList))
+//		{
+//			foreach ($aThreadsList as &$oItem)
+//			{
+//				$oOwnerUser = $this->oCoreDecorator->GetUser($oItem->IdOwner);
+//				$oOwnerAccount = $this->oAccountsManager->getAccountByUserId($oItem->IdOwner);
+//				
+//				if ($oOwnerUser)
+//				{
+//					$aOwnerDataList[$oOwnerUser->EntityId] = array(
+//						'Email' => '', //actualy, it's a User Login stored in Auth account
+//						'Name' => $oOwnerUser->Name,
+//						'NotificationEmail' => isset($oOwnerAccount) ? $oOwnerAccount->NotificationEmail : ''
+//					);
+//				}
+//			}
+//		}
+//
+//		if (0 < count($aOwnerDataList))
+//		{
+////			$aOwnerList = array_values($aOwnerList);
+//			
+////			$aUserInfo = $this->oMainManager->userInformation($oUser, $aOwnerList);
+////			id_helpdesk_user, email, name, is_agent, notification_email
+//			
+//			if (\is_array($aOwnerDataList) && 0 < \count($aOwnerDataList))
+//			{
+//				foreach ($aThreadsList as &$oItem)
+//				{
+//					if ($oItem && isset($aOwnerDataList[$oItem->IdOwner]))
+//					{
+//						$oOwnerData = $aOwnerDataList[$oItem->IdOwner];
+//						$sEmail = isset($oOwnerData['Email']) ? $oOwnerData['Email'] : '';
+//						$sName = isset($oOwnerData['Name']) ? $oOwnerData['Name'] : '';
+//
+//						if (empty($sEmail) && !empty($oOwnerData['NotificationEmail']))
+//						{
+//							$sEmail = $oOwnerData['NotificationEmail'];
+//						}
+//
+//						if (!$this->isAgent() && 0 < \strlen($sName))
+//						{
+//							$sEmail = '';
+//						}
+//						
+//						$oItem->Owner = array($sEmail, $sName);
+//					}
+//				}
+//			}
+//		}
 
 		return array(
 			'Search' => $Search,
@@ -1120,17 +1082,13 @@ class Module extends \Aurora\System\Module\AbstractModule
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
-		if (!($oUser instanceof \CHelpdeskUser))
-		{
-			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::HelpdeskUnknownUser);
-		}
-
-
 		return $this->oMainManager->getThreadsPendingCount($oUser->IdTenant);
 	}	
 	
 	/**
-	 * @return array
+	 * 
+	 * @return boolean
+	 * @throws \Aurora\System\Exceptions\ApiException
 	 */
 	public function UpdateUserPassword()
 	{
@@ -1155,26 +1113,24 @@ class Module extends \Aurora\System\Module\AbstractModule
 	}	
 	
 	/**
-	 * @return array
+	 * 
+	 * @param string $Name
+	 * @param string $Language
+	 * @param string $DateFormat
+	 * @param int $TimeFormat
+	 * @return boolean
 	 */
-	public function UpdateSettings()
+	public function UpdateSettings($Name, $Language, $DateFormat, $TimeFormat)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		\setcookie('aft-cache-ctrl', '', \time() - 3600);
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
-		$sName = (string) $this->getParamValue('Name', $oUser->Name);
-		$sLanguage = (string) $this->getParamValue('Language', $oUser->Language);
-		//$sLanguage = $this->validateLang($sLanguage);
-
-		$sDateFormat = (string) $this->getParamValue('DateFormat', $oUser->DateFormat);
-		$iTimeFormat = (int) $this->getParamValue('TimeFormat', $oUser->TimeFormat);
-
-		$oUser->Name = \trim($sName);
-		$oUser->Language = \trim($sLanguage);
-		$oUser->DateFormat = $sDateFormat;
-		$oUser->TimeFormat = $iTimeFormat;
+		$oUser->Name = \trim($Name);
+		$oUser->Language = \trim($Language);
+		$oUser->DateFormat = $DateFormat;
+		$oUser->TimeFormat = $TimeFormat;
 		
 		return $this->oMainManager->updateUser($oUser);
 	}	
@@ -1195,11 +1151,10 @@ class Module extends \Aurora\System\Module\AbstractModule
 		{
 			if ($oUser->Role === \Aurora\System\Enums\UserRole::NormalUser)
 			{
-				$oCoreDecorator = \Aurora\System\Api::GetModuleDecorator('Core');
 				$oUser->{$this->GetName().'::AllowEmailNotifications'} = $AllowEmailNotifications;
 				$oUser->{$this->GetName().'::Signature'} = $Signature;
 				$oUser->{$this->GetName().'::UseSignature'} = $UseSignature;
-				return $oCoreDecorator->UpdateUserObject($oUser);
+				return $this->oCoreDecorator->UpdateUserObject($oUser);
 			}
 			if ($oUser->Role === \Aurora\System\Enums\UserRole::SuperAdmin)
 			{

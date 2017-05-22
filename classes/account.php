@@ -24,34 +24,16 @@ class CAccount extends \Aurora\System\EAV\Entity
 	 */
 	public function __construct($sModule)
 	{
-		parent::__construct(get_class($this), $sModule);
-		
 		$this->setStaticMap(array(
 			'IsDisabled'	=> array('bool', false),
 			'IdUser'		=> array('int', 0),
-//			'Login'			=> array('string', ''),
-//			'Password'		=> array('string', ''),
+			'Login'			=> array('string', ''),
+			'Password'		=> array('encrypted', ''),
 			'NotificationEmail' => array('string', '')
 			/* moved from user */
 //			'IsAgent' => array('string', '')
 		));
-	}
-	
-	/**
-	 * Checks if the user has only valid data.
-	 * 
-	 * @return bool
-	 */
-	public function validate()
-	{
-		switch (true)
-		{
-			case false:
-				throw new \Aurora\System\Exceptions\ValidationException(Errs::Validation_FieldIsEmpty, null, array(
-					'{{ClassName}}' => 'CUser', '{{ClassField}}' => 'Error'));
-		}
-
-		return true;
+		parent::__construct($sModule);
 	}
 	
 	/**
