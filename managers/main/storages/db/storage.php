@@ -36,8 +36,8 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 		$this->oConnection =& $oManager->GetConnection();
 		$this->oCommandCreator =& $oManager->GetCommandCreator(
 			$this, array(
-				EDbType::MySQL => 'CApiHelpdeskCommandCreatorMySQL',
-				EDbType::PostgreSQL => 'CApiHelpdeskCommandCreatorPostgreSQL'
+				\Aurora\System\Enums\DbType::MySQL => 'CApiHelpdeskCommandCreatorMySQL',
+				\Aurora\System\Enums\DbType::PostgreSQL => 'CApiHelpdeskCommandCreatorPostgreSQL'
 			)
 		);
 	}
