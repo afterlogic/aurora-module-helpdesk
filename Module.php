@@ -31,7 +31,6 @@ class Module extends \Aurora\System\Module\AbstractModule
 	{
 		$this->incClass('account');
 		$this->incClass('enum');
-		$this->incClass('user');
 		$this->incClass('attachment');
 		$this->incClass('post');
 		$this->incClass('thread');
@@ -128,10 +127,10 @@ class Module extends \Aurora\System\Module\AbstractModule
 		try
 		{
 //				$oApiIntegrator = \Aurora\System\Api::GetCoreManager('integrator');
-//				$oHelpdeskUser = $oApiIntegrator->loginToHelpdeskAccount($mIdTenant, $sEmail, $sPassword);
-//				if ($oHelpdeskUser && !$oHelpdeskUser->Blocked)
+//				$oUser = $oApiIntegrator->loginToHelpdeskAccount($mIdTenant, $sEmail, $sPassword);
+//				if ($oUser && !$oUser->Blocked)
 //				{
-//					$oApiIntegrator->setHelpdeskUserAsLoggedIn($oHelpdeskUser, $bSignMe);
+//					$oApiIntegrator->setHelpdeskUserAsLoggedIn($oUser, $bSignMe);
 //					return true;
 //				}
 
@@ -448,88 +447,88 @@ class Module extends \Aurora\System\Module\AbstractModule
 		{
 			$bIsNew = true;
 			
-			$oThread = new \CHelpdeskThread();
+			$oThread = \CThread::createInstance('CThread', $this->GetName());
 			$oThread->IdTenant = $oUser->IdTenant;
 			$oThread->IdOwner = $oUser->EntityId;
 			$oThread->Type = \EHelpdeskThreadType::Pending;
 			$oThread->Subject = $Subject;
-
-			if (!$this->oMainManager->createThread($oUser, $oThread))
+			
+			if (!$this->oMainManager->createThread($oThread))
 			{
 				$oThread = null;
 			}
 		}
 		else
 		{
-			$oThread = $this->oMainManager->getThreadById($oUser, $ThreadId);
+			$oThread = $this->oMainManager->getThread($ThreadId);
 		}
 
-		if ($oThread && 0 < $oThread->IdHelpdeskThread)
+		if ($oThread && 0 < $oThread->EntityId)
 		{
-			$oPost = new \CHelpdeskPost();
+			$oPost = \CPost::createInstance('CPost', $this->GetName());
 			$oPost->IdTenant = $oUser->IdTenant;
 			$oPost->IdOwner = $oUser->EntityId;
-			$oPost->IdHelpdeskThread = $oThread->IdHelpdeskThread;
+			$oPost->IdThread = $oThread->EntityId;
 			$oPost->Type = $IsInternal ? \EHelpdeskPostType::Internal : \EHelpdeskPostType::Normal;
 			$oPost->SystemType = \EHelpdeskPostSystemType::None;
 			$oPost->Text = $Text;
 
-			$aResultAttachment = array();
-			if (\is_array($Attachments) && 0 < \count($Attachments))
-			{
-				foreach ($Attachments as $sTempName => $sHash)
-				{
-					$aDecodeData = \Aurora\System\Api::DecodeKeyValues($sHash);
-					if (!isset($aDecodeData['HelpdeskUserID']))
-					{
-						continue;
-					}
-
-					$rData = $this->ApiFileCache()->getFile($oUser, $sTempName);
-					if ($rData)
-					{
-						$iFileSize = $this->ApiFileCache()->fileSize($oUser, $sTempName);
-
-						$sThreadID = (string) $oThread->IdHelpdeskThread;
-						$sThreadID = \str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
-						$sThreadIDSubFolder = \substr($sThreadID, 0, 2);
-
-						$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
-
-						$this->oApiFilestorage->createFolder($oUser, \EFileStorageTypeStr::Corporate, '',
-							$sThreadFolderName);
-
-						$sUploadName = isset($aDecodeData['Name']) ? $aDecodeData['Name'] : $sTempName;
-
-						$this->oApiFilestorage->createFile($oUser,
-							\EFileStorageTypeStr::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
-
-						$oAttachment = new \CHelpdeskAttachment();
-						$oAttachment->IdHelpdeskThread = $oThread->IdHelpdeskThread;
-						$oAttachment->IdHelpdeskPost = $oPost->IdHelpdeskPost;
-						$oAttachment->IdOwner = $oUser->EntityId;
-						$oAttachment->IdTenant = $oUser->IdTenant;
-
-						$oAttachment->FileName = $sUploadName;
-						$oAttachment->SizeInBytes = $iFileSize;
-						$oAttachment->encodeHash($oUser, $sThreadFolderName);
-						
-						$aResultAttachment[] = $oAttachment;
-					}
-				}
-
-				if (\is_array($aResultAttachment) && 0 < \count($aResultAttachment))
-				{
-					$oPost->Attachments = $aResultAttachment;
-				}
-			}
+//			$aResultAttachment = array();
+//			if (\is_array($Attachments) && 0 < \count($Attachments))
+//			{
+//				foreach ($Attachments as $sTempName => $sHash)
+//				{
+//					$aDecodeData = \Aurora\System\Api::DecodeKeyValues($sHash);
+//					if (!isset($aDecodeData['HelpdeskUserID']))
+//					{
+//						continue;
+//					}
+//
+//					$rData = $this->ApiFileCache()->getFile($oUser, $sTempName);
+//					if ($rData)
+//					{
+//						$iFileSize = $this->ApiFileCache()->fileSize($oUser, $sTempName);
+//
+//						$sThreadID = (string) $oThread->IdThread;
+//						$sThreadID = \str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
+//						$sThreadIDSubFolder = \substr($sThreadID, 0, 2);
+//
+//						$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
+//
+//						$this->oApiFilestorage->createFolder($oUser, \EFileStorageTypeStr::Corporate, '',
+//							$sThreadFolderName);
+//
+//						$sUploadName = isset($aDecodeData['Name']) ? $aDecodeData['Name'] : $sTempName;
+//
+//						$this->oApiFilestorage->createFile($oUser,
+//							\EFileStorageTypeStr::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
+//
+//						$oAttachment = \CHelpdeskAttachment::createInstance('CHelpdeskAttachment', $this->GetName());
+//						$oAttachment->IdThread = $oThread->IdThread;
+//						$oAttachment->IdPost = $oPost->IdPost;
+//						$oAttachment->IdOwner = $oUser->EntityId;
+//						$oAttachment->IdTenant = $oUser->IdTenant;
+//
+//						$oAttachment->FileName = $sUploadName;
+//						$oAttachment->SizeInBytes = $iFileSize;
+//						$oAttachment->encodeHash($oUser, $sThreadFolderName);
+//						
+//						$aResultAttachment[] = $oAttachment;
+//					}
+//				}
+//
+//				if (\is_array($aResultAttachment) && 0 < \count($aResultAttachment))
+//				{
+//					$oPost->Attachments = $aResultAttachment;
+//				}
+//			}
 
 			$mResult = $this->oMainManager->createPost($oUser, $oThread, $oPost, $bIsNew, true, $Cc, $Bcc);
 
 			if ($mResult)
 			{
 				$mResult = array(
-					'ThreadId' => $oThread->IdHelpdeskThread,
+					'ThreadId' => $oThread->EntityId,
 					'ThreadIsNew' => $bIsNew
 				);
 			}
@@ -564,7 +563,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		$oThread = $this->oMainManager->getThreadById($oUser, $ThreadId);
+		$oThread = $this->oMainManager->getThread($ThreadId);
 		if (!$oThread)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
@@ -582,7 +581,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 * 
 	 * @param int $ThreadId
 	 * @param string $ThreadHash
-	 * @return \CHelpdeskThread
+	 * @return \CThread
 	 * @throws \Aurora\System\Exceptions\ApiException
 	 */
 	public function GetThreadByIdOrHash($ThreadId = 0, $ThreadHash = '')
@@ -597,13 +596,13 @@ class Module extends \Aurora\System\Module\AbstractModule
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		$mHelpdeskThreadId = $ThreadId ? $ThreadId : $this->oMainManager->getThreadIdByHash($oUser->IdTenant, $ThreadHash);
-		if (!\is_int($mHelpdeskThreadId) || 1 > $mHelpdeskThreadId)
+		$iThreadId = $ThreadId ? $ThreadId : $this->oMainManager->getThreadIdByHash($oUser->IdTenant, $ThreadHash);
+		if (!\is_int($iThreadId) || 1 > $iThreadId)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		$oThread = $this->oMainManager->getThreadById($oUser, $mHelpdeskThreadId);
+		$oThread = $this->oMainManager->getThread($iThreadId);
 		if (!$oThread)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
@@ -654,13 +653,13 @@ class Module extends \Aurora\System\Module\AbstractModule
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 		
-		$oThread = $this->oMainManager->getThreadById($oUser, $ThreadId);
+		$oThread = $this->oMainManager->getThread($ThreadId);
 		if (!$oThread)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		$aPostList = $this->oMainManager->getPosts($oUser, $oThread, $StartFromId, $Limit);
+		$aPostList = $this->oMainManager->getPosts($oThread, $StartFromId, $Limit);
 		$bIsAgent = $this->isAgent();
 		$iExtPostsCount = !$bIsAgent ? $this->oMainManager->getExtPostsCount($oUser, $oThread) : 0;
 
@@ -760,10 +759,10 @@ class Module extends \Aurora\System\Module\AbstractModule
 			{
 				foreach ($aPostList as &$oItem)
 				{
-					if (isset($aAttachments[$oItem->IdHelpdeskPost]) && \is_array($aAttachments[$oItem->IdHelpdeskPost]) &&
-						0 < \count($aAttachments[$oItem->IdHelpdeskPost]))
+					if (isset($aAttachments[$oItem->IdPost]) && \is_array($aAttachments[$oItem->IdPost]) &&
+						0 < \count($aAttachments[$oItem->IdPost]))
 					{
-						$oItem->Attachments = $aAttachments[$oItem->IdHelpdeskPost];
+						$oItem->Attachments = $aAttachments[$oItem->IdPost];
 
 						foreach ($oItem->Attachments as $oAttachment)
 						{
@@ -778,7 +777,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 		}
 
 		return array(
-			'ThreadId' => $oThread->IdHelpdeskThread,
+			'ThreadId' => $oThread->EntityId,
 			'StartFromId' => $StartFromId,
 			'Limit' => $Limit,
 			'ItemsCount' => $iExtPostsCount ? $iExtPostsCount : ($oThread->PostCount > \count($aPostList) ? $oThread->PostCount : \count($aPostList)),
@@ -849,11 +848,11 @@ class Module extends \Aurora\System\Module\AbstractModule
 		}
 
 		$bResult = false;
-		$oThread = $this->oMainManager->getThreadById($oUser, $ThreadId);
+		$oThread = $this->oMainManager->getThread($ThreadId);
 		if ($oThread)
 		{
 			$oThread->Type = $ThreadType;
-			$bResult = $this->oMainManager->updateThread($oUser, $oThread);
+			$bResult = $this->oMainManager->updateThread($oThread);
 		}
 		
 		return $bResult;
@@ -898,7 +897,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		$oThread = $this->oMainManager->getThreadById($oUser, $ThreadId);
+		$oThread = $this->oMainManager->getThread($ThreadId);
 		if (!$oThread)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
@@ -934,57 +933,57 @@ class Module extends \Aurora\System\Module\AbstractModule
 			$aThreadsList = $this->oMainManager->getThreads($oUser, $Offset, $Limit, $Filter, $Search);
 		}
 
-		$aOwnerDataList = array();
-		if (\is_array($aThreadsList) && 0 < \count($aThreadsList))
-		{
-			foreach ($aThreadsList as &$oItem)
-			{
-//				$aOwnerList[$oItem->IdOwner] = (int) $oItem->IdOwner;
-				$oOwnerUser = $this->oCoreDecorator->GetUser($oItem->IdOwner);
-				$oOwnerAccount = $this->oAccountsManager->getAccountByUserId($oItem->IdOwner);
-				
-				if ($oOwnerUser)
-				{
-					$aOwnerDataList[$oOwnerUser->EntityId] = array(
-						'Email' => '', //actualy, it's a User Login stored in Auth account
-						'Name' => $oOwnerUser->Name,
-						'NotificationEmail' => isset($oOwnerAccount) ? $oOwnerAccount->NotificationEmail : ''
-					);
-				}
-			}
-		}
-
-		if (0 < count($aOwnerDataList))
-		{
-//			$aOwnerList = array_values($aOwnerList);
-			
-//			$aUserInfo = $this->oMainManager->userInformation($oUser, $aOwnerList);
-//			id_helpdesk_user, email, name, is_agent, notification_email
-			
-			if (\is_array($aOwnerDataList) && 0 < \count($aOwnerDataList))
-			{
-				foreach ($aThreadsList as &$oItem)
-				{
-					if ($oItem && isset($aOwnerDataList[$oItem->IdOwner]))
-					{
-						$sEmail = isset($aOwnerDataList[$oItem->IdOwner]['Email']) ? $aOwnerDataList[$oItem->IdOwner]['Email'] : '';
-						$sName = isset($aOwnerDataList[$oItem->IdOwner]['Name']) ? $aOwnerDataList[$oItem->IdOwner]['Name'] : '';
-
-						if (empty($sEmail) && !empty($aOwnerDataList[$oItem->IdOwner]['NotificationEmail']))
-						{
-							$sEmail = $aOwnerDataList[$oItem->IdOwner]['NotificationEmail'];
-						}
-
-						if (!$this->isAgent() && 0 < \strlen($sName))
-						{
-							$sEmail = '';
-						}
-						
-						$oItem->Owner = array($sEmail, $sName);
-					}
-				}
-			}
-		}
+//		$aOwnerDataList = array();
+//		if (\is_array($aThreadsList) && 0 < \count($aThreadsList))
+//		{
+//			foreach ($aThreadsList as &$oItem)
+//			{
+//				$oOwnerUser = $this->oCoreDecorator->GetUser($oItem->IdOwner);
+//				$oOwnerAccount = $this->oAccountsManager->getAccountByUserId($oItem->IdOwner);
+//				
+//				if ($oOwnerUser)
+//				{
+//					$aOwnerDataList[$oOwnerUser->EntityId] = array(
+//						'Email' => '', //actualy, it's a User Login stored in Auth account
+//						'Name' => $oOwnerUser->Name,
+//						'NotificationEmail' => isset($oOwnerAccount) ? $oOwnerAccount->NotificationEmail : ''
+//					);
+//				}
+//			}
+//		}
+//
+//		if (0 < count($aOwnerDataList))
+//		{
+////			$aOwnerList = array_values($aOwnerList);
+//			
+////			$aUserInfo = $this->oMainManager->userInformation($oUser, $aOwnerList);
+////			id_helpdesk_user, email, name, is_agent, notification_email
+//			
+//			if (\is_array($aOwnerDataList) && 0 < \count($aOwnerDataList))
+//			{
+//				foreach ($aThreadsList as &$oItem)
+//				{
+//					if ($oItem && isset($aOwnerDataList[$oItem->IdOwner]))
+//					{
+//						$oOwnerData = $aOwnerDataList[$oItem->IdOwner];
+//						$sEmail = isset($oOwnerData['Email']) ? $oOwnerData['Email'] : '';
+//						$sName = isset($oOwnerData['Name']) ? $oOwnerData['Name'] : '';
+//
+//						if (empty($sEmail) && !empty($oOwnerData['NotificationEmail']))
+//						{
+//							$sEmail = $oOwnerData['NotificationEmail'];
+//						}
+//
+//						if (!$this->isAgent() && 0 < \strlen($sName))
+//						{
+//							$sEmail = '';
+//						}
+//						
+//						$oItem->Owner = array($sEmail, $sName);
+//					}
+//				}
+//			}
+//		}
 
 		return array(
 			'Search' => $Search,

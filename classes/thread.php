@@ -9,8 +9,7 @@
  */
 
 /**
- * @property int $IdHelpdeskThread
- * @property string $StrHelpdeskThreadHash
+ * @property string $ThreadHash
  * @property int $IdTenant
  * @property int $IdOwner
  * @property bool $ItsMe
@@ -30,39 +29,33 @@
  * @package Helpdesk
  * @subpackage Classes
  */
-class CHelpdeskThread extends \Aurora\System\AbstractContainer
+class CThread extends \Aurora\System\EAV\Entity
 {
 	/**
 	 * @var array
 	 */
-	public $Owner;
+	public $Owner = null;
 
-	public function __construct()
+	public function __construct($sModule)
 	{
-		parent::__construct(get_class($this));
-
-		$this->SetTrimer(array('Subject'));
-
-		$this->Owner = null;
-
-		$this->SetDefaults(array(
-			'IdHelpdeskThread'		=> 0,
-			'StrHelpdeskThreadHash'	=> trim(base_convert(md5(microtime(true).rand(1000, 9999)), 16, 32), '0'),
-			'IdTenant'				=> 0,
-			'IdOwner'				=> 0,
-			'ItsMe'					=> false,
-			'IsArchived'			=> false,
-			'Type'					=> EHelpdeskThreadType::None,
-			'Subject'				=> '',
-			'Created'				=> time(),
-			'Updated'				=> time(),
-			'PostCount'				=> 0,
-			'LastPostId'			=> 0,
-			'LastPostOwnerId'		=> 0,
-			'Notificated'			=> false,
-			'HasAttachments'		=> false,
-			'IsRead'				=> false
-		));
+		$this->aStaticMap = array(
+			'ThreadHash'		=> array('string', trim(base_convert(md5(microtime(true).rand(1000, 9999)), 16, 32), '0')),
+			'IdTenant'			=> array('int', 0),
+			'IdOwner'			=> array('int', 0),
+			'ItsMe'				=> array('bool', false),
+			'IsArchived'		=> array('bool', false),
+			'Type'				=> array('int', EHelpdeskThreadType::None),
+			'Subject'			=> array('string', ''),
+			'Created'			=> array('datetime', date('Y-m-d H:i:s')),
+			'Updated'			=> array('datetime', date('Y-m-d H:i:s')),
+			'PostCount'			=> array('int', 0),
+			'LastPostId'		=> array('int', 0),
+			'LastPostOwnerId'	=> array('int', 0),
+			'Notificated'		=> array('bool', false),
+			'HasAttachments'	=> array('bool', false),
+			'IsRead'			=> array('bool', false)
+		);
+		parent::__construct($sModule);
 	}
 
 	/**
@@ -87,91 +80,20 @@ class CHelpdeskThread extends \Aurora\System\AbstractContainer
 	}
 
 	/**
-	 * @throws \Aurora\System\Exceptions\ValidationException 1106 Errs::Validation_ObjectNotComplete
-	 *
-	 * @return bool
-	 */
-	public function validate()
-	{
-		switch (true)
-		{
-			case 0 < $this->IdOwner:
-				throw new \Aurora\System\Exceptions\ValidationException(Errs::Validation_ObjectNotComplete, null, array(
-					'{{ClassName}}' => 'CHelpdeskPost', '{{ClassField}}' => 'IdOwner'));
-		}
-
-		return true;
-	}
-	
-	/**
 	 * @return string
 	 */
 	public function threadLink()
 	{
 		$sPath = $this->_helpdeskLink();
-		$sPath .= '&thread='.$this->StrHelpdeskThreadHash;
-		
+		$sPath .= '&thread='.$this->ThreadHash;
 		return $sPath;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function loginLink()
-	{
-		$sPath = $this->_helpdeskLink();
-		return $sPath;
-	}
-	
-	/**
-	 * @return array
-	 */
-	public function getMap()
-	{
-		return self::getStaticMap();
-	}
-
-	/**
-	 * @return array
-	 */
-	public static function getStaticMap()
-	{
-		return array(
-			'IdHelpdeskThread'	=> array('int', 'id_helpdesk_thread', false, false),
-			'StrHelpdeskThreadHash'	=> array('string', 'str_helpdesk_hash', true, false),
-			'IdTenant'			=> array('int', 'id_tenant', true, false),
-			'IdOwner'			=> array('int', 'id_owner', true, false),
-			'ItsMe'				=> array('bool'),
-			'IsArchived'		=> array('bool', 'archived'),
-			'Type'				=> array('int', 'type'),
-			'Subject'			=> array('string', 'subject'),
-			'Created'			=> array('datetime', 'created', true, false),
-			'Updated'			=> array('datetime', 'updated'),
-			'PostCount'			=> array('int', 'post_count'),
-			'LastPostId'		=> array('int', 'last_post_id'),
-			'LastPostOwnerId'	=> array('int', 'last_post_owner_id'),
-			'Notificated'		=> array('bool', 'notificated'),
-			'HasAttachments'	=> array('bool', 'has_attachments'),
-			'IsRead'			=> array('bool')
-		);
 	}
 	
 	public function toResponseArray()
 	{
-		return array(
-			'IdHelpdeskThread' => $this->IdHelpdeskThread,
-			'ThreadHash' => $this->StrHelpdeskThreadHash,
-			'IdOwner' => $this->IdOwner,
-			'Owner' => $this->Owner,
-			'Type' => $this->Type,
-			'Subject' => $this->Subject,
-			'IsRead' => $this->IsRead,
-			'IsArchived' => $this->IsArchived,
-			'ItsMe' => $this->ItsMe,
-			'HasAttachments' => $this->HasAttachments,
-			'PostCount' => $this->PostCount,
-			'Created' => $this->Created,
-			'Updated' => $this->Updated
-		);		
+		$aResponse = parent::toResponseArray();
+		$aResponse['Owner'] = $this->Owner;
+		$aResponse['IdThread'] = $this->EntityId;
+		return $aResponse;
 	}
 }

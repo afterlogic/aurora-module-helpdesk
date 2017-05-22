@@ -9,9 +9,9 @@
  */
 
 /**
- * @property int $IdHelpdeskAttachment
- * @property int $IdHelpdeskPost
- * @property int $IdHelpdeskThread
+ * @property int $IdAttachment
+ * @property int $IdPost
+ * @property int $IdThread
  * @property int $IdTenant
  * @property int $IdOwner
  * @property int $Created
@@ -23,24 +23,23 @@
  * @package Helpdesk
  * @subpackage Classes
  */
-class CHelpdeskAttachment extends \Aurora\System\AbstractContainer
+class CHelpdeskAttachment extends \Aurora\System\EAV\Entity
 {
-	public function __construct()
+	public function __construct($sModule)
 	{
-		parent::__construct(get_class($this));
-
-		$this->SetDefaults(array(
-			'IdHelpdeskAttachment'	=> 0,
-			'IdHelpdeskPost'		=> 0,
-			'IdHelpdeskThread'		=> 0,
-			'IdTenant'				=> 0,
-			'IdOwner'				=> 0,
-			'Created'				=> time(),
-			'SizeInBytes'			=> 0,
-			'FileName'				=> '',
-			'Content'				=> '',
-			'Hash'					=> ''
-		));
+		$this->aStaticMap = array(
+			'IdAttachment'	=> array('int', 0),
+			'IdPost'		=> array('int', 0),
+			'IdThread'		=> array('int', 0),
+			'IdTenant'		=> array('int', 0),
+			'IdOwner'		=> array('int', 0),
+			'Created'		=> array('datetime', date('Y-m-d H:i:s')),
+			'SizeInBytes'	=> array('int', 0),
+			'FileName'		=> array('string', ''),
+			'Content'		=> array('string', ''),
+			'Hash'			=> array('string', '')
+		);
+		parent::__construct($sModule);
 	}
 
 	/**
@@ -57,31 +56,6 @@ class CHelpdeskAttachment extends \Aurora\System\AbstractContainer
 			'Name' => $this->FileName,
 			'Path' => $sThreadFolderName
 		));
-	}
-
-	/**
-	 * @throws \Aurora\System\Exceptions\ValidationException 1106 Errs::Validation_ObjectNotComplete
-	 *
-	 * @return bool
-	 */
-	public function validate()
-	{
-		switch (true)
-		{
-			case 0 >= $this->IdOwner:
-				throw new \Aurora\System\Exceptions\ValidationException(Errs::Validation_ObjectNotComplete, null, array(
-					'{{ClassName}}' => 'CHelpdeskPost', '{{ClassField}}' => 'IdOwner'));
-		}
-
-		return true;
-	}
-	
-	/**
-	 * @return array
-	 */
-	public function getMap()
-	{
-		return self::getStaticMap();
 	}
 
 	/**
@@ -123,34 +97,15 @@ class CHelpdeskAttachment extends \Aurora\System\AbstractContainer
 			}
 		}
 	}
-
-	/**
-	 * @return array
-	 */
-	public static function getStaticMap()
-	{
-		return array(
-			'IdHelpdeskAttachment'	=> array('int', 'id_helpdesk_attachment', false, false),
-			'IdHelpdeskPost'		=> array('int', 'id_helpdesk_post', true, false),
-			'IdHelpdeskThread'		=> array('int', 'id_helpdesk_thread', true, false),
-			'IdTenant'				=> array('int', 'id_tenant', true, false),
-			'IdOwner'				=> array('int', 'id_owner', true, false),
-			'Created'				=> array('datetime', 'created', true, false),
-			'SizeInBytes'			=> array('int', 'size_in_bytes'),
-			'FileName'				=> array('string', 'file_name'),
-			'Content'				=> array('string'),
-			'Hash'					=> array('string', 'hash')
-		);
-	}
 	
 	public function toResponseArray()
 	{
 		$oSettings =& \Aurora\System\Api::GetSettings();
 		$iThumbnailLimit = ((int) $oSettings->GetConf('ThumbnailMaxFileSizeMb', 5)) * 1024 * 1024;
 		return array(
-			'IdHelpdeskAttachment' => $this->IdHelpdeskAttachment,
-			'IdHelpdeskPost' => $this->IdHelpdeskPost,
-			'IdHelpdeskThread' => $this->IdHelpdeskThread,
+			'IdAttachment' => $this->IdAttachment,
+			'IdPost' => $this->IdPost,
+			'IdThread' => $this->IdThread,
 			'SizeInBytes' => $this->SizeInBytes,
 			'FileName' => $this->FileName,
 			'MimeType' => \MailSo\Base\Utils::MimeContentType($this->FileName),
