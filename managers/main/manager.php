@@ -1494,12 +1494,12 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 
 	/**
 	 * @param \CUser $oUser Core user object
-	 * @param int $iFilter Default value is **0** EHelpdeskThreadFilterType::All.
+	 * @param int $iFilter Default value is **0** \EHelpdeskThreadFilterType::All.
 	 * @param string $sSearch = ''
 	 * 
 	 * @return int
 	 */
-	public function getThreadsCount(\CUser $oUser, $iFilter = EHelpdeskThreadFilterType::All, $sSearch = '')
+	public function getThreadsCount(\CUser $oUser, $iFilter = \EHelpdeskThreadFilterType::All, $sSearch = '')
 	{
 		$iResult = 0;
 		try
@@ -1535,44 +1535,44 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 		return $iResult;
 	}
 
-	protected function _getFilters(\CUser $oUser, $iFilter = EHelpdeskThreadFilterType::All, $sSearch = '')
+	protected function _getFilters(\CUser $oUser, $iFilter = \EHelpdeskThreadFilterType::All, $sSearch = '')
 	{
 		$bIsAgent = $this->isAgent($oUser);
 		$iSearchOwner = $this->_getOwnerFromSearch($oUser->IdTenant, $sSearch);
 		
 		$aFilters = array(
 			'IdTenant' => $oUser->IdTenant,
-			'IsArchived' => EHelpdeskThreadFilterType::Archived === $iFilter,
+			'IsArchived' => \EHelpdeskThreadFilterType::Archived === $iFilter,
 		);
 
-		if (EHelpdeskThreadFilterType::Archived !== $iFilter)
+		if (\EHelpdeskThreadFilterType::Archived !== $iFilter)
 		{
 			switch ($iFilter)
 			{
-				case EHelpdeskThreadFilterType::PendingOnly:
-					$aFilters['Type'] = array(array(EHelpdeskThreadType::Pending, EHelpdeskThreadType::Deferred), 'IN');
+				case \EHelpdeskThreadFilterType::PendingOnly:
+					$aFilters['Type'] = array(array(\EHelpdeskThreadType::Pending, \EHelpdeskThreadType::Deferred), 'IN');
 					break;
-				case EHelpdeskThreadFilterType::ResolvedOnly:
-					$aFilters['Type'] = array(EHelpdeskThreadType::Resolved, '=');
+				case \EHelpdeskThreadFilterType::ResolvedOnly:
+					$aFilters['Type'] = array(\EHelpdeskThreadType::Resolved, '=');
 					break;
-				case EHelpdeskThreadFilterType::Open:
+				case \EHelpdeskThreadFilterType::Open:
 					if ($bIsAgent)
 					{
 						$aFilters['$OR'] = array(
-							'Type' => array(array(EHelpdeskThreadType::Pending, EHelpdeskThreadType::Deferred, EHelpdeskThreadType::Waiting), 'IN'),
+							'Type' => array(array(\EHelpdeskThreadType::Pending, \EHelpdeskThreadType::Deferred, \EHelpdeskThreadType::Waiting), 'IN'),
 							'$AND' => array(
 								'IdOwner' => array($oUser->EntityId, '='),
-								'Type' => array(EHelpdeskThreadType::Answered, '='),
+								'Type' => array(\EHelpdeskThreadType::Answered, '='),
 							)
 						);
 					}
 					else
 					{
-						$aFilters['Type'] = array(array(EHelpdeskThreadType::Waiting, EHelpdeskThreadType::Answered, EHelpdeskThreadType::Pending, EHelpdeskThreadType::Deferred), 'IN');
+						$aFilters['Type'] = array(array(\EHelpdeskThreadType::Waiting, \EHelpdeskThreadType::Answered, \EHelpdeskThreadType::Pending, \EHelpdeskThreadType::Deferred), 'IN');
 					}
 					break;
-				case EHelpdeskThreadFilterType::InWork:
-					$aFilters['Type'] = array(array(EHelpdeskThreadType::Waiting, EHelpdeskThreadType::Answered, EHelpdeskThreadType::Pending, EHelpdeskThreadType::Deferred), 'IN');
+				case \EHelpdeskThreadFilterType::InWork:
+					$aFilters['Type'] = array(array(\EHelpdeskThreadType::Waiting, \EHelpdeskThreadType::Answered, \EHelpdeskThreadType::Pending, \EHelpdeskThreadType::Deferred), 'IN');
 					break;
 			}
 		}
@@ -1596,12 +1596,12 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	 * @param \CUser $oUser Core user object
 	 * @param int $iOffset Default value is **0**.
 	 * @param int $iLimit Default value is **20**.
-	 * @param int $iFilter Default value is **0** EHelpdeskThreadFilterType::All
+	 * @param int $iFilter Default value is **0** \EHelpdeskThreadFilterType::All
 	 * @param string $sSearch Default value is empty string.
 	 *
 	 * @return array|bool
 	 */
-	public function getThreads(\CUser $oUser, $iOffset = 0, $iLimit = 20, $iFilter = EHelpdeskThreadFilterType::All, $sSearch = '')
+	public function getThreads(\CUser $oUser, $iOffset = 0, $iLimit = 20, $iFilter = \EHelpdeskThreadFilterType::All, $sSearch = '')
 	{
 		$aResult = null;
 		try
@@ -1956,7 +1956,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 						$oHelpdeskSenderEmail = \MailSo\Mime\Email::NewInstance($oFromAccount->Email, $sSiteName);
 						$oThreadOwnerEmail = \MailSo\Mime\Email::NewInstance($sEmail, $oThreadOwnerUser->Name);
 
-						if (EHelpdeskPostType::Normal === $oPost->Type && ($bIsNew || $oThreadOwnerUser->iObjectId !== $oPost->IdOwner))
+						if (\EHelpdeskPostType::Normal === $oPost->Type && ($bIsNew || $oThreadOwnerUser->iObjectId !== $oPost->IdOwner))
 						{
 							$oUserMessage = $this->_buildPostMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.post'.($bIsNew ? '.new' : '').'.html',
 								$oHelpdeskSenderEmail->ToString(), $oThreadOwnerEmail->ToString(),
@@ -1969,7 +1969,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 							}
 						}
 
-						if (EHelpdeskPostType::Internal === $oPost->Type || $oThreadOwnerUser->IobjectId === $oPost->IdOwner)
+						if (\EHelpdeskPostType::Internal === $oPost->Type || $oThreadOwnerUser->IobjectId === $oPost->IdOwner)
 						{
 							$aDeMail[] = $oThreadOwnerUser->resultEmail();
 						}
@@ -2067,21 +2067,21 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 		$bResult = false;
 		try
 		{
-			if ($oPost->Type === EHelpdeskPostType::Internal && !$this->isAgent($oUser))
+			if ($oPost->Type === \EHelpdeskPostType::Internal && !$this->isAgent($oUser))
 			{
-				$oPost->Type = EHelpdeskPostType::Normal;
+				$oPost->Type = \EHelpdeskPostType::Normal;
 			}
 
 			if ($this->isAgent($oUser) && !$bIsNew && $oUser->EntityId !== $oThread->IdOwner)
 			{
-				if ($oPost->Type !== EHelpdeskPostType::Internal)
+				if ($oPost->Type !== \EHelpdeskPostType::Internal)
 				{
-					$oThread->Type = EHelpdeskThreadType::Answered;
+					$oThread->Type = \EHelpdeskThreadType::Answered;
 				}
 			}
 			else
 			{
-				$oThread->Type = EHelpdeskThreadType::Pending;
+				$oThread->Type = \EHelpdeskThreadType::Pending;
 			}
 
 			$bResult = $this->oEavManager->saveEntity($oPost);

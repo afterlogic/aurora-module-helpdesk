@@ -44,7 +44,7 @@ class CThread extends \Aurora\System\EAV\Entity
 			'IdOwner'			=> array('int', 0),
 			'ItsMe'				=> array('bool', false),
 			'IsArchived'		=> array('bool', false),
-			'Type'				=> array('int', EHelpdeskThreadType::None),
+			'Type'				=> array('int', \EHelpdeskThreadType::None),
 			'Subject'			=> array('string', ''),
 			'Created'			=> array('datetime', date('Y-m-d H:i:s')),
 			'Updated'			=> array('datetime', date('Y-m-d H:i:s')),
