@@ -12,13 +12,10 @@
  * @property int $IdThread
  * @property int $IdTenant
  * @property int $IdOwner
- * @property array $Owner
  * @property array $Attachments
  * @property int $Type
  * @property int $SystemType
  * @property int $Created
- * @property bool $IsThreadOwner
- * @property bool $ItsMe
  * @property string $Text
  *
  * @package Helpdesk
@@ -29,7 +26,7 @@ class CPost extends \Aurora\System\EAV\Entity
 	/**
 	 * @var array
 	 */
-	public $Owner = null;
+	public $IsThreadOwner = false;
 	
 	/**
 	 * @var array
@@ -45,8 +42,6 @@ class CPost extends \Aurora\System\EAV\Entity
 			'Type'			=> array('int', \EHelpdeskPostType::Normal),
 			'SystemType'	=> array('int', \EHelpdeskPostSystemType::None),
 			'Created'		=> array('datetime', date('Y-m-d H:i:s')),
-			'IsThreadOwner'	=> array('bool', true),
-			'ItsMe'			=> array('bool', false),
 			'Text'			=> array('string', '')
 		);
 		parent::__construct($sModule);
@@ -58,6 +53,17 @@ class CPost extends \Aurora\System\EAV\Entity
 		$aResponse['Attachments'] = \Aurora\System\Managers\Response::GetResponseObject($this->Attachments);
 		$aResponse['Text'] = \MailSo\Base\HtmlUtils::ConvertPlainToHtml($this->Text);
 		$aResponse['IdPost'] = $this->EntityId;
+		
+		$oOwnerUser = \Aurora\System\Api::getUserById($this->IdOwner);
+		if ($oOwnerUser !== false)
+		{
+			$aResponse['Owner'] = array($oOwnerUser->PublicId, '');
+		}
+		
+		$oAuthenticatedUser = \Aurora\System\Api::getAuthenticatedUser();
+		$aResponse['ItsMe'] = $oAuthenticatedUser->EntityId === $this->IdOwner;
+		$aResponse['IsThreadOwner'] = $this->IsThreadOwner;
+		
 		return $aResponse;
 	}
 }

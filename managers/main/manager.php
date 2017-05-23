@@ -715,27 +715,6 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 
 	/**
 	 * @param \CUser $oUser Helpdesk user object
-	 * @param array $aIdList
-	 *
-	 * @return array|bool
-	 */
-	public function userInformation(\CUser $oUser, $aIdList)
-	{
-		$mResult = false;
-		try
-		{
-//			$mResult = $this->oStorage->userInformation($oUser, $aIdList);
-		}
-		catch (\Aurora\System\Exceptions\BaseException $oException)
-		{
-			$mResult = false;
-			$this->setLastException($oException);
-		}
-		return $mResult;
-	}
-
-	/**
-	 * @param \CUser $oUser Helpdesk user object
      *
 	 * @return bool
 	 */
@@ -972,25 +951,16 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	 */
 	public function getThread($iThreadId)
 	{
-		$oThread = false;
+		$mThread = false;
 		try
 		{
-			$oThread = $this->oEavManager->getEntity($iThreadId);
-			if ($oThread)
-			{
-				$aThreadLastPostIds = $this->getThreadsLastPostIds(array($oThread->IdThread));
-				if (is_array($aThreadLastPostIds) && isset($aThreadLastPostIds[$oThread->IdThread]) &&
-					$oThread->LastPostId === $aThreadLastPostIds[$oThread->IdThread])
-				{
-					$oThread->IsRead = true;
-				}
-			}
+			$mThread = $this->oEavManager->getEntity($iThreadId);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
 			$this->setLastException($oException);
 		}
-		return $oThread;
+		return $mThread;
 	}
 	
 	/**
@@ -1606,8 +1576,8 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 		$aResult = null;
 		try
 		{
-			$sOrderBy = 'Created';
-			$iOrderType = \ESortOrder::ASC;
+			$sOrderBy = 'Updated';
+			$iOrderType = \ESortOrder::DESC;
 			$aFilters = $this->_getFilters($oUser, $iFilter, $sSearch);
 			$aResult = $this->oEavManager->getEntities('CThread', array(), $iOffset, $iLimit, $aFilters, $sOrderBy, $iOrderType);
 			if (is_array($aResult) && 0 < count($aResult))
@@ -1616,19 +1586,6 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 				foreach ($aResult as $oItem)
 				{
 					$aThreadsIdList[] = $oItem->IdThread;
-				}
-				
-				$aThreadLastPostIds = $this->getThreadsLastPostIds($aThreadsIdList);
-				if (is_array($aThreadLastPostIds) && 0 < count($aThreadLastPostIds))
-				{
-					foreach ($aResult as &$oItem)
-					{
-						if (isset($aThreadLastPostIds[$oItem->IdThread]) &&
-							$oItem->LastPostId === $aThreadLastPostIds[$oItem->IdThread])
-						{
-							$oItem->IsRead = true;
-						}
-					}
 				}
 			}
 		}
@@ -1657,35 +1614,6 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 		}
 
 		return $iResult;
-	}
-
-	/**
-	 * @param array $aThreadIds
-	 * @return array|bool
-	 */
-	public function getThreadsLastPostIds($aThreadIds)
-	{
-		$mResult = false;
-		try
-		{
-			$sOrderBy = 'Created';
-			$iOrderType = \ESortOrder::ASC;
-			$mThreads = $this->oEavManager->getEntities('CThread', array('LastPostId'), 0, 0, array(), $sOrderBy, $iOrderType, $aThreadIds);
-			if (is_array($mThreads))
-			{
-				$mResult = array();
-				foreach ($mThreads as $oThread)
-				{
-					$mResult[$oThread->EntityId] = $oThread->LastPostId;
-				}
-			}
-		}
-		catch (\Aurora\System\Exceptions\BaseException $oException)
-		{
-			$this->setLastException($oException);
-		}
-
-		return $mResult;
 	}
 
 	/**
@@ -1723,7 +1651,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 		try
 		{
 			$aFilters = array('IdThread' => array($oThread->EntityId, '='));
-			$aResult = $this->oEavManager->getEntities('CPost', array(), $iOffset, $iLimit, $aFilters, 'Created');
+			$aResult = $this->oEavManager->getEntities('CPost', array(), $iOffset, $iLimit, $aFilters, 'Created', \ESortOrder::DESC);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -2099,9 +2027,8 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 
 				$oThread->Updated = date('Y-m-d H:i:s');
 				$oThread->PostCount = $this->getPostsCount($oThread);
-				$oThread->LastPostId = $oPost->EntityId;
-				$oThread->LastPostOwnerId = $oPost->IdOwner;
 				$oThread->Notificated = false;
+				$oThread->resetUsersRead($oPost->IdOwner);
 
 				if (!$oThread->HasAttachments)
 				{
@@ -2138,24 +2065,23 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param \CUser $oUser Helpdesk user object
+	 * @param int $iUserId
 	 * @param \CThread $oThread Helpdesk thread object
 	 *
 	 * @return bool
 	 */
-	public function setThreadSeen(CUser $oUser, $oThread)
+	public function setThreadSeen($iUserId, $oThread)
 	{
 		$bResult = false;
 		try
 		{
-			$bResult = $this->oStorage->setThreadSeen($oUser, $oThread);
+			$oThread->addUserRead($iUserId);
+			$bResult = $this->oEavManager->saveEntity($oThread);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
-			$bResult = false;
 			$this->setLastException($oException);
 		}
-
 		return $bResult;
 	}
 

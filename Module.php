@@ -746,28 +746,6 @@ class Module extends \Aurora\System\Module\AbstractModule
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		$aUserInfo = $this->oMainManager->userInformation($oUser, array($oThread->IdOwner));
-		if (\is_array($aUserInfo) && 0 < \count($aUserInfo))
-		{
-			if (isset($aUserInfo[$oThread->IdOwner]) && \is_array($aUserInfo[$oThread->IdOwner]))
-			{
-				$sEmail = isset($aUserInfo[$oThread->IdOwner][0]) ? $aUserInfo[$oThread->IdOwner][0] : '';
-				$sName = isset($aUserInfo[$oThread->IdOwner][1]) ? $aUserInfo[$oThread->IdOwner][1] : '';
-
-				if (empty($sEmail) && !empty($aUserInfo[$oThread->IdOwner][3]))
-				{
-					$sEmail = $aUserInfo[$oThread->IdOwner][3];
-				}
-
-				if (!$bIsAgent && 0 < \strlen($sName))
-				{
-					$sEmail = '';
-				}
-
-				$oThread->Owner = array($sEmail, $sName);
-			}
-		}
-
 		return $oThread;
 	}	
 	
@@ -795,95 +773,9 @@ class Module extends \Aurora\System\Module\AbstractModule
 		$aPostList = $this->oMainManager->getPosts($oUser, $oThread, $StartFromId, $Limit);
 		$iExtPostsCount = $IsExt ? $this->oMainManager->getExtPostsCount($oUser, $oThread) : 0;
 
-		$aOwnerDataList = array();
-		if (\is_array($aPostList) && 0 < \count($aPostList))
+		foreach ($aPostList as &$oPost)
 		{
-			foreach ($aPostList as &$oItem)
-			{
-				if ($oItem && !isset($aOwnerDataList[$oItem->IdOwner]))
-				{
-//					$aIdList[$oItem->IdOwner] = (int) $oItem->IdOwner;
-					$oOwnerUser = $this->oCoreDecorator->GetUser($oItem->IdOwner);
-					$oOwnerAccount = $this->oAccountsManager->getAccountByUserId($oItem->IdOwner);
-					
-					if ($oOwnerUser)
-					{
-						$aOwnerDataList[$oItem->IdOwner] = array(
-							'Email' => '',  //actualy, it's a User Login stored in Auth account
-							'Name' => $oOwnerUser->Name,
-							'NotificationEmail' => isset($oOwnerAccount) ? $oOwnerAccount->NotificationEmail : '' 
-						);
-					}
-				}
-			}
-		}
-		
-		if (!isset($aOwnerDataList[$oThread->IdOwner]))
-		{
-			$oOwnerUser = $this->oCoreDecorator->GetUser($oThread->IdOwner);
-			$oOwnerAccount = $this->oAccountsManager->getAccountByUserId($oThread->IdOwner);
-
-			if ($oOwnerUser)
-			{
-				$aOwnerDataList[$oThread->IdOwner] = array(
-					'Email' => '', //actualy, it's a User Login stored in Auth account
-					'Name' => $oOwnerUser->Name,
-					'NotificationEmail' => $oOwnerAccount->NotificationEmail
-				);
-			}
-		}
-
-		if (0 < \count($aOwnerDataList))
-		{
-//			$aIdList = array_values($aIdList);
-//			$aUserInfo = $this->oMainManager->userInformation($oUser, $aIdList);
-//			$aUserInfo => id_helpdesk_user, email, name, is_agent, notification_email
-
-//			if (is_array($aUserInfo) && 0 < count($aUserInfo))
-//			{
-				$bIsAgent = $this->IsAgent($oUser);
-				
-				foreach ($aPostList as &$oItem)
-				{
-					if ($oItem && isset($aOwnerDataList[$oItem->IdOwner]) && \is_array($aOwnerDataList[$oItem->IdOwner]))
-					{
-						$oItem->Owner = array(
-							isset($aOwnerDataList[$oItem->IdOwner]['Email']) ? $aOwnerDataList[$oItem->IdOwner]['Email'] : '',
-							isset($aOwnerDataList[$oItem->IdOwner]['Name']) ? $aOwnerDataList[$oItem->IdOwner]['Name'] : ''
-						);
-
-						if (empty($oItem->Owner[0]))
-						{
-							$oItem->Owner[0] = isset($aOwnerDataList[$oItem->IdOwner]['notification_email']) ? $aOwnerDataList[$oItem->IdOwner]['notification_email'] : '';
-						}
-
-						if (!$bIsAgent && 0 < \strlen($oItem->Owner[1]))
-						{
-							$oItem->Owner[0] = '';
-						}
-
-						$oItem->IsThreadOwner = $oThread->IdOwner === $oItem->IdOwner;
-					}
-
-					if ($oItem)
-					{
-						$oItem->ItsMe = $oUser->EntityId === $oItem->IdOwner;
-					}
-				}
-
-				if (isset($aOwnerDataList[$oThread->IdOwner]) && \is_array($aOwnerDataList[$oThread->IdOwner]))
-				{
-					$sEmail = isset($aOwnerDataList[$oThread->IdOwner]['Email']) ? $aOwnerDataList[$oThread->IdOwner]['Email'] : '';
-					$sName = isset($aOwnerDataList[$oThread->IdOwner]['Name']) ? $aOwnerDataList[$oThread->IdOwner]['Name'] : '';
-
-					if (!$bIsAgent && 0 < \strlen($sName))
-					{
-						$sEmail = '';
-					}
-
-					$oThread->Owner = array($sEmail, $sName);
-				}
-//			}
+			$oPost->IsThreadOwner = $oThread->IdOwner === $oPost->IdOwner;
 		}
 
 		if ($oThread->HasAttachments)
@@ -891,14 +783,14 @@ class Module extends \Aurora\System\Module\AbstractModule
 			$aAttachments = $this->oMainManager->getAttachments($oUser, $oThread);
 			if (\is_array($aAttachments))
 			{
-				foreach ($aPostList as &$oItem)
+				foreach ($aPostList as &$oPost)
 				{
-					if (isset($aAttachments[$oItem->IdHelpdeskPost]) && \is_array($aAttachments[$oItem->IdHelpdeskPost]) &&
-						0 < \count($aAttachments[$oItem->IdHelpdeskPost]))
+					if (isset($aAttachments[$oPost->IdPost]) && \is_array($aAttachments[$oPost->IdPost]) &&
+						0 < \count($aAttachments[$oPost->IdPost]))
 					{
-						$oItem->Attachments = $aAttachments[$oItem->IdHelpdeskPost];
+						$oPost->Attachments = $aAttachments[$oPost->IdPost];
 
-						foreach ($oItem->Attachments as $oAttachment)
+						foreach ($oPost->Attachments as $oAttachment)
 						{
 							if ($oAttachment && '.asc' === \strtolower(\substr(\trim($oAttachment->FileName), -4)))
 							{
@@ -1011,7 +903,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
-		$oUser = \Aurora\System\Api::getAuthenticatedUser();
+		$iUserId = \Aurora\System\Api::getAuthenticatedUserId();
 
 //		$iThreadId = (int) $this->getParamValue('ThreadId', 0);
 
@@ -1026,7 +918,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
 		}
 
-		return $this->oMainManager->setThreadSeen($oUser, $oThread);
+		return $this->oMainManager->setThreadSeen($iUserId, $oThread);
 	}	
 	
 	/**
@@ -1048,60 +940,6 @@ class Module extends \Aurora\System\Module\AbstractModule
 		if ($iCount)
 		{
 			$aThreadsList = $this->oMainManager->getThreads($oUser, $Offset, $Limit, $Filter, $Search);
-		}
-
-		$aOwnerDataList = array();
-		if (\is_array($aThreadsList) && 0 < \count($aThreadsList))
-		{
-			foreach ($aThreadsList as &$oItem)
-			{
-//				$aOwnerList[$oItem->IdOwner] = (int) $oItem->IdOwner;
-				$oOwnerUser = $this->oCoreDecorator->GetUser($oItem->IdOwner);
-				$oOwnerAccount = $this->oAccountsManager->getAccountByUserId($oItem->IdOwner);
-				
-				if ($oOwnerUser)
-				{
-					$aOwnerDataList[$oOwnerUser->EntityId] = array(
-						'Email' => '', //actualy, it's a User Login stored in Auth account
-						'Name' => $oOwnerUser->Name,
-						'NotificationEmail' => isset($oOwnerAccount) ? $oOwnerAccount->NotificationEmail : ''
-					);
-				}
-			}
-		}
-
-		if (0 < count($aOwnerDataList))
-		{
-//			$aOwnerList = array_values($aOwnerList);
-			
-//			$aUserInfo = $this->oMainManager->userInformation($oUser, $aOwnerList);
-//			id_helpdesk_user, email, name, is_agent, notification_email
-			
-			if (\is_array($aOwnerDataList) && 0 < \count($aOwnerDataList))
-			{
-				$bIsAgent = $this->IsAgent($oUser);
-				
-				foreach ($aThreadsList as &$oItem)
-				{
-					if ($oItem && isset($aOwnerDataList[$oItem->IdOwner]))
-					{
-						$sEmail = isset($aOwnerDataList[$oItem->IdOwner]['Email']) ? $aOwnerDataList[$oItem->IdOwner]['Email'] : '';
-						$sName = isset($aOwnerDataList[$oItem->IdOwner]['Name']) ? $aOwnerDataList[$oItem->IdOwner]['Name'] : '';
-
-						if (empty($sEmail) && !empty($aOwnerDataList[$oItem->IdOwner]['NotificationEmail']))
-						{
-							$sEmail = $aOwnerDataList[$oItem->IdOwner]['NotificationEmail'];
-						}
-
-						if (!$bIsAgent && 0 < \strlen($sName))
-						{
-							$sEmail = '';
-						}
-						
-						$oItem->Owner = array($sEmail, $sName);
-					}
-				}
-			}
 		}
 
 		return array(

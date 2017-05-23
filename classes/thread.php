@@ -12,50 +12,56 @@
  * @property string $ThreadHash
  * @property int $IdTenant
  * @property int $IdOwner
- * @property bool $ItsMe
  * @property bool $IsArchived
  * @property int $Type
  * @property string $Subject
  * @property int $Created
  * @property int $Updated
  * @property int $PostCount
- * @property int $LastPostId
- * @property int $LastPostOwnerId
  * @property bool $Notificated
  * @property bool $HasAttachments
- * @property bool $IsRead
- * @property array $Owner
+ * @property string $UsersRead
  *
  * @package Helpdesk
  * @subpackage Classes
  */
 class CThread extends \Aurora\System\EAV\Entity
 {
-	/**
-	 * @var array
-	 */
-	public $Owner = null;
-
 	public function __construct($sModule)
 	{
 		$this->aStaticMap = array(
 			'ThreadHash'		=> array('string', trim(base_convert(md5(microtime(true).rand(1000, 9999)), 16, 32), '0')),
 			'IdTenant'			=> array('int', 0),
 			'IdOwner'			=> array('int', 0),
-			'ItsMe'				=> array('bool', false),
 			'IsArchived'		=> array('bool', false),
 			'Type'				=> array('int', \EHelpdeskThreadType::None),
 			'Subject'			=> array('string', ''),
 			'Created'			=> array('datetime', date('Y-m-d H:i:s')),
 			'Updated'			=> array('datetime', date('Y-m-d H:i:s')),
 			'PostCount'			=> array('int', 0),
-			'LastPostId'		=> array('int', 0),
-			'LastPostOwnerId'	=> array('int', 0),
 			'Notificated'		=> array('bool', false),
 			'HasAttachments'	=> array('bool', false),
-			'IsRead'			=> array('bool', false)
+			'UsersRead'			=> array('string', false)
 		);
 		parent::__construct($sModule);
+	}
+	
+	public function addUserRead($iUserId)
+	{
+		$aUsersRead = explode('|', $this->UsersRead);
+		$aUsersRead[] = $iUserId;
+		$this->UsersRead = implode('|', $aUsersRead);
+	}
+	
+	public function resetUsersRead($iUserId)
+	{
+		$this->UsersRead = $iUserId;
+	}
+	
+	public function hasUserRead($iUserId)
+	{
+		$aUsersRead = explode('|', $this->UsersRead);
+		return in_array($iUserId, $aUsersRead);
 	}
 
 	/**
@@ -92,8 +98,19 @@ class CThread extends \Aurora\System\EAV\Entity
 	public function toResponseArray()
 	{
 		$aResponse = parent::toResponseArray();
-		$aResponse['Owner'] = $this->Owner;
+		
+		$oAuthenticatedUser = \Aurora\System\Api::getAuthenticatedUser();
 		$aResponse['IdThread'] = $this->EntityId;
+		$aResponse['IsRead'] = $this->hasUserRead($oAuthenticatedUser->EntityId);
+		
+		$oOwnerUser = \Aurora\System\Api::getUserById($this->IdOwner);
+		if ($oOwnerUser !== false)
+		{
+			$aResponse['Owner'] = array($oOwnerUser->PublicId, '');
+		}
+		
+		$aResponse['ItsMe'] = $oAuthenticatedUser->EntityId === $this->IdOwner;
+		
 		return $aResponse;
 	}
 }
