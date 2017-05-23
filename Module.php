@@ -378,14 +378,8 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	protected function isAgent()
 	{
-<<<<<<< HEAD
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
-		
-		return $this->oMainManager->isAgent($oUser);
-=======
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 		return $oUser ? $this->oMainManager->isAgent($oUser) : false;
->>>>>>> e92ca74ce3b6cf31ef8d2fb48d8e0d1f9864edf7
 	}	
 	
 	/**

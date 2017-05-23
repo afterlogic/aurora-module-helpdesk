@@ -55,3 +55,24 @@ class EHelpdeskThreadFilterType extends \Aurora\System\Enums\AbstractEnumeration
 	const Open = 4;
 	const Archived = 9;
 }
+
+/**
+ * @package Api
+ * @subpackage Enum
+ */
+class EHelpdeskFetcherType extends \Aurora\System\Enums\AbstractEnumeration
+{
+	const NONE = 0;
+	const REPLY = 1;
+	const ALL = 2;
+
+	/**
+	 * @var array
+	 */
+	protected $aConsts = array(
+		'NONE' => self::NONE,
+		'REPLY' => self::REPLY,
+		'ALL' => self::ALL
+	);
+}
+
