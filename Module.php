@@ -35,8 +35,8 @@ class Module extends \Aurora\System\Module\AbstractModule
 		$this->incClass('post');
 		$this->incClass('thread');
 		
-		$this->oMainManager = $this->GetManager('main');
-		$this->oAccountsManager = $this->GetManager('accounts');
+		$this->oMainManager = new Managers\Main\Manager('', $this);
+		$this->oAccountsManager = new Managers\Accounts\Manager('', $this);
 		
 		$this->oCoreDecorator = \Aurora\System\Api::GetModuleDecorator('Core');
 		$this->oAuthDecorator = \Aurora\System\Api::GetModuleDecorator('StandardAuth');
