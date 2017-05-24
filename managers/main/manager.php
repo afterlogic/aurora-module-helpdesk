@@ -120,11 +120,8 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	private function _addHtmlBodyAndSubjectForUserMessage($sPath, &$oMessage, $oUser, $sSiteName, $sFrom)
 	{
 		$sSubject = '';
-		$oApiUsers = $this->_getApiUsers();
-		
-		$sData = $this->_getMessageTemplate($sPath, $sSubject, function ($sData) use ($oUser, $sSiteName, $sFrom, $oApiUsers) {
+		$sData = $this->_getMessageTemplate($sPath, $sSubject, function ($sData) use ($oUser, $sSiteName, $sFrom) {
 			
-			$oAccount = $oApiUsers->getAccountByEmail($oUser->resultEmail());
 			$sHelpdeskSiteName = strlen($sSiteName) === 0 ? 'Helpdesk' : $sSiteName;
 
 			return strtr($sData, array(
@@ -181,11 +178,9 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	private function _addHtmlBodyAndSubjectForPostMessage($sPath, &$oMessage, $oHelpdeskThreadOwnerUser, $oHelpdeskPostOwnerUser, $oThread, $oPost, $sSiteName)
 	{
 		$sSubject = '';
-		$oApiUsers = $this->_getApiUsers();
 			
-		$sData = $this->_getMessageTemplate($sPath, $sSubject, function ($sData) use ($oHelpdeskThreadOwnerUser, $oHelpdeskPostOwnerUser, $oThread, $oPost, $sSiteName, $oApiUsers)
+		$sData = $this->_getMessageTemplate($sPath, $sSubject, function ($sData) use ($oHelpdeskThreadOwnerUser, $oHelpdeskPostOwnerUser, $oThread, $oPost, $sSiteName)
 		{
-			$oAccount = $oApiUsers->getAccountByEmail($oHelpdeskPostOwnerUser->resultEmail());
 			$sPostOwner = \MailSo\Mime\Email::NewInstance($oHelpdeskPostOwnerUser->resultEmail(), $oHelpdeskPostOwnerUser->Name)->ToString();
 
 			$sSubjectPrefix = '';
@@ -1638,19 +1633,25 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	}
 
 	/**
-	 * @param \CUser $oUser Core user object
 	 * @param \CThread $oThread Helpdesk thread object
 	 * @param int $iStartFromId Default value is **0**.
 	 * @param int $iLimit Default value is **20**.
-	 *
-	 * @return array|bool
+	 * @return array|boolean
 	 */
-	public function getPosts($oThread, $iOffset = 0, $iLimit = 20)
+	public function getPosts($oThread, $iStartFromId = 0, $iLimit = 20)
 	{
 		$aResult = null;
 		try
 		{
 			$aFilters = array('IdThread' => array($oThread->EntityId, '='));
+			if ($iStartFromId > 0)
+			{
+				$aFilters = array('$AND' => array(
+					'IdThread' => array($oThread->EntityId, '='),
+					'IdPost' => array($iStartFromId, '<')
+				));
+			}
+			$iOffset = 0;
 			$aResult = $this->oEavManager->getEntities('CPost', array(), $iOffset, $iLimit, $aFilters, 'Created', \ESortOrder::DESC);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
@@ -1804,12 +1805,12 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	 *
 	 * @return bool
 	 */
-	public function NotifyRegistration($oHelpdeskAccount, $bCreateFromFetcher = false)
+	public function NotifyRegistration($oUser, $bCreateFromFetcher = false)
 	{
-		if ($oHelpdeskAccount)
+		if ($oUser)
 		{
 			$oFromAccount = null;
-			$aData = $this->getHelpdeskMainSettings($oHelpdeskAccount->User->IdTenant);
+			$aData = $this->getHelpdeskMainSettings($oUser->User->IdTenant);
 			if (!empty($aData['AdminEmailAccount']))
 			{
 				$oApiUsers = $this->_getApiUsers();
@@ -1826,14 +1827,14 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 				$oApiMail = $this->_getApiMail();
 				if ($oApiMail)
 				{
-					$sEmail = $oHelpdeskAccount->resultEmail();
+					$sEmail = $oUser->resultEmail();
 					if (!empty($sEmail))
 					{
 						$oFromEmail = \MailSo\Mime\Email::NewInstance($oFromAccount->Email, $sSiteName);
-						$oToEmail = \MailSo\Mime\Email::NewInstance($sEmail, $oHelpdeskAccount->Name);
+						$oToEmail = \MailSo\Mime\Email::NewInstance($sEmail, $oUser->Name);
 
 						$oUserMessage = $this->_buildUserMailMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.registration'.($bCreateFromFetcher ? '.fetcher' : '').'.html',
-							$oFromEmail->ToString(), $oToEmail->ToString(), 'Registration', '', '', $oHelpdeskAccount, $sSiteName);
+							$oFromEmail->ToString(), $oToEmail->ToString(), 'Registration', '', '', $oUser, $sSiteName);
 
 						$oApiMail->sendMessage($oFromAccount, $oUserMessage);
 					}
@@ -1844,12 +1845,12 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 
 	/**
 	 * @param \CThread $oThread Helpdesk thread object
-	 * @param CHelpdeskPost $oPost Helpdesk post object
+	 * @param \CPost $oPost Helpdesk post object
 	 * @param bool $bIsNew Default value is **false**.
 	 * @param string $sCc Default value is empty string.
 	 * @param string $sBcc Default value is empty string.
 	 */
-	public function sendPostNotify($oThread, $oPost, $bIsNew = false, $sCc, $sBcc)
+	public function sendPostNotify($oThread, $oPost, $bIsNew = false, $sCc = '', $sBcc = '')
 	{
 		if ($oThread && $oPost)
 		{
@@ -2020,6 +2021,8 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 			}
 			else
 			{
+				$oPost->IdPost = $oPost->EntityId;
+				$this->oEavManager->saveEntity($oPost);
 //				if (is_array($oPost->Attachments) && 0 < count($oPost->Attachments))
 //				{
 //					$this->oStorage->addAttachments($oUser, $oThread, $oPost, $oPost->Attachments);

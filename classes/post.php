@@ -12,6 +12,7 @@
  * @property int $IdThread
  * @property int $IdTenant
  * @property int $IdOwner
+ * @property int $IdPost
  * @property array $Attachments
  * @property int $Type
  * @property int $SystemType
@@ -39,6 +40,7 @@ class CPost extends \Aurora\System\EAV\Entity
 			'IdThread'		=> array('int', 0),
 			'IdTenant'		=> array('int', 0),
 			'IdOwner'		=> array('int', 0),
+			'IdPost'		=> array('int', 0),
 			'Type'			=> array('int', \EHelpdeskPostType::Normal),
 			'SystemType'	=> array('int', \EHelpdeskPostSystemType::None),
 			'Created'		=> array('datetime', date('Y-m-d H:i:s')),

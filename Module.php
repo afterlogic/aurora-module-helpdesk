@@ -878,7 +878,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
-		$oUser = \Aurora\System\Api::getAuthenticatedUser();
+		$iUserId = \Aurora\System\Api::getAuthenticatedUserId();
 
 		if (0 === $ThreadId)
 		{
@@ -891,7 +891,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
 		}
 
-		return $this->oMainManager->setThreadSeen($oUser, $oThread);
+		return $this->oMainManager->setThreadSeen($iUserId, $oThread);
 	}	
 	
 	/**
