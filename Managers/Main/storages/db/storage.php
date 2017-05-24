@@ -580,13 +580,13 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	
 	/**
 	 * @param \CUser $oUser
-	 * @param int $iFilter Default value is **0** EHelpdeskThreadFilterType::All.
+	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All.
 	 * @param string $sSearch Default value is empty string.
 	 * @param int $iSearchOwner Default value is **0**.
 	 *
 	 * @return int
 	 */
-	public function getThreadsCount(\CUser $oUser, $bIsAgent = false, $iFilter = EHelpdeskThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
+	public function getThreadsCount(\CUser $oUser, $bIsAgent = false, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
 	{
 		$iResult = 0;
 		if ($this->oConnection->Execute($this->oCommandCreator->getThreadsCount($oUser, $bIsAgent, $iFilter, $sSearch, $iSearchOwner)))
@@ -631,13 +631,13 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @param \CUser $oUser
 	 * @param int $iOffset Default value is **0**.
 	 * @param int $iLimit Default value is **20**.
-	 * @param int $iFilter Default value is **0** EHelpdeskThreadFilterType::All.
+	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All.
 	 * @param string $sSearch Default value is empty string.
 	 * @param int $iSearchOwner Default value is **0**.
 	 *
 	 * @return array|bool
 	 */
-	public function getThreads(\CUser $oUser, $bIsAgent = false, $iOffset = 0, $iLimit = 20, $iFilter = EHelpdeskThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
+	public function getThreads(\CUser $oUser, $bIsAgent = false, $iOffset = 0, $iLimit = 20, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
 	{
 		$mResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->getThreads($oUser, $bIsAgent, $iOffset, $iLimit, $iFilter, $sSearch, $iSearchOwner)))

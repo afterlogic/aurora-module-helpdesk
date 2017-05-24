@@ -30,7 +30,6 @@ class Module extends \Aurora\System\Module\AbstractModule
 	public function init() 
 	{
 		$this->incClass('account');
-		$this->incClass('enum');
 		$this->incClass('attachment');
 		$this->incClass('post');
 		$this->incClass('thread');
@@ -56,7 +55,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 				'SiteName'			=> array('string', ''),
 				'StyleAllow'		=> array('bool', false),
 				'StyleImage'		=> array('string', ''),
-				'FetcherType'		=> array('int', \EHelpdeskFetcherType::NONE),
+				'FetcherType'		=> array('int', Enums\FetcherType::NONE),
 				'StyleText'			=> array('string', ''),
 				'AllowFetcher'		=> array('bool', false),
 				'FetcherTimer'		=> array('int', 0)
@@ -242,16 +241,16 @@ class Module extends \Aurora\System\Module\AbstractModule
 			{
 				switch ($oException->getCode())
 				{
-					case \Errs::HelpdeskManager_AccountSystemAuthentication:
+					case \Aurora\System\Exceptions\Errs::HelpdeskManager_AccountSystemAuthentication:
 						$iErrorCode = \Aurora\System\Notifications::HelpdeskSystemUserExists;
 						break;
-					case \Errs::HelpdeskManager_AccountAuthentication:
+					case \Aurora\System\Exceptions\Errs::HelpdeskManager_AccountAuthentication:
 						$iErrorCode = \Aurora\System\Notifications::AuthError;
 						break;
-					case \Errs::HelpdeskManager_UnactivatedUser:
+					case \Aurora\System\Exceptions\Errs::HelpdeskManager_UnactivatedUser:
 						$iErrorCode = \Aurora\System\Notifications::HelpdeskUnactivatedUser;
 						break;
-					case \Errs::Db_ExceptionError:
+					case \Aurora\System\Exceptions\Errs::Db_ExceptionError:
 						$iErrorCode = \Aurora\System\Notifications::DataBaseError;
 						break;
 				}
@@ -352,13 +351,13 @@ class Module extends \Aurora\System\Module\AbstractModule
 			{
 				switch ($oException->getCode())
 				{
-					case \Errs::HelpdeskManager_UserAlreadyExists:
+					case \Aurora\System\Exceptions\Errs::HelpdeskManager_UserAlreadyExists:
 						$iErrorCode = \Aurora\System\Notifications::HelpdeskUserAlreadyExists;
 						break;
-					case \Errs::HelpdeskManager_UserCreateFailed:
+					case \Aurora\System\Exceptions\Errs::HelpdeskManager_UserCreateFailed:
 						$iErrorCode = \Aurora\System\Notifications::CanNotCreateHelpdeskUser;
 						break;
-					case \Errs::Db_ExceptionError:
+					case \Aurora\System\Exceptions\Errs::Db_ExceptionError:
 						$iErrorCode = \Aurora\System\Notifications::DataBaseError;
 						break;
 				}
@@ -522,7 +521,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 			$oThread = \CThread::createInstance('CThread', $this->GetName());
 			$oThread->IdTenant = $oUser->IdTenant;
 			$oThread->IdOwner = $oUser->EntityId;
-			$oThread->Type = \EHelpdeskThreadType::Pending;
+			$oThread->Type = Enums\ThreadType::Pending;
 			$oThread->Subject = $Subject;
 			
 			if (!$this->oMainManager->createThread($oThread))
@@ -541,8 +540,8 @@ class Module extends \Aurora\System\Module\AbstractModule
 			$oPost->IdTenant = $oUser->IdTenant;
 			$oPost->IdOwner = $oUser->EntityId;
 			$oPost->IdThread = $oThread->EntityId;
-			$oPost->Type = $IsInternal ? \EHelpdeskPostType::Internal : \EHelpdeskPostType::Normal;
-			$oPost->SystemType = \EHelpdeskPostSystemType::None;
+			$oPost->Type = $IsInternal ? Enums\PostType::Internal : Enums\PostType::Normal;
+			$oPost->SystemType = Enums\PostSystemType::None;
 			$oPost->Text = $Text;
 
 //			$aResultAttachment = array();
@@ -813,24 +812,18 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 * @return boolean
 	 * @throws \Aurora\System\Exceptions\ApiException
 	 */
-	public function ChangeThreadState($ThreadId = 0, $ThreadType = \EHelpdeskThreadType::None)
+	public function ChangeThreadState($ThreadId = 0, $ThreadType = Enums\ThreadType::None)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
-		if (1 > $ThreadId || !\in_array($ThreadType, array(
-			\EHelpdeskThreadType::Pending,
-			\EHelpdeskThreadType::Waiting,
-			\EHelpdeskThreadType::Answered,
-			\EHelpdeskThreadType::Resolved,
-			\EHelpdeskThreadType::Deferred
-		)))
+		if (1 > $ThreadId || !\in_array($ThreadType, array(Enums\ThreadType::Pending, Enums\ThreadType::Waiting, Enums\ThreadType::Answered, Enums\ThreadType::Resolved, Enums\ThreadType::Deferred)))
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		if (!$oUser || ($ThreadType !== \EHelpdeskThreadType::Resolved && !$this->isAgent()))
+		if (!$oUser || ($ThreadType !== Enums\ThreadType::Resolved && !$this->isAgent()))
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
 		}
@@ -903,7 +896,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 * @return array
 	 * @throws \Aurora\System\Exceptions\ApiException
 	 */
-	public function GetThreads($Offset = 0, $Limit = 10, $Filter = \EHelpdeskThreadFilterType::All, $Search = '')
+	public function GetThreads($Offset = 0, $Limit = 10, $Filter = Enums\ThreadFilterType::All, $Search = '')
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		

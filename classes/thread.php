@@ -34,7 +34,7 @@ class CThread extends \Aurora\System\EAV\Entity
 			'IdTenant'			=> array('int', 0),
 			'IdOwner'			=> array('int', 0),
 			'IsArchived'		=> array('bool', false),
-			'Type'				=> array('int', \EHelpdeskThreadType::None),
+			'Type'				=> array('int', \Aurora\Modules\HelpDesk\Enums\ThreadType::None),
 			'Subject'			=> array('string', ''),
 			'Created'			=> array('datetime', date('Y-m-d H:i:s')),
 			'Updated'			=> array('datetime', date('Y-m-d H:i:s')),

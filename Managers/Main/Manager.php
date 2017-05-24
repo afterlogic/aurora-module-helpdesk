@@ -439,7 +439,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 				{
 					if (!$this->oStorage->createUser($oUser))
 					{
-						throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_UserCreateFailed);
+						throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::HelpdeskManager_UserCreateFailed);
 					}
 					else if (!$oUser->Activated)
 					{
@@ -448,7 +448,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 				}
 				else
 				{
-					throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_UserAlreadyExists);
+					throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::HelpdeskManager_UserAlreadyExists);
 				}
 			}
 			
@@ -729,7 +729,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 				if (!$bResult)
 				{
 //					$this->moveStorageExceptionToManager();
-					throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_UserUpdateFailed);
+					throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::HelpdeskManager_UserUpdateFailed);
 				}
 			}
 		}
@@ -998,7 +998,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 			if (!$bResult)
 			{
 //				$this->moveStorageExceptionToManager();
-				throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_ThreadCreateFailed);
+				throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::HelpdeskManager_ThreadCreateFailed);
 			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
@@ -1023,7 +1023,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 			if (!$bResult)
 			{
 //				$this->moveStorageExceptionToManager();
-				throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_ThreadUpdateFailed);
+				throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::HelpdeskManager_ThreadUpdateFailed);
 			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
@@ -1155,9 +1155,9 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 							$sSubject = $oMessage->getSubject();
 							if (
 								is_array($aFrom) && 0 < count($aFrom) && (
-								(\EHelpdeskFetcherType::REPLY === $aMainSettingsData['HelpdeskFetcherType'] && !empty($sSubject) && preg_match('/\[#([a-zA-Z0-9]+)#\]/', $sSubject, $aMatch))
+								(\Aurora\Modules\HelpDesk\Enums\FetcherType::REPLY === $aMainSettingsData['HelpdeskFetcherType'] && !empty($sSubject) && preg_match('/\[#([a-zA-Z0-9]+)#\]/', $sSubject, $aMatch))
 									||
-								(\EHelpdeskFetcherType::ALL === $aMainSettingsData['HelpdeskFetcherType'])
+								(\Aurora\Modules\HelpDesk\Enums\FetcherType::ALL === $aMainSettingsData['HelpdeskFetcherType'])
 							))
 							{
 								$sThreadHash = '';
@@ -1196,7 +1196,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 											$oThread = \CThread::createInstance('CThread', $this->GetModule()->GetName());
 											$oThread->IdTenant = $iIdTenant;
 											$oThread->IdOwner = $oUser->iObjectId;
-											$oThread->Type = \EHelpdeskThreadType::Pending;
+											$oThread->Type = \Aurora\Modules\HelpDesk\Enums\ThreadType::Pending;
 											$oThread->Subject = $sSubject;
 
 											if (!$this->createThread($oUser, $oThread))
@@ -1221,8 +1221,8 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 											$oPost->IdTenant = $oUser->IdTenant;
 											$oPost->IdOwner = $oUser->iObjectId;
 											$oPost->IdThread = $oThread->IdThread;
-											$oPost->Type = \EHelpdeskPostType::Normal;
-											$oPost->SystemType = \EHelpdeskPostSystemType::None;
+											$oPost->Type = \Aurora\Modules\HelpDesk\Enums\PostType::Normal;
+											$oPost->SystemType = \Aurora\Modules\HelpDesk\Enums\PostSystemType::None;
 											$oPost->Text = $sText;
 
 											$aResultAttachment = array();
@@ -1377,8 +1377,8 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 													$oPost->IdTenant = $oUser->IdTenant;
 													$oPost->IdOwner = $oUser->iObjectId;
 													$oPost->IdThread = $oThread->IdThread;
-													$oPost->Type = \EHelpdeskPostType::Normal;
-													$oPost->SystemType = \EHelpdeskPostSystemType::None;
+													$oPost->Type = \Aurora\Modules\HelpDesk\Enums\PostType::Normal;
+													$oPost->SystemType = \Aurora\Modules\HelpDesk\Enums\PostSystemType::None;
 													$oPost->Text = $sText;
 
 													$aResultAttachment = array();
@@ -1464,12 +1464,12 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 
 	/**
 	 * @param \CUser $oUser Core user object
-	 * @param int $iFilter Default value is **0** \EHelpdeskThreadFilterType::All.
+	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All.
 	 * @param string $sSearch = ''
 	 * 
 	 * @return int
 	 */
-	public function getThreadsCount(\CUser $oUser, $iFilter = \EHelpdeskThreadFilterType::All, $sSearch = '')
+	public function getThreadsCount(\CUser $oUser, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '')
 	{
 		$iResult = 0;
 		try
@@ -1505,44 +1505,44 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		return $iResult;
 	}
 
-	protected function _getFilters(\CUser $oUser, $iFilter = \EHelpdeskThreadFilterType::All, $sSearch = '')
+	protected function _getFilters(\CUser $oUser, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '')
 	{
 		$bIsAgent = $this->isAgent($oUser);
 		$iSearchOwner = $this->_getOwnerFromSearch($oUser->IdTenant, $sSearch);
 		
 		$aFilters = array(
 			'IdTenant' => $oUser->IdTenant,
-			'IsArchived' => \EHelpdeskThreadFilterType::Archived === $iFilter,
+			'IsArchived' => \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::Archived === $iFilter,
 		);
 
-		if (\EHelpdeskThreadFilterType::Archived !== $iFilter)
+		if (\Aurora\Modules\HelpDesk\Enums\ThreadFilterType::Archived !== $iFilter)
 		{
 			switch ($iFilter)
 			{
-				case \EHelpdeskThreadFilterType::PendingOnly:
-					$aFilters['Type'] = array(array(\EHelpdeskThreadType::Pending, \EHelpdeskThreadType::Deferred), 'IN');
+				case \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::PendingOnly:
+					$aFilters['Type'] = array(array(\Aurora\Modules\HelpDesk\Enums\ThreadType::Pending, \Aurora\Modules\HelpDesk\Enums\ThreadType::Deferred), 'IN');
 					break;
-				case \EHelpdeskThreadFilterType::ResolvedOnly:
-					$aFilters['Type'] = array(\EHelpdeskThreadType::Resolved, '=');
+				case \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::ResolvedOnly:
+					$aFilters['Type'] = array(\Aurora\Modules\HelpDesk\Enums\ThreadType::Resolved, '=');
 					break;
-				case \EHelpdeskThreadFilterType::Open:
+				case \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::Open:
 					if ($bIsAgent)
 					{
 						$aFilters['$OR'] = array(
-							'Type' => array(array(\EHelpdeskThreadType::Pending, \EHelpdeskThreadType::Deferred, \EHelpdeskThreadType::Waiting), 'IN'),
+							'Type' => array(array(\Aurora\Modules\HelpDesk\Enums\ThreadType::Pending, \Aurora\Modules\HelpDesk\Enums\ThreadType::Deferred, \Aurora\Modules\HelpDesk\Enums\ThreadType::Waiting), 'IN'),
 							'$AND' => array(
 								'IdOwner' => array($oUser->EntityId, '='),
-								'Type' => array(\EHelpdeskThreadType::Answered, '='),
+								'Type' => array(\Aurora\Modules\HelpDesk\Enums\ThreadType::Answered, '='),
 							)
 						);
 					}
 					else
 					{
-						$aFilters['Type'] = array(array(\EHelpdeskThreadType::Waiting, \EHelpdeskThreadType::Answered, \EHelpdeskThreadType::Pending, \EHelpdeskThreadType::Deferred), 'IN');
+						$aFilters['Type'] = array(array(\Aurora\Modules\HelpDesk\Enums\ThreadType::Waiting, \Aurora\Modules\HelpDesk\Enums\ThreadType::Answered, \Aurora\Modules\HelpDesk\Enums\ThreadType::Pending, \Aurora\Modules\HelpDesk\Enums\ThreadType::Deferred), 'IN');
 					}
 					break;
-				case \EHelpdeskThreadFilterType::InWork:
-					$aFilters['Type'] = array(array(\EHelpdeskThreadType::Waiting, \EHelpdeskThreadType::Answered, \EHelpdeskThreadType::Pending, \EHelpdeskThreadType::Deferred), 'IN');
+				case \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::InWork:
+					$aFilters['Type'] = array(array(\Aurora\Modules\HelpDesk\Enums\ThreadType::Waiting, \Aurora\Modules\HelpDesk\Enums\ThreadType::Answered, \Aurora\Modules\HelpDesk\Enums\ThreadType::Pending, \Aurora\Modules\HelpDesk\Enums\ThreadType::Deferred), 'IN');
 					break;
 			}
 		}
@@ -1566,18 +1566,18 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 * @param \CUser $oUser Core user object
 	 * @param int $iOffset Default value is **0**.
 	 * @param int $iLimit Default value is **20**.
-	 * @param int $iFilter Default value is **0** \EHelpdeskThreadFilterType::All
+	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All
 	 * @param string $sSearch Default value is empty string.
 	 *
 	 * @return array|bool
 	 */
-	public function getThreads(\CUser $oUser, $iOffset = 0, $iLimit = 20, $iFilter = \EHelpdeskThreadFilterType::All, $sSearch = '')
+	public function getThreads(\CUser $oUser, $iOffset = 0, $iLimit = 20, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '')
 	{
 		$aResult = null;
 		try
 		{
 			$sOrderBy = 'Updated';
-			$iOrderType = \ESortOrder::DESC;
+			$iOrderType = \Aurora\System\Enums\SortOrder::DESC;
 			$aFilters = $this->_getFilters($oUser, $iFilter, $sSearch);
 			$aResult = $this->oEavManager->getEntities('CThread', array(), $iOffset, $iLimit, $aFilters, $sOrderBy, $iOrderType);
 			if (is_array($aResult) && 0 < count($aResult))
@@ -1657,7 +1657,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 				));
 			}
 			$iOffset = 0;
-			$aResult = $this->oEavManager->getEntities('CPost', array(), $iOffset, $iLimit, $aFilters, 'Created', \ESortOrder::DESC);
+			$aResult = $this->oEavManager->getEntities('CPost', array(), $iOffset, $iLimit, $aFilters, 'Created', \Aurora\System\Enums\SortOrder::DESC);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1890,7 +1890,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 						$oHelpdeskSenderEmail = \MailSo\Mime\Email::NewInstance($oFromAccount->Email, $sSiteName);
 						$oThreadOwnerEmail = \MailSo\Mime\Email::NewInstance($sEmail, $oThreadOwnerUser->Name);
 
-						if (\EHelpdeskPostType::Normal === $oPost->Type && ($bIsNew || $oThreadOwnerUser->iObjectId !== $oPost->IdOwner))
+						if (\Aurora\Modules\HelpDesk\Enums\PostType::Normal === $oPost->Type && ($bIsNew || $oThreadOwnerUser->iObjectId !== $oPost->IdOwner))
 						{
 							$oUserMessage = $this->_buildPostMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.post'.($bIsNew ? '.new' : '').'.html',
 								$oHelpdeskSenderEmail->ToString(), $oThreadOwnerEmail->ToString(),
@@ -1903,7 +1903,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 							}
 						}
 
-						if (\EHelpdeskPostType::Internal === $oPost->Type || $oThreadOwnerUser->IobjectId === $oPost->IdOwner)
+						if (\Aurora\Modules\HelpDesk\Enums\PostType::Internal === $oPost->Type || $oThreadOwnerUser->IobjectId === $oPost->IdOwner)
 						{
 							$aDeMail[] = $oThreadOwnerUser->resultEmail();
 						}
@@ -2001,28 +2001,28 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$bResult = false;
 		try
 		{
-			if ($oPost->Type === \EHelpdeskPostType::Internal && !$this->isAgent($oUser))
+			if ($oPost->Type === \Aurora\Modules\HelpDesk\Enums\PostType::Internal && !$this->isAgent($oUser))
 			{
-				$oPost->Type = \EHelpdeskPostType::Normal;
+				$oPost->Type = \Aurora\Modules\HelpDesk\Enums\PostType::Normal;
 			}
 
 			if ($this->isAgent($oUser) && !$bIsNew && $oUser->EntityId !== $oThread->IdOwner)
 			{
-				if ($oPost->Type !== \EHelpdeskPostType::Internal)
+				if ($oPost->Type !== \Aurora\Modules\HelpDesk\Enums\PostType::Internal)
 				{
-					$oThread->Type = \EHelpdeskThreadType::Answered;
+					$oThread->Type = \Aurora\Modules\HelpDesk\Enums\ThreadType::Answered;
 				}
 			}
 			else
 			{
-				$oThread->Type = \EHelpdeskThreadType::Pending;
+				$oThread->Type = \Aurora\Modules\HelpDesk\Enums\ThreadType::Pending;
 			}
 
 			$bResult = $this->oEavManager->saveEntity($oPost);
 			if (!$bResult)
 			{
 //				$this->moveStorageExceptionToManager();
-				throw new \Aurora\System\Exceptions\ManagerException(Errs::HelpdeskManager_PostCreateFailed);
+				throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::HelpdeskManager_PostCreateFailed);
 			}
 			else
 			{
@@ -2058,7 +2058,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
-			if ($oException->getCode() !== \Errs::Mail_MailboxUnavailable)
+			if ($oException->getCode() !== \Aurora\System\Exceptions\Errs::Mail_MailboxUnavailable)
 			{
 				$bResult = false;
 				$this->setLastException($oException);

@@ -63,7 +63,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 			}
 			else
 			{
-				throw new \Aurora\System\Exceptions\BaseException(Errs::Validation_InvalidParameters);
+				throw new \Aurora\System\Exceptions\BaseException(\Aurora\System\Exceptions\Errs::Validation_InvalidParameters);
 			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
@@ -197,11 +197,11 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 * @param int $iPage List page.
 	 * @param int $iUsersPerPage Number of users on a single page.
 	 * @param string $sOrderBy = 'email'. Field by which to sort.
-	 * @param int $iOrderType = \ESortOrder::ASC. If **\ESortOrder::ASC** the sort order type is ascending.
+	 * @param int $iOrderType = \Aurora\System\Enums\SortOrder::ASC. If **\Aurora\System\Enums\SortOrder::ASC** the sort order type is ascending.
 	 * @param string $sSearchDesc = ''. If specified, the search goes on by substring in the name and email of default account.
 	 * @return array | false
 	 */
-	public function getAccountList($iPage, $iUsersPerPage, $sOrderBy = 'Login', $iOrderType = \ESortOrder::ASC, $sSearchDesc = '')
+	public function getAccountList($iPage, $iUsersPerPage, $sOrderBy = 'Login', $iOrderType = \Aurora\System\Enums\SortOrder::ASC, $sSearchDesc = '')
 	{
 		$aResult = false;
 		try
@@ -302,12 +302,12 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 				{
 					if (!$this->oEavManager->saveEntity($oAccount))
 					{
-						throw new \Aurora\System\Exceptions\ManagerException(Errs::UsersManager_UserCreateFailed);
+						throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::UsersManager_UserCreateFailed);
 					}
 				}
 				else
 				{
-					throw new \Aurora\System\Exceptions\ManagerException(Errs::UsersManager_UserAlreadyExists);
+					throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::UsersManager_UserAlreadyExists);
 				}
 			}
 
@@ -338,12 +338,12 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 //				{
 					if (!$this->oEavManager->saveEntity($oAccount))
 					{
-						throw new \Aurora\System\Exceptions\ManagerException(Errs::UsersManager_UserCreateFailed);
+						throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::UsersManager_UserCreateFailed);
 					}
 //				}
 //				else
 //				{
-//					throw new \Aurora\System\Exceptions\ManagerException(Errs::UsersManager_UserAlreadyExists);
+//					throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::UsersManager_UserAlreadyExists);
 //				}
 			}
 

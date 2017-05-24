@@ -41,8 +41,8 @@ class CPost extends \Aurora\System\EAV\Entity
 			'IdTenant'		=> array('int', 0),
 			'IdOwner'		=> array('int', 0),
 			'IdPost'		=> array('int', 0),
-			'Type'			=> array('int', \EHelpdeskPostType::Normal),
-			'SystemType'	=> array('int', \EHelpdeskPostSystemType::None),
+			'Type'			=> array('int', \Aurora\Modules\HelpDesk\Enums\PostType::Normal),
+			'SystemType'	=> array('int', \Aurora\Modules\HelpDesk\Enums\PostSystemType::None),
 			'Created'		=> array('datetime', date('Y-m-d H:i:s')),
 			'Text'			=> array('string', '')
 		);

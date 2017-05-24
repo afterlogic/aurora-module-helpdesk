@@ -432,64 +432,64 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 
 	/**
 	 * @param \CUser $oUser
-	 * @param int $iFilter Default value is **0** EHelpdeskThreadFilterType::All.
+	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All.
 	 * @param string $sSearch
 	 * @param int $iSearchOwner
 	 *
 	 * @return array
 	 */
-	private function _buildThreadsWhere(\CUser $oUser, $bIsAgent = false, $iFilter = EHelpdeskThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
+	private function _buildThreadsWhere(\CUser $oUser, $bIsAgent = false, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
 	{
 		$aWhere = array();
 
 		$aWhere[] = $this->escapeColumn('id_tenant').' = '.$oUser->IdTenant;
 
-		$aWhere[] = $this->escapeColumn('archived').' = '.(EHelpdeskThreadFilterType::Archived === $iFilter ? 1 : 0);
-		if (EHelpdeskThreadFilterType::Archived !== $iFilter)
+		$aWhere[] = $this->escapeColumn('archived').' = '.(\Aurora\Modules\HelpDesk\Enums\ThreadFilterType::Archived === $iFilter ? 1 : 0);
+		if (\Aurora\Modules\HelpDesk\Enums\ThreadFilterType::Archived !== $iFilter)
 		{
 			switch ($iFilter)
 			{
-				case EHelpdeskThreadFilterType::PendingOnly:
+				case \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::PendingOnly:
 					$aWhere[] = $this->escapeColumn('type').' IN ('.implode(',', array(
-						EHelpdeskThreadType::Pending,
-						EHelpdeskThreadType::Deferred
+						\Aurora\Modules\HelpDesk\Enums\ThreadType::Pending,
+						\Aurora\Modules\HelpDesk\Enums\ThreadType::Deferred
 					)).')';
 					break;
-				case EHelpdeskThreadFilterType::ResolvedOnly:
-					$aWhere[] = $this->escapeColumn('type').' = '.EHelpdeskThreadType::Resolved;
+				case \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::ResolvedOnly:
+					$aWhere[] = $this->escapeColumn('type').' = '.\Aurora\Modules\HelpDesk\Enums\ThreadType::Resolved;
 					break;
-				case EHelpdeskThreadFilterType::Open:
+				case \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::Open:
 					if ($bIsAgent)
 					{
 						$aWhere[] = '(('.
 							$this->escapeColumn('type').' IN ('.implode(',', array(
-								EHelpdeskThreadType::Pending,
-								EHelpdeskThreadType::Deferred,
-								EHelpdeskThreadType::Waiting
+								\Aurora\Modules\HelpDesk\Enums\ThreadType::Pending,
+								\Aurora\Modules\HelpDesk\Enums\ThreadType::Deferred,
+								\Aurora\Modules\HelpDesk\Enums\ThreadType::Waiting
 							)).')'.
 						') OR ('.
 							$this->escapeColumn('id_owner').' = '.$oUser->EntityId.' AND '.
 							$this->escapeColumn('type').' IN ('.implode(',', array(
-								EHelpdeskThreadType::Answered
+								\Aurora\Modules\HelpDesk\Enums\ThreadType::Answered
 							)).')'.
 						'))';
 					}
 					else
 					{
 						$aWhere[] = $this->escapeColumn('type').' IN ('.implode(',', array(
-							EHelpdeskThreadType::Waiting,
-							EHelpdeskThreadType::Answered,
-							EHelpdeskThreadType::Pending,
-							EHelpdeskThreadType::Deferred
+							\Aurora\Modules\HelpDesk\Enums\ThreadType::Waiting,
+							\Aurora\Modules\HelpDesk\Enums\ThreadType::Answered,
+							\Aurora\Modules\HelpDesk\Enums\ThreadType::Pending,
+							\Aurora\Modules\HelpDesk\Enums\ThreadType::Deferred
 						)).')';
 					}
 					break;
-				case EHelpdeskThreadFilterType::InWork:
+				case \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::InWork:
 					$aWhere[] = $this->escapeColumn('type').' IN ('.implode(',', array(
-							EHelpdeskThreadType::Waiting,
-							EHelpdeskThreadType::Answered,
-							EHelpdeskThreadType::Pending,
-							EHelpdeskThreadType::Deferred
+							\Aurora\Modules\HelpDesk\Enums\ThreadType::Waiting,
+							\Aurora\Modules\HelpDesk\Enums\ThreadType::Answered,
+							\Aurora\Modules\HelpDesk\Enums\ThreadType::Pending,
+							\Aurora\Modules\HelpDesk\Enums\ThreadType::Deferred
 						)).')';
 					break;
 			}
@@ -528,13 +528,13 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 
 	/**
 	 * @param \CUser $oUser
-	 * @param int $iFilter Default value is **0** EHelpdeskThreadFilterType::All.
+	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All.
 	 * @param string $sSearch Default value is empty string.
 	 * @param int $iSearchOwner Default value is **0**.
 	 *
 	 * @return string
 	 */
-	public function getThreadsCount(\CUser $oUser, $bIsAgent = false, $iFilter = EHelpdeskThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
+	public function getThreadsCount(\CUser $oUser, $bIsAgent = false, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
 	{
 		$sSql = 'SELECT COUNT(id_helpdesk_thread) as item_count FROM %sahd_threads';
 		$sSql = sprintf($sSql, $this->prefix());
@@ -568,13 +568,13 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	 * @param \CUser $oUser
 	 * @param int $iOffset Default value is **0**.
 	 * @param int $iLimit Default value is **20**.
-	 * @param int $iFilter Default value is **0** EHelpdeskThreadFilterType::All.
+	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All.
 	 * @param string $sSearch Default value is empty string.
 	 * @param int $iSearchOwner Default value is **0**.
 	 *
 	 * @return string
 	 */
-	public function getThreads(\CUser $oUser, $bIsAgent = false, $iOffset = 0, $iLimit = 20, $iFilter = EHelpdeskThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
+	public function getThreads(\CUser $oUser, $bIsAgent = false, $iOffset = 0, $iLimit = 20, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
 	{
 		$sSearch = trim($sSearch);
 
@@ -655,7 +655,7 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 
 		if (!$oUser->Role === \Aurora\System\Enums\UserRole::NormalUser || $oThread->IdOwner === $oUser->EntityId)
 		{
-			$aWhere[] = $this->escapeColumn('type').' <> '.EHelpdeskPostType::Internal;
+			$aWhere[] = $this->escapeColumn('type') . ' <> ' . \Aurora\Modules\HelpDesk\Enums\PostType::Internal;
 		}
 
 		$aWhere[] = $this->escapeColumn('id_helpdesk_thread').' = '.$oThread->IdHelpdeskThread;
