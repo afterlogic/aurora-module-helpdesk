@@ -52,7 +52,7 @@ class CHelpdeskAttachment extends \Aurora\System\EAV\Entity
 			'FilestorageFile' => true,
 			'HelpdeskTenantID' => $oUser->IdTenant,
 			'HelpdeskUserID' => $oUser->EntityId,
-			'StorageType' => \EFileStorageTypeStr::Corporate,
+			'StorageType' => \Aurora\System\Enums\FileStorageType::Corporate,
 			'Name' => $this->FileName,
 			'Path' => $sThreadFolderName
 		));

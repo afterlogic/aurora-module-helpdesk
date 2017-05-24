@@ -39,14 +39,14 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 	 * @param \Aurora\System\Managers\GlobalManager &$oManager
 	 * @param string $sForcedStorage Default value is empty string.
 	 */
-	public function __construct(\Aurora\System\Managers\GlobalManager &$oManager, $sForcedStorage = '', \Aurora\System\Module\AbstractModule $oModule = null)
+	public function __construct($sForcedStorage = '', \Aurora\System\Module\AbstractModule $oModule = null)
 	{
-		parent::__construct('main', $oManager, $sForcedStorage, $oModule);
+		parent::__construct('main', $sForcedStorage, $oModule);
 
 		$this->oApiMail = null;
 		$this->oApiUsers = null;
 		$this->oApiTenants = null;
-		$this->oEavManager = \Aurora\System\Api::GetSystemManager('eav', 'db');
+		$this->oEavManager = new \Aurora\System\Managers\Eav\Manager();
 	}
 
 	/**
@@ -1285,11 +1285,11 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 
 														$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
 
-														$oApiFilestorage->createFolder($oUser, \EFileStorageTypeStr::Corporate, '',
+														$oApiFilestorage->createFolder($oUser, \Aurora\System\Enums\FileStorageType::Corporate, '',
 															$sThreadFolderName);
 
 														$oApiFilestorage->createFile($oUser,
-															\EFileStorageTypeStr::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
+															\Aurora\System\Enums\FileStorageType::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
 
 														if (is_resource($rData))
 														{
@@ -1441,11 +1441,11 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 
 																$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
 
-																$oApiFilestorage->createFolder($oUser, \EFileStorageType::Corporate, '',
+																$oApiFilestorage->createFolder($oUser, \Aurora\System\Enums\FileStorageType::Corporate, '',
 																	$sThreadFolderName);
 
 																$oApiFilestorage->createFile($oUser,
-																	\EFileStorageTypeStr::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
+																	\Aurora\System\Enums\FileStorageType::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
 
 																if (is_resource($rData))
 																{
@@ -1607,7 +1607,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 		try
 		{
 			$sOrderBy = 'Created';
-			$iOrderType = \ESortOrder::ASC;
+			$iOrderType = \Aurora\System\Enums\SortOrder::ASC;
 			$aFilters = $this->_getFilters($oUser, $iFilter, $sSearch);
 			$aResult = $this->oEavManager->getEntities('CThread', array(), $iOffset, $iLimit, $aFilters, $sOrderBy, $iOrderType);
 			if (is_array($aResult) && 0 < count($aResult))
@@ -1669,7 +1669,7 @@ class CApiHelpdeskMainManager extends \Aurora\System\Managers\AbstractManagerWit
 		try
 		{
 			$sOrderBy = 'Created';
-			$iOrderType = \ESortOrder::ASC;
+			$iOrderType = \Aurora\System\Enums\SortOrder::ASC;
 			$mThreads = $this->oEavManager->getEntities('CThread', array('LastPostId'), 0, 0, array(), $sOrderBy, $iOrderType, $aThreadIds);
 			if (is_array($mThreads))
 			{

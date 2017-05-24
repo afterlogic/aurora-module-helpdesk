@@ -637,13 +637,13 @@ class Module extends \Aurora\System\Module\AbstractModule
 
 						$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
 
-						$this->oApiFilestorage->createFolder($oUser, \EFileStorageTypeStr::Corporate, '',
+						$this->oApiFilestorage->createFolder($oUser, \Aurora\System\Enums\FileStorageType::Corporate, '',
 							$sThreadFolderName);
 
 						$sUploadName = isset($aDecodeData['Name']) ? $aDecodeData['Name'] : $sTempName;
 
 						$this->oApiFilestorage->createFile($oUser,
-							\EFileStorageTypeStr::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
+							\Aurora\System\Enums\FileStorageType::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
 
 						$oAttachment = new \CHelpdeskAttachment();
 						$oAttachment->IdHelpdeskThread = $oThread->IdHelpdeskThread;
