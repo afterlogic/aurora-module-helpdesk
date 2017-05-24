@@ -75,7 +75,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 *
 	 * @return bool
 	 */
-	public function createUser(CUser &$oHelpdeskUser)
+	public function createUser(\CUser &$oHelpdeskUser)
 	{
 		$bResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->createUser($oHelpdeskUser)))
@@ -443,7 +443,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return bool
 	 */
 //	public function archiveThreads(CHelpdeskUser $oHelpdeskUser, $aThreadIds, $bSetArchive = true)
-	public function archiveThreads(CUser $oHelpdeskUser, $aThreadIds, $bSetArchive = true)
+	public function archiveThreads(\CUser $oHelpdeskUser, $aThreadIds, $bSetArchive = true)
 	{
 		$bResult = $this->oConnection->Execute($this->oCommandCreator->archiveThreads($oHelpdeskUser, $aThreadIds, $bSetArchive));
 		$this->throwDbExceptionIfExist();
@@ -551,7 +551,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return bool
 	 */
 //	public function createThread(CHelpdeskUser $oHelpdeskUser, CHelpdeskThread &$oHelpdeskThread)
-	public function createThread(CUser $oHelpdeskUser, CHelpdeskThread &$oHelpdeskThread)
+	public function createThread(\CUser $oHelpdeskUser, CHelpdeskThread &$oHelpdeskThread)
 	{
 		$bResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->createThread($oHelpdeskUser, $oHelpdeskThread)))
@@ -571,7 +571,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return bool
 	 */
 //	public function updateThread(CHelpdeskUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
-	public function updateThread(CUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
+	public function updateThread(\CUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
 	{
 		$bResult = $this->oConnection->Execute($this->oCommandCreator->updateThread($oHelpdeskUser, $oHelpdeskThread));
 		$this->throwDbExceptionIfExist();
@@ -666,7 +666,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return int
 	 */
 //	public function getPostsCount(CHelpdeskUser $oHelpdeskUser, $oThread)
-	public function getPostsCount(CUser $oHelpdeskUser, $oThread)
+	public function getPostsCount(\CUser $oHelpdeskUser, $oThread)
 	{
 		$iResult = 0;
 		if ($this->oConnection->Execute($this->oCommandCreator->getPostsCount($oHelpdeskUser, $oThread)))
@@ -691,7 +691,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return int
 	 */
 //	public function getExtPostsCount(CHelpdeskUser $oHelpdeskUser, $oThread)
-	public function getExtPostsCount(CUser $oHelpdeskUser, $oThread)
+	public function getExtPostsCount(\CUser $oHelpdeskUser, $oThread)
 	{
 		$iResult = 0;
 		if ($this->oConnection->Execute($this->oCommandCreator->getExtPostsCount($oHelpdeskUser, $oThread)))
@@ -740,7 +740,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return array|bool
 	 */
 //	public function getAttachments(CHelpdeskUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
-	public function getAttachments(CUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
+	public function getAttachments(\CUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
 	{
 		$mResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->getAttachments($oHelpdeskUser, $oHelpdeskThread)))
@@ -802,7 +802,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return bool
 	 */
 //	public function createPost(CHelpdeskUser $oHelpdeskUser, CHelpdeskPost &$oPost)
-	public function createPost(CUser $oHelpdeskUser, CHelpdeskPost &$oPost)
+	public function createPost(\CUser $oHelpdeskUser, CHelpdeskPost &$oPost)
 	{
 		$bResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->createPost($oHelpdeskUser, $oPost)))
@@ -866,7 +866,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return bool
 	 */
 //	public function setOnline(CHelpdeskUser $oHelpdeskUser, $iThreadID)
-	public function setOnline(CUser $oHelpdeskUser, $iThreadID)
+	public function setOnline(\CUser $oHelpdeskUser, $iThreadID)
 	{
 		$this->oConnection->Execute($this->oCommandCreator->clearOnline($oHelpdeskUser, $iThreadID));
 		$bResult = $this->oConnection->Execute($this->oCommandCreator->setOnline($oHelpdeskUser, $iThreadID));
@@ -882,7 +882,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return bool
 	 */
 //	public function setThreadSeen(CHelpdeskUser $oHelpdeskUser, $oHelpdeskThread)
-	public function setThreadSeen(CUser $oHelpdeskUser, $oHelpdeskThread)
+	public function setThreadSeen(\CUser $oHelpdeskUser, $oHelpdeskThread)
 	{
 		$this->oConnection->Execute($this->oCommandCreator->clearThreadSeen($oHelpdeskUser, $oHelpdeskThread));
 		$bResult = $this->oConnection->Execute($this->oCommandCreator->setThreadSeen($oHelpdeskUser, $oHelpdeskThread));

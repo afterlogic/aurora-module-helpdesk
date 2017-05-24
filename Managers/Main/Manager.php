@@ -437,7 +437,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 			{
 				if (!$this->isUserExists($oUser))
 				{
-					if (!$this->oStorage->createUser($oUser))
+					if (true)//!$this->oStorage->createUser($oUser))
 					{
 						throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::HelpdeskManager_UserCreateFailed);
 					}
@@ -474,7 +474,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$oUser = null;
 		try
 		{
-			$oUser = $this->oStorage->getUserById($iIdTenant, $iHelpdeskUserId);
+//			$oUser = $this->oStorage->getUserById($iIdTenant, $iHelpdeskUserId);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -494,7 +494,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$oUser = null;
 		try
 		{
-			$oUser = $this->oStorage->getUserByIdWithoutTenantID($iHelpdeskUserId);
+//			$oUser = $this->oStorage->getUserByIdWithoutTenantID($iHelpdeskUserId);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -515,7 +515,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$oUser = null;
 		try
 		{
-			$oUser = $this->oStorage->getUserByActivateHash($iIdTenant, $sActivateHash);
+//			$oUser = $this->oStorage->getUserByActivateHash($iIdTenant, $sActivateHash);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -606,7 +606,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$aResult = array();
 		try
 		{
-			$aResult = $this->oStorage->getAgentsEmailsForNotification($iIdTenant, $aExcludeEmails);
+//			$aResult = $this->oStorage->getAgentsEmailsForNotification($iIdTenant, $aExcludeEmails);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -626,7 +626,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$oUser = null;
 		try
 		{
-			$oUser = $this->oStorage->getUserByEmail($iIdTenant, $sEmail);
+//			$oUser = $this->oStorage->getUserByEmail($iIdTenant, $sEmail);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -647,7 +647,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$oUser = null;
 		try
 		{
-			$oUser = $this->oStorage->getUserByNotificationEmail($iIdTenant, $sEmail);
+//			$oUser = $this->oStorage->getUserByNotificationEmail($iIdTenant, $sEmail);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -668,7 +668,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$oUser = null;
 		try
 		{
-			$oUser = $this->oStorage->getUserBySocialId($iIdTenant, $sSocialId);
+//			$oUser = $this->oStorage->getUserBySocialId($iIdTenant, $sSocialId);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -702,7 +702,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		{
 			try
 			{
-				$bResult = $this->oStorage->isUserExists($oUser);
+//				$bResult = $this->oStorage->isUserExists($oUser);
 			}
 			catch (\Aurora\System\Exceptions\BaseException $oException)
 			{
@@ -725,7 +725,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		{
 			if ($oUser->validate())
 			{
-				$bResult = $this->oStorage->updateUser($oUser);
+//				$bResult = $this->oStorage->updateUser($oUser);
 				if (!$bResult)
 				{
 //					$this->moveStorageExceptionToManager();
@@ -753,7 +753,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$bResult = false;
 		try
 		{
-			$bResult = $this->oStorage->setUserAsBlocked($iIdTenant, $iIdUser);
+//			$bResult = $this->oStorage->setUserAsBlocked($iIdTenant, $iIdUser);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -775,7 +775,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$bResult = false;
 		try
 		{
-			$bResult = $this->oStorage->deleteUser($iIdTenant, $iIdHelpdeskUser);
+//			$bResult = $this->oStorage->deleteUser($iIdTenant, $iIdHelpdeskUser);
 			/*if ($bResult)
 			{
 				//TODO
@@ -804,7 +804,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		{
 			if ($oThread instanceof \CThread && 0 < count($aPostIds))
 			{
-				$bResult = $this->oStorage->deletePosts($oUser, $oThread, $aPostIds);
+//				$bResult = $this->oStorage->deletePosts($oUser, $oThread, $aPostIds);
 				if ($bResult)
 				{
 					$oThread->PostCount = $this->getPostsCount($oThread);
@@ -834,7 +834,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		{
 			if (0 < count($aThreadIds))
 			{
-				$bResult = $this->oStorage->verifyThreadIdsBelongToUser($oUser, $aThreadIds);
+//				$bResult = $this->oStorage->verifyThreadIdsBelongToUser($oUser, $aThreadIds);
 			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
@@ -858,7 +858,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		{
 			if (0 < count($aPostIds))
 			{
-				$bResult = $this->oStorage->verifyPostIdsBelongToUser($oUser, $aPostIds);
+//				$bResult = $this->oStorage->verifyPostIdsBelongToUser($oUser, $aPostIds);
 			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
@@ -883,7 +883,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		{
 			if (0 < count($aThreadIds))
 			{
-				$bResult = $this->oStorage->archiveThreads($oUser, $aThreadIds, $bSetArchive);
+//				$bResult = $this->oStorage->archiveThreads($oUser, $aThreadIds, $bSetArchive);
 			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
@@ -902,7 +902,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$bResult = false;
 		try
 		{
-			$bResult = $this->oStorage->archiveOutdatedThreads();
+//			$bResult = $this->oStorage->archiveOutdatedThreads();
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -922,7 +922,8 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		try
 		{
 			$iIdOwner = 0;
-			$iThreadId = $this->oStorage->notificateOutdatedThreadID($iIdOwner);
+			$iThreadId = null;
+//			$iThreadId = $this->oStorage->notificateOutdatedThreadID($iIdOwner);
 			if ($iThreadId && $iIdOwner)
 			{
 				$oUser = $this->getUserByIdWithoutTenantID($iIdOwner);
@@ -974,7 +975,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$iThreadID = 0;
 		try
 		{
-			$iThreadID = $this->oStorage->getThreadIdByHash($iTenantID, $sHash);
+//			$iThreadID = $this->oStorage->getThreadIdByHash($iTenantID, $sHash);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1045,7 +1046,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		{
 			$oHelpDeskModule = $this->GetModule();
 			$iFetcherTimeLimitMinutes = $oHelpDeskModule ? (int) $oHelpDeskModule->getConfig('FetcherTimeLimitMinutes', 5) : 5;
-			$mResult = $this->oStorage->getNextHelpdeskIdForMonitoring($iFetcherTimeLimitMinutes);
+//			$mResult = $this->oStorage->getNextHelpdeskIdForMonitoring($iFetcherTimeLimitMinutes);
 
 			if (0 >= $mResult)
 			{
@@ -1068,7 +1069,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$iIdTenant = $this->getNextHelpdeskIdForMonitoring();
 		if (false !== $iIdTenant)
 		{
-			$this->oStorage->updateHelpdeskFetcherTimer($iIdTenant);
+//			$this->oStorage->updateHelpdeskFetcherTimer($iIdTenant);
 			$this->startMailboxMonitor($iIdTenant);
 		}
 
@@ -1083,7 +1084,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$iResult = 0;
 		try
 		{
-			$iResult = $this->oStorage->getHelpdeskMailboxLastUid($iIdTenant, $sEmail);
+//			$iResult = $this->oStorage->getHelpdeskMailboxLastUid($iIdTenant, $sEmail);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1101,7 +1102,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$bResult = false;
 		try
 		{
-			$bResult = $this->oStorage->setHelpdeskMailboxLastUid($iIdTenant, $sEmail, $iLastUid);
+//			$bResult = $this->oStorage->setHelpdeskMailboxLastUid($iIdTenant, $sEmail, $iLastUid);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1495,7 +1496,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$iResult = 0;
 		try
 		{
-			$iResult = $this->oStorage->getThreadsPendingCount($iTenantId);
+//			$iResult = $this->oStorage->getThreadsPendingCount($iTenantId);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1622,12 +1623,12 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 *
 	 * @return array|bool
 	 */
-	public function getAttachments(CUser $oUser, \CThread $oThread)
+	public function getAttachments(\CUser $oUser, \CThread $oThread)
 	{
 		$aResult = null;
 		try
 		{
-			$aResult = $this->oStorage->getAttachments($oUser, $oThread);
+//			$aResult = $this->oStorage->getAttachments($oUser, $oThread);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1673,12 +1674,12 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 *
 	 * @return array|bool
 	 */
-	public function getExtPostsCount(CUser $oUser, $oThread)
+	public function getExtPostsCount(\CUser $oUser, $oThread)
 	{
 		$aResult = null;
 		try
 		{
-			$aResult = $this->oStorage->getExtPostsCount($oUser, $oThread);
+//			$aResult = $this->oStorage->getExtPostsCount($oUser, $oThread);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1700,7 +1701,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		{
 			try
 			{
-				$bResult = $this->oStorage->clearAllOnline($iTimeoutInMin);
+//				$bResult = $this->oStorage->clearAllOnline($iTimeoutInMin);
 			}
 			catch (\Aurora\System\Exceptions\BaseException $oException)
 			{
@@ -1724,7 +1725,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		{
 			try
 			{
-				$aResult = $this->oStorage->getOnline($oUser, $iThreadID);
+//				$aResult = $this->oStorage->getOnline($oUser, $iThreadID);
 			}
 			catch (\Aurora\System\Exceptions\BaseException $oException)
 			{
@@ -1741,14 +1742,14 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 *
 	 * @return bool
 	 */
-	public function setOnline(CUser $oUser, $iThreadId)
+	public function setOnline(\CUser $oUser, $iThreadId)
 	{
 		$bResult = false;
 		if ($oUser)
 		{
 			try
 			{
-				$bResult = $this->oStorage->setOnline($oUser, $iThreadId);
+//				$bResult = $this->oStorage->setOnline($oUser, $iThreadId);
 			}
 			catch (\Aurora\System\Exceptions\BaseException $oException)
 			{
@@ -2101,7 +2102,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$mResult = false;
 		try
 		{
-			$mResult = $this->oStorage->clearUnregistredUsers();
+//			$mResult = $this->oStorage->clearUnregistredUsers();
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
