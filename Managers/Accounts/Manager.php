@@ -10,12 +10,14 @@
 
 use \Modules\HelpDesk\CAccount as CHelpDeskAccount;
 
+namespace Aurora\Modules\HelpDesk\Managers\Accounts;
+
 /**
  * CApiAccountsManager class summary
  * 
  * @package Accounts
  */
-class CApiHelpDeskAccountsManager extends \Aurora\System\Managers\AbstractManager
+class Manager extends \Aurora\System\Managers\AbstractManager
 {
 	/**
 	 * @var \Aurora\System\Managers\Eav\Manager
@@ -26,9 +28,18 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\Managers\AbstractManage
 	
 	public $sAccountClassName = '';
 	
+<<<<<<< HEAD:managers/accounts/manager.php
 	public function __construct($sForcedStorage = '', \Aurora\System\Module\AbstractModule $oModule = null)
 	{
 		parent::__construct('accounts', $oModule);
+=======
+	/**
+	 * @param \Aurora\System\Managers\GlobalManager &$oManager
+	 */
+	public function __construct($sForcedStorage = '', \Aurora\System\Module\AbstractModule $oModule = null)
+	{
+		parent::__construct('main', $oModule);
+>>>>>>> 67e94ef939770acd188b381bedef5ec941520307:Managers/Accounts/Manager.php
 		
 		$this->oEavManager = new \Aurora\System\Managers\Eav\Manager();
 		
@@ -58,7 +69,7 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\Managers\AbstractManage
 			}
 			else
 			{
-				throw new \Aurora\System\Exceptions\BaseException(Errs::Validation_InvalidParameters);
+				throw new \Aurora\System\Exceptions\BaseException(\Aurora\System\Exceptions\Errs::Validation_InvalidParameters);
 			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
@@ -297,12 +308,12 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\Managers\AbstractManage
 				{
 					if (!$this->oEavManager->saveEntity($oAccount))
 					{
-						throw new \Aurora\System\Exceptions\ManagerException(Errs::UsersManager_UserCreateFailed);
+						throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::UsersManager_UserCreateFailed);
 					}
 				}
 				else
 				{
-					throw new \Aurora\System\Exceptions\ManagerException(Errs::UsersManager_UserAlreadyExists);
+					throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::UsersManager_UserAlreadyExists);
 				}
 			}
 
@@ -333,12 +344,12 @@ class CApiHelpDeskAccountsManager extends \Aurora\System\Managers\AbstractManage
 //				{
 					if (!$this->oEavManager->saveEntity($oAccount))
 					{
-						throw new \Aurora\System\Exceptions\ManagerException(Errs::UsersManager_UserCreateFailed);
+						throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::UsersManager_UserCreateFailed);
 					}
 //				}
 //				else
 //				{
-//					throw new \Aurora\System\Exceptions\ManagerException(Errs::UsersManager_UserAlreadyExists);
+//					throw new \Aurora\System\Exceptions\ManagerException(\Aurora\System\Exceptions\Errs::UsersManager_UserAlreadyExists);
 //				}
 			}
 
