@@ -545,57 +545,6 @@ class Module extends \Aurora\System\Module\AbstractModule
 			$oPost->SystemType = Enums\PostSystemType::None;
 			$oPost->Text = $Text;
 
-<<<<<<< HEAD
-			$aResultAttachment = array();
-			if (\is_array($Attachments) && 0 < \count($Attachments))
-			{
-				foreach ($Attachments as $sTempName => $sHash)
-				{
-					$aDecodeData = \Aurora\System\Api::DecodeKeyValues($sHash);
-					if (!isset($aDecodeData['HelpdeskUserID']))
-					{
-						continue;
-					}
-
-					$rData = $this->ApiFileCache()->getFile($oUser, $sTempName);
-					if ($rData)
-					{
-						$iFileSize = $this->ApiFileCache()->fileSize($oUser, $sTempName);
-
-						$sThreadID = (string) $oThread->IdHelpdeskThread;
-						$sThreadID = \str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
-						$sThreadIDSubFolder = \substr($sThreadID, 0, 2);
-
-						$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
-
-						$this->oApiFilestorage->createFolder($oUser, \Aurora\System\Enums\FileStorageType::Corporate, '',
-							$sThreadFolderName);
-
-						$sUploadName = isset($aDecodeData['Name']) ? $aDecodeData['Name'] : $sTempName;
-
-						$this->oApiFilestorage->createFile($oUser,
-							\Aurora\System\Enums\FileStorageType::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
-
-						$oAttachment = new \CHelpdeskAttachment();
-						$oAttachment->IdHelpdeskThread = $oThread->IdHelpdeskThread;
-						$oAttachment->IdHelpdeskPost = $oPost->IdHelpdeskPost;
-						$oAttachment->IdOwner = $oUser->EntityId;
-						$oAttachment->IdTenant = $oUser->IdTenant;
-
-						$oAttachment->FileName = $sUploadName;
-						$oAttachment->SizeInBytes = $iFileSize;
-						$oAttachment->encodeHash($oUser, $sThreadFolderName);
-						
-						$aResultAttachment[] = $oAttachment;
-					}
-				}
-
-				if (\is_array($aResultAttachment) && 0 < \count($aResultAttachment))
-				{
-					$oPost->Attachments = $aResultAttachment;
-				}
-			}
-=======
 //			$aResultAttachment = array();
 //			if (\is_array($Attachments) && 0 < \count($Attachments))
 //			{
@@ -618,13 +567,13 @@ class Module extends \Aurora\System\Module\AbstractModule
 //
 //						$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
 //
-//						$this->oApiFilestorage->createFolder($oUser, \EFileStorageTypeStr::Corporate, '',
+//						$this->oApiFilestorage->createFolder($oUser, \Aurora\System\Enums\FileStorageType::Corporate, '',
 //							$sThreadFolderName);
 //
 //						$sUploadName = isset($aDecodeData['Name']) ? $aDecodeData['Name'] : $sTempName;
 //
 //						$this->oApiFilestorage->createFile($oUser,
-//							\EFileStorageTypeStr::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
+//							\Aurora\System\Enums\FileStorageType::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
 //
 //						$oAttachment = \CHelpdeskAttachment::createInstance('CHelpdeskAttachment', $this->GetName());
 //						$oAttachment->IdThread = $oThread->IdThread;
@@ -645,7 +594,6 @@ class Module extends \Aurora\System\Module\AbstractModule
 //					$oPost->Attachments = $aResultAttachment;
 //				}
 //			}
->>>>>>> 67e94ef939770acd188b381bedef5ec941520307
 
 			$mResult = $this->oMainManager->createPost($oUser, $oThread, $oPost, $bIsNew, true, $Cc, $Bcc);
 
