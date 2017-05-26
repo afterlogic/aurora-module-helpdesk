@@ -38,28 +38,20 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	public $oEavManager = null;
 	
 	/**
-	 * @param \Aurora\System\Managers\GlobalManager &$oManager
 	 * @param string $sForcedStorage Default value is empty string.
+	 * @param \Aurora\System\Module\AbstractModule &$oManager
 	 */
 	public function __construct($sForcedStorage = '', \Aurora\System\Module\AbstractModule $oModule = null)
 	{
-<<<<<<< HEAD:managers/main/manager.php
-		parent::__construct('main', $sForcedStorage, $oModule);
-=======
 		parent::__construct('main', $oModule);
->>>>>>> 67e94ef939770acd188b381bedef5ec941520307:Managers/Main/Manager.php
 
 		$this->oApiMail = null;
 		$this->oApiUsers = null;
 		$this->oApiTenants = null;
-<<<<<<< HEAD:managers/main/manager.php
-		$this->oEavManager = new \Aurora\System\Managers\Eav\Manager();
-=======
 		if ($oModule instanceof \Aurora\System\Module\AbstractModule)
 		{
 			$this->oEavManager = new \Aurora\System\Managers\Eav\Manager();
 		}
->>>>>>> 67e94ef939770acd188b381bedef5ec941520307:Managers/Main/Manager.php
 	}
 
 	/**
@@ -1585,13 +1577,8 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$aResult = null;
 		try
 		{
-<<<<<<< HEAD:managers/main/manager.php
-			$sOrderBy = 'Created';
-			$iOrderType = \Aurora\System\Enums\SortOrder::ASC;
-=======
 			$sOrderBy = 'Updated';
 			$iOrderType = \Aurora\System\Enums\SortOrder::DESC;
->>>>>>> 67e94ef939770acd188b381bedef5ec941520307:Managers/Main/Manager.php
 			$aFilters = $this->_getFilters($oUser, $iFilter, $sSearch);
 			$aResult = $this->oEavManager->getEntities('CThread', array(), $iOffset, $iLimit, $aFilters, $sOrderBy, $iOrderType);
 			if (is_array($aResult) && 0 < count($aResult))
@@ -1631,38 +1618,6 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 
 	/**
-<<<<<<< HEAD:managers/main/manager.php
-	 * @param array $aThreadIds
-	 * @return array|bool
-	 */
-	public function getThreadsLastPostIds($aThreadIds)
-	{
-		$mResult = false;
-		try
-		{
-			$sOrderBy = 'Created';
-			$iOrderType = \Aurora\System\Enums\SortOrder::ASC;
-			$mThreads = $this->oEavManager->getEntities('CThread', array('LastPostId'), 0, 0, array(), $sOrderBy, $iOrderType, $aThreadIds);
-			if (is_array($mThreads))
-			{
-				$mResult = array();
-				foreach ($mThreads as $oThread)
-				{
-					$mResult[$oThread->EntityId] = $oThread->LastPostId;
-				}
-			}
-		}
-		catch (\Aurora\System\Exceptions\BaseException $oException)
-		{
-			$this->setLastException($oException);
-		}
-
-		return $mResult;
-	}
-
-	/**
-=======
->>>>>>> 67e94ef939770acd188b381bedef5ec941520307:Managers/Main/Manager.php
 	 * @param \CUser $oUser Helpdesk user object
 	 * @param \CThread $oThread Helpdesk thread object
 	 *

@@ -28,18 +28,13 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	
 	public $sAccountClassName = '';
 	
-<<<<<<< HEAD:managers/accounts/manager.php
-	public function __construct($sForcedStorage = '', \Aurora\System\Module\AbstractModule $oModule = null)
-	{
-		parent::__construct('accounts', $oModule);
-=======
 	/**
-	 * @param \Aurora\System\Managers\GlobalManager &$oManager
+	 * @param string $sForcedStorage Default value is empty string.
+	 * @param \Aurora\System\Module\AbstractModule &$oManager
 	 */
 	public function __construct($sForcedStorage = '', \Aurora\System\Module\AbstractModule $oModule = null)
 	{
-		parent::__construct('main', $oModule);
->>>>>>> 67e94ef939770acd188b381bedef5ec941520307:Managers/Accounts/Manager.php
+		parent::__construct('accounts', $oModule);
 		
 		$this->oEavManager = new \Aurora\System\Managers\Eav\Manager();
 		
