@@ -33,6 +33,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 		$this->incClass('attachment');
 		$this->incClass('post');
 		$this->incClass('thread');
+		$this->incClass('online');
 		
 		$this->oMainManager = new Managers\Main\Manager('', $this);
 		$this->oAccountsManager = new Managers\Accounts\Manager('', $this);
@@ -901,14 +902,18 @@ class Module extends \Aurora\System\Module\AbstractModule
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
-		$oUser = \Aurora\System\Api::getAuthenticatedUser();
+		$iUserId = \Aurora\System\Api::getAuthenticatedUserId();
 
 		if (0 === $ThreadId)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		$this->oMainManager->setOnline($oUser, $ThreadId);
+		$oOnline = \COnline::createInstance('COnline', $this->GetName());
+		$oOnline->IdThread = $ThreadId;
+		$oOnline->IdUser = $iUserId;
+		$this->oMainManager->setOnline($oOnline);
+		$this->oMainManager->removeOldOnline();
 
 		return $this->oMainManager->getOnline($oUser, $ThreadId);
 	}

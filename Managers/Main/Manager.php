@@ -1781,27 +1781,44 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		return $aResult;
 	}
 
+	public function removeOldOnline()
+	{
+		$iOffset = 0;
+		$iLimit = 0;
+		
+		$oDate = new \DateTime();
+		$oInterval = new \DateInterval('PT10M');
+		$oInterval->invert = 1; //Make it negative.
+		$oDate->add($oInterval);
+		
+		$aFilters = array('PingTime' => array($oDate->format('Y-m-d H:i:s'), '<'));
+		$aOnline = $this->oEavManager->getEntities('COnline', array(), $iOffset, $iLimit, $aFilters);
+		if (is_array($aOnline))
+		{
+			$aUUIDs = array();
+			foreach ($aOnline as $oOnline)
+			{
+				$aUUIDs[] = $oOnline->UUID;
+			}
+			$this->oEavManager->deleteEntities($aUUIDs);
+		}
+	}
+	
 	/**
-	 * @param \CUser $oUser Helpdesk user object
-	 * @param int $iThreadId
-	 *
+	 * @param COnline $oOnline
 	 * @return bool
 	 */
-	public function setOnline(\CUser $oUser, $iThreadId)
+	public function setOnline($oOnline)
 	{
 		$bResult = false;
-		if ($oUser)
+		try
 		{
-			try
-			{
-//				$bResult = $this->oStorage->setOnline($oUser, $iThreadId);
-			}
-			catch (\Aurora\System\Exceptions\BaseException $oException)
-			{
-				$this->setLastException($oException);
-			}
+			$bResult = $this->oEavManager->saveEntity($oOnline);
 		}
-
+		catch (\Aurora\System\Exceptions\BaseException $oException)
+		{
+			$this->setLastException($oException);
+		}
 		return $bResult;
 	}
 
