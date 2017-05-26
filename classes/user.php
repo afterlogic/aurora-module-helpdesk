@@ -113,7 +113,7 @@ class CHelpdeskUser extends \Aurora\System\AbstractContainer
 		{
 			switch (true)
 			{
-				case (\Aurora\System\Validate::IsEmpty($this->NotificationEmail)) :
+				case (\Aurora\System\Utils\Validate::IsEmpty($this->NotificationEmail)) :
 					throw new \Aurora\System\Exceptions\ValidationException(\Aurora\System\Exceptions\Errs::Validation_FieldIsEmpty, null, array(
 						'{{ClassName}}' => 'CHelpdeskUser', '{{NotificationEmail}}' => 'NotificationEmail'));
 			}
@@ -122,11 +122,11 @@ class CHelpdeskUser extends \Aurora\System\AbstractContainer
 		{
 			switch (true)
 			{
-				case (\Aurora\System\Validate::IsEmpty($this->Email)) :
+				case (\Aurora\System\Utils\Validate::IsEmpty($this->Email)) :
 					throw new \Aurora\System\Exceptions\ValidationException(\Aurora\System\Exceptions\Errs::Validation_FieldIsEmpty, null, array(
 						'{{ClassName}}' => 'CHelpdeskUser', '{{ClassField}}' => 'Email'));
 
-				case (\Aurora\System\Validate::IsEmpty($this->PasswordHash)) :
+				case (\Aurora\System\Utils\Validate::IsEmpty($this->PasswordHash)) :
 					throw new \Aurora\System\Exceptions\ValidationException(\Aurora\System\Exceptions\Errs::Validation_FieldIsEmpty, null, array(
 						'{{ClassName}}' => 'CHelpdeskUser', '{{ClassField}}' => 'PasswordHash'));
 			}
