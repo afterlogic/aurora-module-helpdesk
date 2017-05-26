@@ -38,8 +38,8 @@ class Module extends \Aurora\System\Module\AbstractModule
 		$this->oMainManager = new Managers\Main\Manager('', $this);
 		$this->oAccountsManager = new Managers\Accounts\Manager('', $this);
 		
-		$this->oCoreDecorator = \Aurora\System\Api::GetModuleDecorator('Core');
-		$this->oAuthDecorator = \Aurora\System\Api::GetModuleDecorator('StandardAuth');
+		$this->oCoreDecorator = \Aurora\Modules\Core\Module::Decorator();
+		$this->oAuthDecorator = \Aurora\Modules\StandardAuth\Module::Decorator();
 		
 		$this->extendObject('CUser', array(
 				'AllowEmailNotifications'	=> array('bool', $this->getConfig('AllowEmailNotifications', false)),

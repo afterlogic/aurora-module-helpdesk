@@ -38,7 +38,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		
 		$this->oEavManager = new \Aurora\System\Managers\Eav\Manager();
 		
-		$this->oCoreDecorator = \Aurora\System\Api::GetModuleDecorator('Core');
+		$this->oCoreDecorator = \Aurora\Modules\Core\Module::Decorator();
 		
 		$this->sAccountClassName = 'Modules\HelpDesk\CAccount';
 	}
