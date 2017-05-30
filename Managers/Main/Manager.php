@@ -822,26 +822,32 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 
 	/**
-	 * @param \CUser $oUser Helpdesk user object
-	 * @param array $aThreadIds
-	 *
+	 * @param \CUser $oUser
+	 * @param int $iThreadId
 	 * @return bool
 	 */
-	public function verifyThreadIdsBelongToUser(\CUser $oUser, $aThreadIds)
+	public function doesUserOwnThread($oUser, $iThreadId)
 	{
 		$bResult = false;
+		
 		try
 		{
-			if (0 < count($aThreadIds))
-			{
-//				$bResult = $this->oStorage->verifyThreadIdsBelongToUser($oUser, $aThreadIds);
-			}
+			$iOffset = 0;
+			$iLimit = 0;
+			$aFilters = array(
+				'$AND' => array(
+					'IdThread' => $iThreadId,
+					'IdViewer' => $oUser->EntityId,
+				),
+			);
+			$aThreads = $this->oEavManager->getEntities('CThread', array(), $iOffset, $iLimit, $aFilters);
+			$bResult = count($aThreads) > 0;
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
-			$bResult = false;
 			$this->setLastException($oException);
 		}
+		
 		return $bResult;
 	}
 
@@ -870,27 +876,27 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 
 	/**
-	 * @param \CUser $oUser Helpdesk user object
-	 * @param array $aThreadIds
-	 * @param bool $bSetArchive = true
-	 *
-	 * @return bool
+	 * @param int $iThreadId
+	 * @return boolean
 	 */
-	public function archiveThreads(\CUser $oUser, $aThreadIds, $bSetArchive = true)
+	public function archiveThread($iThreadId)
 	{
 		$bResult = false;
+		
 		try
 		{
-			if (0 < count($aThreadIds))
+			$mThread = $this->getThread($iThreadId);
+			if ($mThread !== false)
 			{
-//				$bResult = $this->oStorage->archiveThreads($oUser, $aThreadIds, $bSetArchive);
+				$mThread->IsArchived = true;
+				$bResult = $this->oEavManager->saveEntity($mThread);
 			}
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
-			$bResult = false;
 			$this->setLastException($oException);
 		}
+		
 		return $bResult;
 	}
 	

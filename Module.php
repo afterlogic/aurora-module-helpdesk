@@ -774,7 +774,6 @@ class Module extends \Aurora\System\Module\AbstractModule
 	}
 	
 	/**
-	 * 
 	 * @param int $ThreadId
 	 * @return boolean
 	 * @throws \Aurora\System\Exceptions\ApiException
@@ -785,23 +784,12 @@ class Module extends \Aurora\System\Module\AbstractModule
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
-		if (!$oUser)
+		if (!$oUser || !$this->isAgent() && !$this->oMainManager->doesUserOwnThread($oUser, $ThreadId))
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
 		}
 
-		$iThreadId = (int) $ThreadId;
-
-		if (0 < $iThreadId && !$this->isAgent() && !$this->oMainManager->verifyThreadIdsBelongToUser($oUser, array($iThreadId)))
-		{
-			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
-		}
-
-		$bResult = false;
-		if (0 < $iThreadId)
-		{
-			$bResult = $this->oMainManager->archiveThreads($oUser, array($iThreadId));
-		}
+		$bResult = $this->oMainManager->archiveThread($ThreadId);
 
 		return $bResult;
 	}	
@@ -809,22 +797,22 @@ class Module extends \Aurora\System\Module\AbstractModule
 	/**
 	 * 
 	 * @param int $ThreadId
-	 * @param int $ThreadType
+	 * @param int $Type
 	 * @return boolean
 	 * @throws \Aurora\System\Exceptions\ApiException
 	 */
-	public function ChangeThreadState($ThreadId = 0, $ThreadType = Enums\ThreadType::None)
+	public function ChangeThreadState($ThreadId = 0, $Type = Enums\ThreadType::None)
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
-
-		if (1 > $ThreadId || !\in_array($ThreadType, array(Enums\ThreadType::Pending, Enums\ThreadType::Waiting, Enums\ThreadType::Answered, Enums\ThreadType::Resolved, Enums\ThreadType::Deferred)))
+		$aTypes = array(Enums\ThreadType::Pending, Enums\ThreadType::Waiting, Enums\ThreadType::Answered, Enums\ThreadType::Resolved, Enums\ThreadType::Deferred);
+		if (1 > $ThreadId || !\in_array($Type, $aTypes))
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
 
-		if (!$oUser || ($ThreadType !== Enums\ThreadType::Resolved && !$this->isAgent()))
+		if (!$oUser || ($Type !== Enums\ThreadType::Resolved && !$this->isAgent()))
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::AccessDenied);
 		}
@@ -833,7 +821,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 		$oThread = $this->oMainManager->getThread($ThreadId);
 		if ($oThread)
 		{
-			$oThread->Type = $ThreadType;
+			$oThread->Type = $Type;
 			$bResult = $this->oMainManager->updateThread($oThread);
 		}
 		
