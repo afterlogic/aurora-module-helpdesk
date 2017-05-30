@@ -10,11 +10,9 @@
 
 /**
  * @property int $IdThread
- * @property int $IdUser
+ * @property int $IdViewer
+ * @property string $Email
  * @property datetime $PingTime
- *
- * @package Helpdesk
- * @subpackage Classes
  */
 class COnline extends \Aurora\System\EAV\Entity
 {
@@ -22,7 +20,8 @@ class COnline extends \Aurora\System\EAV\Entity
 	{
 		$this->aStaticMap = array(
 			'IdThread'		=> array('int', 0),
-			'IdUser'		=> array('int', 0),
+			'IdViewer'		=> array('int', 0),
+			'Email'			=> array('string', ''),
 			'PingTime'		=> array('datetime', date('Y-m-d H:i:s')),
 		);
 		parent::__construct($sModule);

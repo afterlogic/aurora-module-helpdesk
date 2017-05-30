@@ -850,20 +850,40 @@ class Module extends \Aurora\System\Module\AbstractModule
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
-		$iUserId = \Aurora\System\Api::getAuthenticatedUserId();
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
 		if (0 === $ThreadId)
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::InvalidInputParameter);
 		}
+		
+		$oOnlineManager = new Managers\Online\Manager('', $this);
 
+		$oOnlineManager->removeOldOnline();
+		$oOnlineManager->removeViewerOnline($oUser, $ThreadId);
+		
 		$oOnline = \COnline::createInstance('COnline', $this->GetName());
 		$oOnline->IdThread = $ThreadId;
-		$oOnline->IdUser = $iUserId;
-		$this->oMainManager->setOnline($oOnline);
-		$this->oMainManager->removeOldOnline();
+		$oOnline->IdViewer = $oUser->EntityId;
+		$oOnline->Email = $oUser->PublicId;
+		$oOnlineManager->setOnline($oOnline);
 
-		return $this->oMainManager->getOnline($oUser, $ThreadId);
+		$aResult = [];
+		if ($this->isAgent())
+		{
+			$aOnlines = $oOnlineManager->getOnlineList($ThreadId);
+			if (is_array($aOnlines))
+			{
+				foreach ($aOnlines as $oOnlineItem)
+				{
+					if ($oOnlineItem->IdViewer !== $oUser->EntityId)
+					{
+						$aResult[] = ['', $oOnlineItem->Email];
+					}
+				}
+			}
+		}
+		return $aResult;
 	}
 	
 	/**
