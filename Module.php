@@ -198,7 +198,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 
 		try
 		{
-//				$oApiIntegrator = \Aurora\System\Api::GetCoreManager('integrator');
+//				$oApiIntegrator = new \Aurora\Modules\Core\Managers\Integrator();
 //				$oUser = $oApiIntegrator->loginToHelpdeskAccount($mIdTenant, $sEmail, $sPassword);
 //				if ($oUser && !$oUser->Blocked)
 //				{
@@ -268,7 +268,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		\setcookie('aft-cache-ctrl', '', \time() - 3600);
-		$oApiIntegrator = \Aurora\System\Api::GetSystemManager('integrator');
+		$oApiIntegrator = new \Aurora\Modules\Core\Managers\Integrator();
 		$oApiIntegrator->logoutHelpdeskUser();
 
 		return true;
