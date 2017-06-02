@@ -13,7 +13,7 @@ namespace Aurora\Modules\HelpDesk\Managers\Online;
 class Manager extends \Aurora\System\Managers\AbstractManager
 {
 	/**
-	 * @var \Aurora\System\Managers\Eav\Manager
+	 * @var \Aurora\System\Managers\Eav
 	 */
 	public $oEavManager = null;
 	
@@ -27,7 +27,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 
 		if ($oModule instanceof \Aurora\System\Module\AbstractModule)
 		{
-			$this->oEavManager = new \Aurora\System\Managers\Eav\Manager();
+			$this->oEavManager = new \Aurora\System\Managers\Eav();
 		}
 	}
 

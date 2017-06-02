@@ -20,7 +20,7 @@ namespace Aurora\Modules\HelpDesk\Managers\Accounts;
 class Manager extends \Aurora\System\Managers\AbstractManager
 {
 	/**
-	 * @var \Aurora\System\Managers\Eav\Manager
+	 * @var \Aurora\System\Managers\Eav
 	 */
 	public $oEavManager = null;
 	
@@ -36,7 +36,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	{
 		parent::__construct($oModule);
 		
-		$this->oEavManager = new \Aurora\System\Managers\Eav\Manager();
+		$this->oEavManager = new \Aurora\System\Managers\Eav();
 		
 		$this->oCoreDecorator = \Aurora\Modules\Core\Module::Decorator();
 		
