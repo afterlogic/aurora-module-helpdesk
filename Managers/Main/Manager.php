@@ -1131,7 +1131,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 			$oApiUsers = $this->_getApiUsers();
 			$oApiMail = $this->_getApiMail();
 			
-			$oApiFileCache = /* @var $oApiFileCache \Aurora\System\Managers\Filecache\Manager */ new \Aurora\System\Managers\Filecache();
+			$oApiFileCache = /* @var $oApiFileCache \Aurora\System\Managers\Filecache */ new \Aurora\System\Managers\Filecache();
 			$oApiFilestorage = /* @var $oApiFileCache \CApiFilestorageManager */ \Aurora\System\Api::Manager('filestorage');
 			$oApiIntegrator = /* @var $oApiIntegrator \Aurora\Modules\Core\Managers\Integrator */ new \Aurora\Modules\Core\Managers\Integrator();
 			
@@ -1323,7 +1323,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		{
 			$oApiUsers = $this->_getApiUsers();
 			$oApiMail = $this->_getApiMail();
-			$oApiFileCache = /* @var $oApiFileCache \Aurora\System\Managers\Filecache\Manager */ new \Aurora\System\Managers\Filecache();
+			$oApiFileCache = /* @var $oApiFileCache \Aurora\System\Managers\Filecache */ new \Aurora\System\Managers\Filecache();
 			$oApiFilestorage = /* @var $oApiFileCache \CApiFilestorageManager */ \Aurora\System\Api::Manager('filestorage');
 
 			if ($oApiUsers && $oApiMail && $oApiFileCache)
