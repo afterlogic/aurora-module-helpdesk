@@ -8,9 +8,9 @@
  * For full statements of the licenses see LICENSE-AFTERLOGIC and LICENSE-AGPL3 files.
  */
 
-use \Modules\HelpDesk\CAccount as CHelpDeskAccount;
-
 namespace Aurora\Modules\HelpDesk\Managers\Accounts;
+
+use \Modules\HelpDesk\CAccount as CHelpDeskAccount;
 
 /**
  * CApiAccountsManager class summary
