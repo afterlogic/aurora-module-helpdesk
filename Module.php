@@ -12,7 +12,7 @@ namespace Aurora\Modules\HelpDesk;
 /**
  * @package Modules
  */
-class Module extends \Aurora\System\Module\AbstractModule
+class Module extends \Aurora\System\Module\AbstractLicensedModule
 {
 	public $oCurrentAccount = null;
 	
