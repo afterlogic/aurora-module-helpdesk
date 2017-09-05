@@ -438,7 +438,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 					$oFromEmail = \MailSo\Mime\Email::NewInstance($oFromAccount->Email, $sSiteName);
 					$oToEmail = \MailSo\Mime\Email::NewInstance($Email, $oAccount->Name);
 
-					$oUserMessage = $this->oMainManager->_buildUserMailMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.forgot.html',
+					$oUserMessage = $this->oMainManager->_buildUserMailMail(AU_APP_ROOT_PATH.'templates/helpdesk/user.forgot.html',
 						$oFromEmail->ToString(), $oToEmail->ToString(),
 						'Forgot', '', '', $oAccount, $sSiteName);
 
@@ -564,7 +564,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 //						$sThreadID = \str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
 //						$sThreadIDSubFolder = \substr($sThreadID, 0, 2);
 //
-//						$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
+//						$sThreadFolderName = AU_API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
 //
 //						$this->oApiFilestorage->createFolder($oUser, \Aurora\System\Enums\FileStorageType::Corporate, '',
 //							$sThreadFolderName);

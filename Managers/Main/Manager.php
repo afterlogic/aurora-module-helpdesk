@@ -1259,7 +1259,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 														$sThreadID = str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
 														$sThreadIDSubFolder = substr($sThreadID, 0, 2);
 
-														$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
+														$sThreadFolderName = AU_API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
 
 														$oApiFilestorage->createFolder($oUser, \Aurora\System\Enums\FileStorageType::Corporate, '',
 															$sThreadFolderName);
@@ -1415,7 +1415,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 																$sThreadID = str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
 																$sThreadIDSubFolder = substr($sThreadID, 0, 2);
 
-																$sThreadFolderName = API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
+																$sThreadFolderName = AU_API_HELPDESK_PUBLIC_NAME.'/'.$sThreadIDSubFolder.'/'.$sThreadID;
 
 																$oApiFilestorage->createFolder($oUser, \Aurora\System\Enums\FileStorageType::Corporate, '',
 																	$sThreadFolderName);
@@ -1728,7 +1728,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 //						$oFromEmail = \MailSo\Mime\Email::NewInstance($oFromAccount->Email, $sSiteName);
 //						$oToEmail = \MailSo\Mime\Email::NewInstance($sEmail, $oHelpdeskAccount->Name);
 //
-//						$oUserMessage = $this->_buildUserMailMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.forgot.html',
+//						$oUserMessage = $this->_buildUserMailMail(AU_APP_ROOT_PATH.'templates/helpdesk/user.forgot.html',
 //							$oFromEmail->ToString(), $oToEmail->ToString(),
 //							'Forgot', '', '', $oHelpdeskAccount, $sSiteName);
 //
@@ -1773,7 +1773,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 						$oFromEmail = \MailSo\Mime\Email::NewInstance($oFromAccount->Email, $sSiteName);
 						$oToEmail = \MailSo\Mime\Email::NewInstance($sEmail, $oUser->Name);
 
-						$oUserMessage = $this->_buildUserMailMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.registration'.($bCreateFromFetcher ? '.fetcher' : '').'.html',
+						$oUserMessage = $this->_buildUserMailMail(AU_APP_ROOT_PATH.'templates/helpdesk/user.registration'.($bCreateFromFetcher ? '.fetcher' : '').'.html',
 							$oFromEmail->ToString(), $oToEmail->ToString(), 'Registration', '', '', $oUser, $sSiteName);
 
 						$oApiMail->sendMessage($oFromAccount, $oUserMessage);
@@ -1827,7 +1827,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 
 						if (\Aurora\Modules\HelpDesk\Enums\PostType::Normal === $oPost->Type && ($bIsNew || $oThreadOwnerUser->iObjectId !== $oPost->IdOwner))
 						{
-							$oUserMessage = $this->_buildPostMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.post'.($bIsNew ? '.new' : '').'.html',
+							$oUserMessage = $this->_buildPostMail(AU_APP_ROOT_PATH.'templates/helpdesk/user.post'.($bIsNew ? '.new' : '').'.html',
 								$oHelpdeskSenderEmail->ToString(), $oThreadOwnerEmail->ToString(),
 								'New Post', $sCc, $sBcc, $oThreadOwnerUser, $oHelpdeskPostOwnerUser, $oThread, $oPost, $sSiteName);
 
@@ -1851,7 +1851,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 						$aAgents = $this->getAgentsEmailsForNotification($oPost->IdTenant, $aDeMail);
 						if (is_array($aAgents) && 0 < count($aAgents))
 						{
-							$oAgentMessage = $this->_buildPostMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/agent.post.html',
+							$oAgentMessage = $this->_buildPostMail(AU_APP_ROOT_PATH.'templates/helpdesk/agent.post.html',
 								$oHelpdeskSenderEmail->ToString(), is_array($aAgents) && 0 < count($aAgents) ? implode(', ', $aAgents) : '',
 								'New Post', $sCc, $sBcc, $oThreadOwnerUser, $oHelpdeskPostOwnerUser, $oThread, $oPost, $sSiteName);
 
@@ -1905,7 +1905,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 
 						if ($oThreadOwnerUser->iObjectId === $oThread->IdOwner)
 						{
-							$oUserMessage = $this->_buildPostMail(AURORA_APP_ROOT_PATH.'templates/helpdesk/user.post.notification.html',
+							$oUserMessage = $this->_buildPostMail(AU_APP_ROOT_PATH.'templates/helpdesk/user.post.notification.html',
 								$oHelpdeskSenderEmail->ToString(), $oThreadOwnerEmail->ToString(),
 								'New Post', '', '', $oThreadOwnerUser, $oHelpdeskPostOwnerUser, $oThread, null, $sSiteName);
 
