@@ -168,7 +168,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 	}
 	
 	/**
-	 * @param \CAccount $oAccount
+	 * @param \Aurora\Modules\StandardAuth\Classes\Account $oAccount
 	 * 
 	 * @param string $Login
 	 * @param string $Password
@@ -318,7 +318,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 			if ($oEventResult instanceOf \CUser)
 			{
 				//Create account for auth
-				$oAuthAccount = \CAccount::createInstance('HelpDesk');
+				$oAuthAccount = \Aurora\Modules\StandardAuth\Classes\Account::createInstance('HelpDesk');
 				$oAuthAccount->IdUser = $oEventResult->EntityId;
 				$oAuthAccount->Login = $Email;
 				$oAuthAccount->Password = $Password;
