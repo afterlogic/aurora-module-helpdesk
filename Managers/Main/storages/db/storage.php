@@ -74,7 +74,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 *
 	 * @return bool
 	 */
-	public function createUser(\CUser &$oHelpdeskUser)
+	public function createUser(\Aurora\Modules\Core\Classes\User &$oHelpdeskUser)
 	{
 		$bResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->createUser($oHelpdeskUser)))
@@ -238,11 +238,11 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 
 	/**
 	 * TODO remove or rewrite for account check instead of user
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 *
 	 * @return bool
 	 */
-	public function isUserExists(\CUser $oUser)
+	public function isUserExists(\Aurora\Modules\Core\Classes\User $oUser)
 	{
 		$bResult = false;
 
@@ -264,12 +264,12 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	/**
 	 * TODO
 	 * 
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param array $aIdList
 	 *
 	 * @return array|bool
 	 */
-	public function userInformation(\CUser $oUser, $aIdList)
+	public function userInformation(\Aurora\Modules\Core\Classes\User $oUser, $aIdList)
 	{
 		$mResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->userInformation($oUser, $aIdList)))
@@ -291,11 +291,11 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 
 	/**
 	 * TODO update Account insead of User
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 *
 	 * @return bool
 	 */
-	public function updateUser(\CUser $oUser)
+	public function updateUser(\Aurora\Modules\Core\Classes\User $oUser)
 	{
 		$bResult = $this->oConnection->Execute($this->oCommandCreator->updateUser($oUser));
 		$this->throwDbExceptionIfExist();
@@ -330,13 +330,13 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param CHelpdeskThread $oThread
 	 * @param array $aPostIds
 	 *
 	 * @return bool
 	 */
-	public function deletePosts(\CUser $oUser, $oThread, $aPostIds)
+	public function deletePosts(\Aurora\Modules\Core\Classes\User $oUser, $oThread, $aPostIds)
 	{
 		$bResult = $this->oConnection->Execute($this->oCommandCreator->deletePosts($oUser, $oThread, $aPostIds));
 		$this->throwDbExceptionIfExist();
@@ -354,14 +354,14 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param CHelpdeskThread $oHelpdeskThread
 	 * @param CHelpdeskPost $oHelpdeskPost
 	 * @param array $aAttachments
 	 *
 	 * @return bool
 	 */
-	public function addAttachments(\CUser $oUser, CHelpdeskThread $oHelpdeskThread, CHelpdeskPost $oHelpdeskPost, $aAttachments)
+	public function addAttachments(\Aurora\Modules\Core\Classes\User $oUser, CHelpdeskThread $oHelpdeskThread, CHelpdeskPost $oHelpdeskPost, $aAttachments)
 	{
 		foreach ($aAttachments as &$oItem)
 		{
@@ -377,12 +377,12 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param array $aThreadIds
 	 *
 	 * @return bool
 	 */
-	public function verifyThreadIdsBelongToUser(\CUser $oUser, $aThreadIds)
+	public function verifyThreadIdsBelongToUser(\Aurora\Modules\Core\Classes\User $oUser, $aThreadIds)
 	{
 		$mResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->verifyThreadIdsBelongToUser($oUser, $aThreadIds)))
@@ -406,12 +406,12 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param array $aPostIds
 	 *
 	 * @return bool
 	 */
-	public function verifyPostIdsBelongToUser(\CUser $oUser, $aPostIds)
+	public function verifyPostIdsBelongToUser(\Aurora\Modules\Core\Classes\User $oUser, $aPostIds)
 	{
 		$mResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->verifyPostIdsBelongToUser($oUser, $aPostIds)))
@@ -442,7 +442,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return bool
 	 */
 //	public function archiveThreads(CHelpdeskUser $oHelpdeskUser, $aThreadIds, $bSetArchive = true)
-	public function archiveThreads(\CUser $oHelpdeskUser, $aThreadIds, $bSetArchive = true)
+	public function archiveThreads(\Aurora\Modules\Core\Classes\User $oHelpdeskUser, $aThreadIds, $bSetArchive = true)
 	{
 		$bResult = $this->oConnection->Execute($this->oCommandCreator->archiveThreads($oHelpdeskUser, $aThreadIds, $bSetArchive));
 		$this->throwDbExceptionIfExist();
@@ -550,7 +550,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return bool
 	 */
 //	public function createThread(CHelpdeskUser $oHelpdeskUser, CHelpdeskThread &$oHelpdeskThread)
-	public function createThread(\CUser $oHelpdeskUser, CHelpdeskThread &$oHelpdeskThread)
+	public function createThread(\Aurora\Modules\Core\Classes\User $oHelpdeskUser, CHelpdeskThread &$oHelpdeskThread)
 	{
 		$bResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->createThread($oHelpdeskUser, $oHelpdeskThread)))
@@ -570,7 +570,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return bool
 	 */
 //	public function updateThread(CHelpdeskUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
-	public function updateThread(\CUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
+	public function updateThread(\Aurora\Modules\Core\Classes\User $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
 	{
 		$bResult = $this->oConnection->Execute($this->oCommandCreator->updateThread($oHelpdeskUser, $oHelpdeskThread));
 		$this->throwDbExceptionIfExist();
@@ -578,14 +578,14 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	}
 	
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All.
 	 * @param string $sSearch Default value is empty string.
 	 * @param int $iSearchOwner Default value is **0**.
 	 *
 	 * @return int
 	 */
-	public function getThreadsCount(\CUser $oUser, $bIsAgent = false, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
+	public function getThreadsCount(\Aurora\Modules\Core\Classes\User $oUser, $bIsAgent = false, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
 	{
 		$iResult = 0;
 		if ($this->oConnection->Execute($this->oCommandCreator->getThreadsCount($oUser, $bIsAgent, $iFilter, $sSearch, $iSearchOwner)))
@@ -627,7 +627,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param int $iOffset Default value is **0**.
 	 * @param int $iLimit Default value is **20**.
 	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All.
@@ -636,7 +636,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 *
 	 * @return array|bool
 	 */
-	public function getThreads(\CUser $oUser, $bIsAgent = false, $iOffset = 0, $iLimit = 20, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
+	public function getThreads(\Aurora\Modules\Core\Classes\User $oUser, $bIsAgent = false, $iOffset = 0, $iLimit = 20, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
 	{
 		$mResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->getThreads($oUser, $bIsAgent, $iOffset, $iLimit, $iFilter, $sSearch, $iSearchOwner)))
@@ -665,7 +665,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return int
 	 */
 //	public function getPostsCount(CHelpdeskUser $oHelpdeskUser, $oThread)
-	public function getPostsCount(\CUser $oHelpdeskUser, $oThread)
+	public function getPostsCount(\Aurora\Modules\Core\Classes\User $oHelpdeskUser, $oThread)
 	{
 		$iResult = 0;
 		if ($this->oConnection->Execute($this->oCommandCreator->getPostsCount($oHelpdeskUser, $oThread)))
@@ -690,7 +690,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return int
 	 */
 //	public function getExtPostsCount(CHelpdeskUser $oHelpdeskUser, $oThread)
-	public function getExtPostsCount(\CUser $oHelpdeskUser, $oThread)
+	public function getExtPostsCount(\Aurora\Modules\Core\Classes\User $oHelpdeskUser, $oThread)
 	{
 		$iResult = 0;
 		if ($this->oConnection->Execute($this->oCommandCreator->getExtPostsCount($oHelpdeskUser, $oThread)))
@@ -709,12 +709,12 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param array $aThreadIds
 	 *
 	 * @return array|bool
 	 */
-	public function getThreadsLastPostIds(\CUser $oUser, $aThreadIds)
+	public function getThreadsLastPostIds(\Aurora\Modules\Core\Classes\User $oUser, $aThreadIds)
 	{
 		$mResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->getThreadsLastPostIds($oUser, $aThreadIds)))
@@ -739,7 +739,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return array|bool
 	 */
 //	public function getAttachments(CHelpdeskUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
-	public function getAttachments(\CUser $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
+	public function getAttachments(\Aurora\Modules\Core\Classes\User $oHelpdeskUser, CHelpdeskThread $oHelpdeskThread)
 	{
 		$mResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->getAttachments($oHelpdeskUser, $oHelpdeskThread)))
@@ -766,14 +766,14 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	}
 	
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param CHelpdeskThread $oThread
 	 * @param int $iStartFromId Default value is **0**.
 	 * @param int $iLimit Default value is **20**.
 	 *
 	 * @return array|bool
 	 */
-	public function getPosts(\CUser $oUser, $oThread, $iStartFromId = 0, $iLimit = 20)
+	public function getPosts(\Aurora\Modules\Core\Classes\User $oUser, $oThread, $iStartFromId = 0, $iLimit = 20)
 	{
 		$mResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->getPosts($oUser, $oThread, $iStartFromId, $iLimit)))
@@ -801,7 +801,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return bool
 	 */
 //	public function createPost(CHelpdeskUser $oHelpdeskUser, CHelpdeskPost &$oPost)
-	public function createPost(\CUser $oHelpdeskUser, CHelpdeskPost &$oPost)
+	public function createPost(\Aurora\Modules\Core\Classes\User $oHelpdeskUser, CHelpdeskPost &$oPost)
 	{
 		$bResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->createPost($oHelpdeskUser, $oPost)))
@@ -819,7 +819,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 *
 	 * @return array|bool
 	 */
-	public function getOnline(\CUser $oUser, $iThreadID)
+	public function getOnline(\Aurora\Modules\Core\Classes\User $oUser, $iThreadID)
 	{
 		$mResult = false;
 		if ($this->oConnection->Execute($this->oCommandCreator->getOnline($oUser, $iThreadID, 5)))
@@ -865,7 +865,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return bool
 	 */
 //	public function setOnline(CHelpdeskUser $oHelpdeskUser, $iThreadID)
-	public function setOnline(\CUser $oHelpdeskUser, $iThreadID)
+	public function setOnline(\Aurora\Modules\Core\Classes\User $oHelpdeskUser, $iThreadID)
 	{
 		$this->oConnection->Execute($this->oCommandCreator->clearOnline($oHelpdeskUser, $iThreadID));
 		$bResult = $this->oConnection->Execute($this->oCommandCreator->setOnline($oHelpdeskUser, $iThreadID));
@@ -881,7 +881,7 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	 * @return bool
 	 */
 //	public function setThreadSeen(CHelpdeskUser $oHelpdeskUser, $oHelpdeskThread)
-	public function setThreadSeen(\CUser $oHelpdeskUser, $oHelpdeskThread)
+	public function setThreadSeen(\Aurora\Modules\Core\Classes\User $oHelpdeskUser, $oHelpdeskThread)
 	{
 		$this->oConnection->Execute($this->oCommandCreator->clearThreadSeen($oHelpdeskUser, $oHelpdeskThread));
 		$bResult = $this->oConnection->Execute($this->oCommandCreator->setThreadSeen($oHelpdeskUser, $oHelpdeskThread));

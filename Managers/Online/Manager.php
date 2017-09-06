@@ -74,11 +74,11 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 	
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param int $iThreadId
 	 * @return boolean
 	 */
-	public function removeViewerOnline(\CUser $oUser, $iThreadId)
+	public function removeViewerOnline(\Aurora\Modules\Core\Classes\User $oUser, $iThreadId)
 	{
 		$aFilters = array(
 			'IdViewer' => array($oUser->EntityId, '=')

@@ -117,7 +117,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	/**
 	 * @param string $sPath
 	 * @param \MailSo\Mime\Message $oMessage Message object
-	 * @param \CUser $oUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Helpdesk user object
 	 * @param string $sSiteName
 	 * @param string $sFrom
 	 */
@@ -173,8 +173,8 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	/**
 	 * @param string $sPath
 	 * @param \MailSo\Mime\Message $oMessage Message object
-	 * @param \CUser $oHelpdeskThreadOwnerUser Helpdesk user object
-	 * @param \CUser $oHelpdeskPostOwnerUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oHelpdeskThreadOwnerUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oHelpdeskPostOwnerUser Helpdesk user object
 	 * @param \CThread $oThread Helpdesk thread object
 	 * @param CHelpdeskPost $oPost Helpdesk post object
 	 * @param string $sSiteName
@@ -347,8 +347,8 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 * @param string $sSubject
 	 * @param string $sCc
 	 * @param string $sBcc
-	 * @param \CUser $oHelpdeskThreadOwnerUser Helpdesk user object
-	 * @param \CUser $oHelpdeskPostOwnerUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oHelpdeskThreadOwnerUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oHelpdeskPostOwnerUser Helpdesk user object
 	 * @param \CThread $oThread Helpdesk thread object
 	 * @param CHelpdeskPost $oPost Helpdesk post object
 	 * @param string $sSiteName
@@ -376,7 +376,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 * @param string $sSubject
 	 * @param string $sCc
 	 * @param string $sBcc
-	 * @param \CUser $oUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Helpdesk user object
 	 * @param string $sSiteName
 	 *
 	 * @return \MailSo\Mime\Message
@@ -416,18 +416,18 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		return 0;
 	}
 	
-	public function isAgent(\CUser $oUser)
+	public function isAgent(\Aurora\Modules\Core\Classes\User $oUser)
 	{
 		return !empty($oUser) && $oUser->Role === \Aurora\System\Enums\UserRole::NormalUser;
 	}
 	
 	/**
-	 * @param \CUser $oUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Helpdesk user object
 	 * @param bool $bCreateFromFetcher Default value is **false**.
 	 * 
 	 * @return bool
 	 */
-	public function createUser(\CUser &$oUser, $bCreateFromFetcher = false)
+	public function createUser(\Aurora\Modules\Core\Classes\User &$oUser, $bCreateFromFetcher = false)
 	{
 		$bResult = false;
 		try
@@ -466,7 +466,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 * @param int $iIdTenant
 	 * @param int $iHelpdeskUserId
 	 * 
-	 * @return \CUser|false
+	 * @return \Aurora\Modules\Core\Classes\User|false
 	 */
 	public function getUserById($iIdTenant, $iHelpdeskUserId)
 	{
@@ -486,7 +486,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	/**
 	 * @param int $iHelpdeskUserId
 	 *
-	 * @return \CUser|false
+	 * @return \Aurora\Modules\Core\Classes\User|false
 	 */
 	public function getUserByIdWithoutTenantID($iHelpdeskUserId)
 	{
@@ -507,7 +507,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 * @param int $iIdTenant
 	 * @param string $sActivateHash
 	 *
-	 * @return \CUser|false
+	 * @return \Aurora\Modules\Core\Classes\User|false
 	 */
 	public function getUserByActivateHash($iIdTenant, $sActivateHash)
 	{
@@ -527,7 +527,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	/**
 	 * @param int $iIdTenant
 	 *
-	 * @return \CUser|false
+	 * @return \Aurora\Modules\Core\Classes\User|false
 	 */
 	public function getHelpdeskMainSettings($iIdTenant)
 	{
@@ -618,7 +618,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 * @param int $iIdTenant
 	 * @param string $sEmail
 	 * 
-	 * @return \CUser|null|false
+	 * @return \Aurora\Modules\Core\Classes\User|null|false
 	 */
 	public function getUserByEmail($iIdTenant, $sEmail)
 	{
@@ -639,7 +639,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 * @param int $iIdTenant
 	 * @param string $sEmail
 	 *
-	 * @return \CUser|null|false
+	 * @return \Aurora\Modules\Core\Classes\User|null|false
 	 */
 	public function getUserByNotificationEmail($iIdTenant, $sEmail)
 	{
@@ -660,7 +660,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 * @param int $iIdTenant
 	 * @param string $sSocialId
 	 *
-	 * @return \CUser|null|false
+	 * @return \Aurora\Modules\Core\Classes\User|null|false
 	 */
 	public function getUserBySocialId($iIdTenant, $sSocialId)
 	{
@@ -678,7 +678,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 *
 	 * @return bool
 	 */
@@ -690,11 +690,11 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 //	}
 	
 	/**
-	 * @param \CUser $oUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Helpdesk user object
 	 *
 	 * @return bool
 	 */
-	public function isUserExists(\CUser $oUser)
+	public function isUserExists(\Aurora\Modules\Core\Classes\User $oUser)
 	{
 		$bResult = false;
 		if(!$oUser->SocialId)
@@ -713,11 +713,11 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 
 	/**
-	 * @param \CUser $oUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Helpdesk user object
      *
 	 * @return bool
 	 */
-	public function updateUser(\CUser $oUser)
+	public function updateUser(\Aurora\Modules\Core\Classes\User $oUser)
 	{
 		$bResult = false;
 		try
@@ -790,13 +790,13 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 
 	/**
-	 * @param \CUser $oUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Helpdesk user object
 	 * @param \CThread $oThread Helpdesk thread object
 	 * @param array $aPostIds
 	 *
 	 * @return bool
 	 */
-	public function deletePosts(\CUser $oUser, $oThread, $aPostIds)
+	public function deletePosts(\Aurora\Modules\Core\Classes\User $oUser, $oThread, $aPostIds)
 	{
 		$bResult = false;
 		try
@@ -821,7 +821,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param int $iThreadId
 	 * @return bool
 	 */
@@ -851,12 +851,12 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 
 	/**
-	 * @param \CUser $oUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Helpdesk user object
 	 * @param array $aPostIds
 	 *
 	 * @return bool
 	 */
-	public function verifyPostIdsBelongToUser(\CUser $oUser, $aPostIds)
+	public function verifyPostIdsBelongToUser(\Aurora\Modules\Core\Classes\User $oUser, $aPostIds)
 	{
 		$bResult = false;
 		try
@@ -1234,7 +1234,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 											$aResultAttachment = array();
 											if (is_array($aAttachments) && 0 < count($aAttachments))
 											{
-												foreach ($aAttachments as /* @var $oAttachment CApiMailAttachment */ $oAttachment)
+												foreach ($aAttachments as /* @var $oAttachment \Aurora\Modules\Mail\Classes\Attachment */ $oAttachment)
 												{
 													$sUploadName = $oAttachment->getFileName(true);
 													$sTempName = md5($sUploadName.rand(1000, 9999));
@@ -1390,7 +1390,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 													$aResultAttachment = array();
 													if (is_array($aAttachments) && 0 < count($aAttachments))
 													{
-														foreach ($aAttachments as /* @var $oAttachment CApiMailAttachment */ $oAttachment)
+														foreach ($aAttachments as /* @var $oAttachment \Aurora\Modules\Mail\Classes\Attachment */ $oAttachment)
 														{
 															$sUploadName = $oAttachment->getFileName(true);
 															$sTempName = md5($sUploadName.rand(1000, 9999));
@@ -1469,13 +1469,13 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 
 	/**
-	 * @param \CUser $oUser Core user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Core user object
 	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All.
 	 * @param string $sSearch = ''
 	 * 
 	 * @return int
 	 */
-	public function getThreadsCount(\CUser $oUser, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '')
+	public function getThreadsCount(\Aurora\Modules\Core\Classes\User $oUser, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '')
 	{
 		$iResult = 0;
 		try
@@ -1511,7 +1511,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		return $iResult;
 	}
 
-	protected function _getFilters(\CUser $oUser, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '')
+	protected function _getFilters(\Aurora\Modules\Core\Classes\User $oUser, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '')
 	{
 		$bIsAgent = $this->isAgent($oUser);
 		$iSearchOwner = $this->_getOwnerFromSearch($oUser->IdTenant, $sSearch);
@@ -1569,7 +1569,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 	
 	/**
-	 * @param \CUser $oUser Core user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Core user object
 	 * @param int $iOffset Default value is **0**.
 	 * @param int $iLimit Default value is **20**.
 	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All
@@ -1577,7 +1577,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 *
 	 * @return array|bool
 	 */
-	public function getThreads(\CUser $oUser, $iOffset = 0, $iLimit = 20, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '')
+	public function getThreads(\Aurora\Modules\Core\Classes\User $oUser, $iOffset = 0, $iLimit = 20, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '')
 	{
 		$aResult = null;
 		try
@@ -1623,12 +1623,12 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 
 	/**
-	 * @param \CUser $oUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Helpdesk user object
 	 * @param \CThread $oThread Helpdesk thread object
 	 *
 	 * @return array|bool
 	 */
-	public function getAttachments(\CUser $oUser, \CThread $oThread)
+	public function getAttachments(\Aurora\Modules\Core\Classes\User $oUser, \CThread $oThread)
 	{
 		$aResult = null;
 		try
@@ -1674,12 +1674,12 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 
 	/**
-	 * @param \CUser $oUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Helpdesk user object
 	 * @param \CThread $oThread Helpdesk thread object
 	 *
 	 * @return array|bool
 	 */
-	public function getExtPostsCount(\CUser $oUser, $oThread)
+	public function getExtPostsCount(\Aurora\Modules\Core\Classes\User $oUser, $oThread)
 	{
 		$aResult = null;
 		try
@@ -1695,7 +1695,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 
 	/**
-	 * @param \CUser $oUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Helpdesk user object
 	 */
 	//MOVED TO THE MAIN MODULE CLASS
 //	public function NotifyForgot($oHelpdeskAccount)
@@ -1740,7 +1740,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 //	}
 	
 	/**
-	 * @param \CUser $oUser Helpdesk user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Helpdesk user object
 	 * @param bool $bCreateFromFetcher Default value is **false**.
 	 *
 	 * @return bool
@@ -1921,7 +1921,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	}
 
 	/**
-	 * @param \CUser $oUser Core user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Core user object
 	 * @param \CThread $oThread Helpdesk thread object
 	 * @param \CPost $oPost Helpdesk post object
 	 * @param bool $bIsNew Default value is **false**.
@@ -1931,7 +1931,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 *
 	 * @return bool
 	 */
-	public function createPost(\CUser $oUser, $oThread, \CPost $oPost, $bIsNew = false, $bSendNotify = true, $sCc = '', $sBcc = '')
+	public function createPost(\Aurora\Modules\Core\Classes\User $oUser, $oThread, \CPost $oPost, $bIsNew = false, $bSendNotify = true, $sCc = '', $sBcc = '')
 	{
 		$bResult = false;
 		try

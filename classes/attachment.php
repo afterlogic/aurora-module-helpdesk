@@ -42,10 +42,10 @@ class CHelpdeskAttachment extends \Aurora\System\EAV\Entity
 	}
 
 	/**
-	 * @param \CUser $oUser Core user object
+	 * @param \Aurora\Modules\Core\Classes\User $oUser Core user object
 	 * @param string $sThreadFolderName
 	 */
-	public function encodeHash(\CUser $oUser, $sThreadFolderName)
+	public function encodeHash(\Aurora\Modules\Core\Classes\User $oUser, $sThreadFolderName)
 	{
 		$this->Hash = \Aurora\System\Api::EncodeKeyValues(array(
 			'FilestorageFile' => true,
@@ -58,7 +58,7 @@ class CHelpdeskAttachment extends \Aurora\System\EAV\Entity
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param \CApiHelpdeskManager $oApiHelpdesk
 	 * @param \CApiFilestorageManager $oApiFilestorage
 	 */

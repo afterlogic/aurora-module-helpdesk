@@ -40,7 +40,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		$this->oCoreDecorator = \Aurora\Modules\Core\Module::Decorator();
 		$this->oAuthDecorator = \Aurora\Modules\StandardAuth\Module::Decorator();
 		
-		$this->extendObject('CUser', array(
+		$this->extendObject('Aurora\Modules\Core\Classes\User', array(
 				'AllowEmailNotifications'	=> array('bool', $this->getConfig('AllowEmailNotifications', false)),
 				'Signature'					=> array('bool', $this->getConfig('Signature', '')),
 				'UseSignature'				=> array('bool', $this->getConfig('UseSignature', false)),
@@ -315,7 +315,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 				$oEventResult
 			);
 
-			if ($oEventResult instanceOf \CUser)
+			if ($oEventResult instanceOf \Aurora\Modules\Core\Classes\User)
 			{
 				//Create account for auth
 				$oAuthAccount = \Aurora\Modules\StandardAuth\Classes\Account::createInstance('HelpDesk');
@@ -475,7 +475,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		}
 
 		$oUser = $this->oMainManager->getUserByActivateHash($mIdTenant, $ActivateHash);
-		if (!($oUser instanceof \CUser))
+		if (!($oUser instanceof \Aurora\Modules\Core\Classes\User))
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::HelpdeskUnknownUser);
 		}

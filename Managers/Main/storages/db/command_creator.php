@@ -170,12 +170,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 
 	/**
 	 * TODO
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param int $niExceptUserId Default value is **null**.
 	 *
 	 * @return string
 	 */
-	public function isUserExists(\CUser $oUser, $niExceptUserId = null)
+	public function isUserExists(\Aurora\Modules\Core\Classes\User $oUser, $niExceptUserId = null)
 	{
 		$sAddSql = (is_integer($niExceptUserId)) ? ' AND id_helpdesk_user <> '.$niExceptUserId : '';
 
@@ -190,12 +190,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 
 	/**
 	 * TODO
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param array $aIdList
 	 *
 	 * @return string
 	 */
-	public function userInformation(\CUser $oUser, $aIdList)
+	public function userInformation(\Aurora\Modules\Core\Classes\User $oUser, $aIdList)
 	{
 		$sSql = 'SELECT id_helpdesk_user, email, name, is_agent, notification_email FROM %sahd_users WHERE %s = %d AND %s IN (%s)';
 		return sprintf($sSql, $this->prefix(),
@@ -206,11 +206,11 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 
 	/**
 	 * TODO remove this method
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 *
 	 * @return string
 	 */
-	public function createUser(\CUser $oUser)
+	public function createUser(\Aurora\Modules\Core\Classes\User $oUser)
 	{
 		$aResults = \Aurora\System\AbstractContainer::DbInsertArrays($oUser, $this->oHelper);
 
@@ -225,11 +225,11 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 
 	/**
 	 * TODO remove
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 *
 	 * @return string
 	 */
-	public function updateUser(\CUser $oUser)
+	public function updateUser(\Aurora\Modules\Core\Classes\User $oUser)
 	{
 		$aResult = \Aurora\System\AbstractContainer::DbUpdateArray($oUser, $this->oHelper);
 
@@ -273,13 +273,13 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param array $aThreadIds
 	 * @param bool $bSetArchive Default value is **true**.
 	 *
 	 * @return string
 	 */
-	public function archiveThreads(\CUser $oUser, $aThreadIds, $bSetArchive = true)
+	public function archiveThreads(\Aurora\Modules\Core\Classes\User $oUser, $aThreadIds, $bSetArchive = true)
 	{
 		$sSql = 'UPDATE %sahd_threads SET %s = %d WHERE %s = %d AND %s IN (%d)';
 		return sprintf($sSql, $this->prefix(),
@@ -335,13 +335,13 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param CHelpdeskThread $oThread
 	 * @param array $aPostIds
 	 *
 	 * @return string
 	 */
-	public function deletePosts(\CUser $oUser, $oThread, $aPostIds)
+	public function deletePosts(\Aurora\Modules\Core\Classes\User $oUser, $oThread, $aPostIds)
 	{
 		$sSql = 'UPDATE %sahd_posts SET deleted = 1 WHERE %s = %d AND %s = %d AND %s IN (%d)';
 		return sprintf($sSql, $this->prefix(),
@@ -376,12 +376,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param int $iIdThread
 	 *
 	 * @return string
 	 */
-	public function getThreadById(\CUser $oUser, $iIdThread)
+	public function getThreadById(\Aurora\Modules\Core\Classes\User $oUser, $iIdThread)
 	{
 		$aMap = \Aurora\System\AbstractContainer::DbReadKeys(CHelpdeskThread::getStaticMap());
 		$aMap = array_map(array($this, 'escapeColumn'), $aMap);
@@ -394,12 +394,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param CHelpdeskThread $oHelpdeskThread
 	 *
 	 * @return string
 	 */
-	public function createThread(\CUser $oUser, CHelpdeskThread $oHelpdeskThread)
+	public function createThread(\Aurora\Modules\Core\Classes\User $oUser, CHelpdeskThread $oHelpdeskThread)
 	{
 		$aResults = \Aurora\System\AbstractContainer::DbInsertArrays($oHelpdeskThread, $this->oHelper);
 
@@ -413,12 +413,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param CHelpdeskThread $oHelpdeskThread
 	 *
 	 * @return string
 	 */
-	public function updateThread(\CUser $oUser, CHelpdeskThread $oHelpdeskThread)
+	public function updateThread(\Aurora\Modules\Core\Classes\User $oUser, CHelpdeskThread $oHelpdeskThread)
 	{
 		$aResult = \Aurora\System\AbstractContainer::DbUpdateArray($oHelpdeskThread, $this->oHelper);
 
@@ -430,14 +430,14 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All.
 	 * @param string $sSearch
 	 * @param int $iSearchOwner
 	 *
 	 * @return array
 	 */
-	private function _buildThreadsWhere(\CUser $oUser, $bIsAgent = false, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
+	private function _buildThreadsWhere(\Aurora\Modules\Core\Classes\User $oUser, $bIsAgent = false, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
 	{
 		$aWhere = array();
 
@@ -526,14 +526,14 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All.
 	 * @param string $sSearch Default value is empty string.
 	 * @param int $iSearchOwner Default value is **0**.
 	 *
 	 * @return string
 	 */
-	public function getThreadsCount(\CUser $oUser, $bIsAgent = false, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
+	public function getThreadsCount(\Aurora\Modules\Core\Classes\User $oUser, $bIsAgent = false, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
 	{
 		$sSql = 'SELECT COUNT(id_helpdesk_thread) as item_count FROM %sahd_threads';
 		$sSql = sprintf($sSql, $this->prefix());
@@ -564,7 +564,7 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param int $iOffset Default value is **0**.
 	 * @param int $iLimit Default value is **20**.
 	 * @param int $iFilter Default value is **0** \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All.
@@ -573,7 +573,7 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	 *
 	 * @return string
 	 */
-	public function getThreads(\CUser $oUser, $bIsAgent = false, $iOffset = 0, $iLimit = 20, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
+	public function getThreads(\Aurora\Modules\Core\Classes\User $oUser, $bIsAgent = false, $iOffset = 0, $iLimit = 20, $iFilter = \Aurora\Modules\HelpDesk\Enums\ThreadFilterType::All, $sSearch = '', $iSearchOwner = 0)
 	{
 		$sSearch = trim($sSearch);
 
@@ -600,12 +600,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param array $aThreadIds
 	 *
 	 * @return string
 	 */
-	public function getThreadsLastPostIds(\CUser $oUser, $aThreadIds)
+	public function getThreadsLastPostIds(\Aurora\Modules\Core\Classes\User $oUser, $aThreadIds)
 	{
 		$sSql = 'SELECT DISTINCT id_helpdesk_thread, last_post_id FROM %sahd_reads WHERE %s = %d AND %s = %d AND %s IN (%s)';
 		return sprintf($sSql, $this->prefix(),
@@ -616,24 +616,24 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param array $aThreadIds
 	 *
 	 * @return string
 	 */
-	public function verifyThreadIdsBelongToUser(\CUser $oUser, $aThreadIds)
+	public function verifyThreadIdsBelongToUser(\Aurora\Modules\Core\Classes\User $oUser, $aThreadIds)
 	{
 		$sSql = 'SELECT id_owner, id_helpdesk_thread FROM %sahd_threads WHERE %s IN (%s)';
 		return sprintf($sSql, $this->prefix(), $this->escapeColumn('id_helpdesk_thread'), implode(',', $aThreadIds));
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param array $aPostIds
 	 *
 	 * @return string
 	 */
-	public function verifyPostIdsBelongToUser(\CUser $oUser, $aPostIds)
+	public function verifyPostIdsBelongToUser(\Aurora\Modules\Core\Classes\User $oUser, $aPostIds)
 	{
 		$sSql = 'SELECT id_owner FROM %sahd_posts WHERE %s IN (%s)';
 		return sprintf($sSql, $this->prefix(), $this->escapeColumn('id_helpdesk_post'), implode(',', $aPostIds));
@@ -641,12 +641,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 
 	/**
 	 *
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param CHelpdeskThread $oThread
 	 * 
 	 * @return array
 	 */
-	private function buildPostsWhere(\CUser $oUser, $oThread)
+	private function buildPostsWhere(\Aurora\Modules\Core\Classes\User $oUser, $oThread)
 	{
 		$aWhere = array();
 		
@@ -663,12 +663,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 	
 	/**
-	 * @param \CUser $oHelpdeskUser
+	 * @param \Aurora\Modules\Core\Classes\User $oHelpdeskUser
 	 * @param CHelpdeskThread $oThread
 	 *
 	 * @return string
 	 */
-	public function getPostsCount(\CUser $oUser, $oThread)
+	public function getPostsCount(\Aurora\Modules\Core\Classes\User $oUser, $oThread)
 	{
 		$sSql = 'SELECT COUNT(id_helpdesk_post) as item_count FROM %sahd_posts WHERE deleted = 0 AND %s = %d AND %s = %d%s';
 		
@@ -681,12 +681,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param CHelpdeskThread $oThread
 	 *
 	 * @return string
 	 */
-	public function getExtPostsCount(\CUser $oUser, $oThread)
+	public function getExtPostsCount(\Aurora\Modules\Core\Classes\User $oUser, $oThread)
 	{
 		$sSql = 'SELECT COUNT(id_helpdesk_post) as item_count FROM %sahd_posts WHERE deleted = 0 AND type = 0 AND %s = %d AND %s = %d%s';
 
@@ -699,14 +699,14 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param CHelpdeskThread $oThread
 	 * @param int $iStartFromId Default value is **0**.
 	 * @param int $iLimit Default value is **20**.
 	 *
 	 * @return string
 	 */
-	public function getPosts(\CUser $oUser, $oThread, $iStartFromId = 0, $iLimit = 20)
+	public function getPosts(\Aurora\Modules\Core\Classes\User $oUser, $oThread, $iStartFromId = 0, $iLimit = 20)
 	{
 		$aMap = \Aurora\System\AbstractContainer::DbReadKeys(CHelpdeskPost::getStaticMap());
 		$aMap = array_map(array($this, 'escapeColumn'), $aMap);
@@ -732,12 +732,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 	
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param CHelpdeskThread $oHelpdeskThread
 	 *
 	 * @return string
 	 */
-	public function getAttachments(\CUser $oUser, CHelpdeskThread $oHelpdeskThread)
+	public function getAttachments(\Aurora\Modules\Core\Classes\User $oUser, CHelpdeskThread $oHelpdeskThread)
 	{
 		$aMap = \Aurora\System\AbstractContainer::DbReadKeys(CHelpdeskAttachment::getStaticMap());
 		$aMap = array_map(array($this, 'escapeColumn'), $aMap);
@@ -780,12 +780,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param CHelpdeskPost $oHelpdeskPost
 	 *
 	 * @return string
 	 */
-	public function createPost(\CUser $oUser, CHelpdeskPost $oHelpdeskPost)
+	public function createPost(\Aurora\Modules\Core\Classes\User $oUser, CHelpdeskPost $oHelpdeskPost)
 	{
 		$aResults = \Aurora\System\AbstractContainer::DbInsertArrays($oHelpdeskPost, $this->oHelper);
 
@@ -799,12 +799,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param CHelpdeskThread $oHelpdeskThread
 	 *
 	 * @return string
 	 */
-	public function clearThreadSeen(\CUser $oUser, $oHelpdeskThread)
+	public function clearThreadSeen(\Aurora\Modules\Core\Classes\User $oUser, $oHelpdeskThread)
 	{
 		$sSql = 'DELETE FROM %sahd_reads WHERE %s = %d AND %s = %d AND %s = %d';
 		return sprintf($sSql, $this->prefix(),
@@ -815,12 +815,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param CHelpdeskThread $oHelpdeskThread
 	 *
 	 * @return string
 	 */
-	public function setThreadSeen(\CUser $oUser, $oHelpdeskThread)
+	public function setThreadSeen(\Aurora\Modules\Core\Classes\User $oUser, $oHelpdeskThread)
 	{
 		$sSql = 'INSERT INTO %sahd_reads ( id_tenant, id_owner, id_helpdesk_thread, last_post_id ) VALUES ( %d, %d, %d, %d )';
 		return sprintf($sSql, $this->prefix(),
@@ -830,13 +830,13 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param int $iThreadID
 	 * @param int $iTimeoutInMin Default value is **5**.
 	 *
 	 * @return string
 	 */
-	public function getOnline(\CUser $oUser, $iThreadID, $iTimeoutInMin = 5)
+	public function getOnline(\Aurora\Modules\Core\Classes\User $oUser, $iThreadID, $iTimeoutInMin = 5)
 	{
 		$sSql = 'SELECT * FROM %sahd_online WHERE id_helpdesk_thread = %d AND id_tenant = %d AND ping_time > %d';
 		return sprintf($sSql, $this->prefix(), $iThreadID, $oUser->IdTenant,
@@ -845,12 +845,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 	}
 
 	/**
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param int $iThreadID
 	 *
 	 * @return string
 	 */
-	public function clearOnline(\CUser $oUser, $iThreadID)
+	public function clearOnline(\Aurora\Modules\Core\Classes\User $oUser, $iThreadID)
 	{
 		$sSql = 'DELETE FROM %sahd_online  WHERE id_helpdesk_user = %d AND id_tenant = %d AND id_helpdesk_thread = %d';
 		return sprintf($sSql, $this->prefix(),
@@ -873,12 +873,12 @@ class CApiHelpdeskCommandCreator extends \Aurora\System\Db\AbstractCommandCreato
 
 	/**
 	 * TODO email must be getted from account
-	 * @param \CUser $oUser
+	 * @param \Aurora\Modules\Core\Classes\User $oUser
 	 * @param int $iThreadID
 	 * 
 	 * @return string
 	 */
-	public function setOnline(\CUser $oUser, $iThreadID)
+	public function setOnline(\Aurora\Modules\Core\Classes\User $oUser, $iThreadID)
 	{
 		$sSql = 'INSERT INTO %sahd_online (id_helpdesk_thread, id_helpdesk_user, id_tenant, name, email, ping_time) VALUES ( %d, %d, %d, %s, %s, %d )';
 		
