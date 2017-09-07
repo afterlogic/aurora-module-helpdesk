@@ -40,14 +40,18 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		$this->oCoreDecorator = \Aurora\Modules\Core\Module::Decorator();
 		$this->oAuthDecorator = \Aurora\Modules\StandardAuth\Module::Decorator();
 		
-		$this->extendObject('Aurora\Modules\Core\Classes\User', array(
+		$this->extendObject(
+			'Aurora\Modules\Core\Classes\User', 
+			array(
 				'AllowEmailNotifications'	=> array('bool', $this->getConfig('AllowEmailNotifications', false)),
 				'Signature'					=> array('bool', $this->getConfig('Signature', '')),
 				'UseSignature'				=> array('bool', $this->getConfig('UseSignature', false)),
 			)
 		);
 
-		$this->extendObject('CTenant', array(
+		$this->extendObject(
+			'Aurora\Modules\Core\Classes\Tenant', 
+			array(
 				'AdminEmail'		=> array('string', ''),
 				'AdminEmailAccount'	=> array('string', ''),
 				'ClientIframeUrl'	=> array('string', ''),
