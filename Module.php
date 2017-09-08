@@ -28,12 +28,6 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 	
 	public function init() 
 	{
-		$this->incClass('account');
-		$this->incClass('attachment');
-		$this->incClass('post');
-		$this->incClass('thread');
-		$this->incClass('online');
-		
 		$this->oMainManager = new Managers\Main\Manager('', $this);
 		$this->oAccountsManager = new Managers\Accounts\Manager('', $this);
 		
@@ -330,7 +324,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 				if ($this->oAuthDecorator->SaveAccount($oAuthAccount))
 				{
 					//Create propertybag account
-					$oAccount = \Modules\HelpDesk\CAccount::createInstance();
+					$oAccount = Classes\Account::createInstance();
 					$oAccount->IdUser = $oEventResult->EntityId;
 					$oAccount->NotificationEmail = $Email;
 
@@ -409,7 +403,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 
 		$oAccount = $this->oAccountsManager->getAccountByEmail($mIdTenant, $Email);
 
-		if (!($oAccount instanceof \Modules\HelpDesk\CAccount))
+		if (!($oAccount instanceof Classes\Account))
 		{
 			throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Notifications::HelpdeskUnknownUser);
 		}
@@ -522,7 +516,9 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		{
 			$bIsNew = true;
 			
-			$oThread = \CThread::createInstance('CThread', $this->GetName());
+			$oThread = Classes\Thread::createInstance(
+				__NAMESPACE__ . '\Classes\Thread', $this->GetName()
+			);
 			$oThread->IdTenant = $oUser->IdTenant;
 			$oThread->IdOwner = $oUser->EntityId;
 			$oThread->Type = Enums\ThreadType::Pending;
@@ -540,7 +536,10 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 
 		if ($oThread && 0 < $oThread->EntityId)
 		{
-			$oPost = \CPost::createInstance('CPost', $this->GetName());
+			$oPost = Classes\Post::createInstance(
+				__NAMESPACE__ . '\Classes\Post', 
+				$this->GetName()
+			);
 			$oPost->IdTenant = $oUser->IdTenant;
 			$oPost->IdOwner = $oUser->EntityId;
 			$oPost->IdThread = $oThread->EntityId;
@@ -853,7 +852,9 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		$oOnlineManager->removeOldOnline();
 		$oOnlineManager->removeViewerOnline($oUser, $ThreadId);
 		
-		$oOnline = \COnline::createInstance('COnline', $this->GetName());
+		$oOnline = Classes\Online::createInstance(
+			__NAMESPACE__ . '\Classes\Online', $this->GetName()
+		);
 		$oOnline->IdThread = $ThreadId;
 		$oOnline->IdViewer = $oUser->EntityId;
 		$oOnline->Email = $oUser->PublicId;

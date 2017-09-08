@@ -7,6 +7,8 @@
  * For full statements of the license see LICENSE file.
  */
 
+namespace Aurora\Modules\HelpDesk\Classes;
+
 /**
  * @property int $IdHelpdeskUser
  * @property int $IdSystemUser
@@ -32,7 +34,7 @@
  * @package Helpdesk
  * @subpackage Classes
  */
-class CHelpdeskUser extends \Aurora\System\AbstractContainer
+class User extends \Aurora\System\AbstractContainer
 {
 	public function __construct()
 	{

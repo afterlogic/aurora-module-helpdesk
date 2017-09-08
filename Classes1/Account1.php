@@ -7,14 +7,14 @@
  * For full statements of the license see LICENSE file.
  */
 
-namespace Aurora\Modules\HelpDesk;
+namespace Aurora\Modules\HelpDesk\Classes;
 
 /**
  *
  * @package Users
  * @subpackage Classes
  */
-class CAccount extends \Aurora\System\EAV\Entity
+class Account extends \Aurora\System\EAV\Entity
 {
 	/**
 	 * Creates a new instance of the object.

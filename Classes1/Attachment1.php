@@ -7,6 +7,8 @@
  * For full statements of the license see LICENSE file.
  */
 
+namespace Aurora\Modules\HelpDesk\Classes;
+
 /**
  * @property int $IdAttachment
  * @property int $IdPost
@@ -22,7 +24,7 @@
  * @package Helpdesk
  * @subpackage Classes
  */
-class CHelpdeskAttachment extends \Aurora\System\EAV\Entity
+class Attachment extends \Aurora\System\EAV\Entity
 {
 	public function __construct($sModule)
 	{

@@ -7,6 +7,8 @@
  * For full statements of the license see LICENSE file.
  */
 
+namespace Aurora\Modules\HelpDesk\Classes;
+
 /**
  * @property string $ThreadHash
  * @property int $IdTenant
@@ -24,7 +26,7 @@
  * @package Helpdesk
  * @subpackage Classes
  */
-class CThread extends \Aurora\System\EAV\Entity
+class Thread extends \Aurora\System\EAV\Entity
 {
 	public function __construct($sModule)
 	{

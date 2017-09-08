@@ -7,6 +7,8 @@
  * For full statements of the license see LICENSE file.
  */
 
+namespace Aurora\Modules\HelpDesk\Classes;
+
 /**
  * @property int $IdThread
  * @property int $IdTenant
@@ -21,7 +23,7 @@
  * @package Helpdesk
  * @subpackage Classes
  */
-class CPost extends \Aurora\System\EAV\Entity
+class Post extends \Aurora\System\EAV\Entity
 {
 	/**
 	 * @var array

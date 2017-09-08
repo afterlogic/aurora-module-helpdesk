@@ -7,13 +7,15 @@
  * For full statements of the license see LICENSE file.
  */
 
+namespace Aurora\Modules\HelpDesk\Classes;
+
 /**
  * @property int $IdThread
  * @property int $IdViewer
  * @property string $Email
  * @property datetime $PingTime
  */
-class COnline extends \Aurora\System\EAV\Entity
+class Online extends \Aurora\System\EAV\Entity
 {
 	public function __construct($sModule)
 	{
