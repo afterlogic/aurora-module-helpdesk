@@ -13,12 +13,13 @@
  * @package Helpdesk
  * @subpackage Storages
  */
-class CApiHelpdeskMainStorage extends \Aurora\System\Managers\AbstractManagerStorage
+class CApiHelpdeskMainStorage extends \Aurora\System\Managers\AbstractStorage
 {
 	/**
-	 * @param \Aurora\System\Managers\GlobalManager &$oManager
+	 * 
+	 * @param \Aurora\System\Managers\AbstractManager $oManager
 	 */
-	public function __construct($sStorageName, \Aurora\System\Managers\AbstractManager &$oManager)
+	public function __construct(\Aurora\System\Managers\AbstractManager &$oManager)
 	{
 		parent::__construct('helpdesk', $sStorageName, $oManager);
 	}

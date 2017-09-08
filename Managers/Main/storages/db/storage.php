@@ -26,7 +26,8 @@ class CApiHelpdeskMainDbStorage extends CApiHelpdeskMainStorage
 	protected $oCommandCreator;
 
 	/**
-	 * @param \Aurora\System\Managers\GlobalManager &$oManager
+	 * 
+	 * @param \Aurora\System\Managers\AbstractManager $oManager
 	 */
 	public function __construct(\Aurora\System\Managers\AbstractManager &$oManager)
 	{
