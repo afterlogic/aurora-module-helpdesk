@@ -517,7 +517,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 			$bIsNew = true;
 			
 			$oThread = Classes\Thread::createInstance(
-				__NAMESPACE__ . '\Classes\Thread', $this->GetName()
+				$this->getNamespace() . '\Classes\Thread', $this->GetName()
 			);
 			$oThread->IdTenant = $oUser->IdTenant;
 			$oThread->IdOwner = $oUser->EntityId;
@@ -537,7 +537,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		if ($oThread && 0 < $oThread->EntityId)
 		{
 			$oPost = Classes\Post::createInstance(
-				__NAMESPACE__ . '\Classes\Post', 
+				$this->getNamespace() . '\Classes\Post',
 				$this->GetName()
 			);
 			$oPost->IdTenant = $oUser->IdTenant;
@@ -853,7 +853,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		$oOnlineManager->removeViewerOnline($oUser, $ThreadId);
 		
 		$oOnline = Classes\Online::createInstance(
-			__NAMESPACE__ . '\Classes\Online', $this->GetName()
+			$this->getNamespace() . '\Classes\Online', $this->GetName()
 		);
 		$oOnline->IdThread = $ThreadId;
 		$oOnline->IdViewer = $oUser->EntityId;
