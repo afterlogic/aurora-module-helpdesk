@@ -32,13 +32,13 @@ class Thread extends \Aurora\System\EAV\Entity
 	{
 		$this->aStaticMap = array(
 			'ThreadHash'		=> array('string', trim(base_convert(md5(microtime(true).rand(1000, 9999)), 16, 32), '0')),
-			'IdTenant'			=> array('int', 0, true),
+			'IdTenant'			=> array('int', 0),
 			'IdOwner'			=> array('int', 0),
-			'IsArchived'		=> array('bool', false, true),
+			'IsArchived'		=> array('bool', false),
 			'Type'				=> array('int', \Aurora\Modules\HelpDesk\Enums\ThreadType::None),
 			'Subject'			=> array('string', ''),
 			'Created'			=> array('datetime', date('Y-m-d H:i:s')),
-			'Updated'			=> array('datetime', date('Y-m-d H:i:s')),
+			'Updated'			=> array('datetime', date('Y-m-d H:i:s'), true),
 			'PostCount'			=> array('int', 0),
 			'Notificated'		=> array('bool', false),
 			'HasAttachments'	=> array('bool', false),

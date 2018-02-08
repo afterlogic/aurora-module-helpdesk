@@ -38,13 +38,13 @@ class Post extends \Aurora\System\EAV\Entity
 	public function __construct($sModule)
 	{
 		$this->aStaticMap = array(
-			'IdThread'		=> array('int', 0, true),
+			'IdThread'		=> array('int', 0),
 			'IdTenant'		=> array('int', 0),
 			'IdOwner'		=> array('int', 0),
-			'IdPost'		=> array('int', 0, true),
+			'IdPost'		=> array('int', 0),
 			'Type'			=> array('int', \Aurora\Modules\HelpDesk\Enums\PostType::Normal),
 			'SystemType'	=> array('int', \Aurora\Modules\HelpDesk\Enums\PostSystemType::None),
-			'Created'		=> array('datetime', date('Y-m-d H:i:s')),
+			'Created'		=> array('datetime', date('Y-m-d H:i:s'), true),
 			'Text'			=> array('string', '')
 		);
 		parent::__construct($sModule);

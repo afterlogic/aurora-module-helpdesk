@@ -20,10 +20,10 @@ class Online extends \Aurora\System\EAV\Entity
 	public function __construct($sModule)
 	{
 		$this->aStaticMap = array(
-			'IdThread'		=> array('int', 0, true),
-			'IdViewer'		=> array('int', 0, true),
+			'IdThread'		=> array('int', 0),
+			'IdViewer'		=> array('int', 0),
 			'Email'			=> array('string', ''),
-			'PingTime'		=> array('datetime', date('Y-m-d H:i:s'), true),
+			'PingTime'		=> array('datetime', date('Y-m-d H:i:s')),
 		);
 		parent::__construct($sModule);
 	}
