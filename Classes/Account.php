@@ -26,7 +26,7 @@ class Account extends \Aurora\System\EAV\Entity
 		$this->setStaticMap(array(
 			'IsDisabled'	=> array('bool', false),
 			'IdUser'		=> array('int', 0),
-			'Login'			=> array('string', ''),
+			'Login'			=> array('string', '', true),
 			'Password'		=> array('encrypted', ''),
 			'NotificationEmail' => array('string', '')
 			/* moved from user */

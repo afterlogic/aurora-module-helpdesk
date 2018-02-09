@@ -44,7 +44,7 @@ class Post extends \Aurora\System\EAV\Entity
 			'IdPost'		=> array('int', 0),
 			'Type'			=> array('int', \Aurora\Modules\HelpDesk\Enums\PostType::Normal),
 			'SystemType'	=> array('int', \Aurora\Modules\HelpDesk\Enums\PostSystemType::None),
-			'Created'		=> array('datetime', date('Y-m-d H:i:s')),
+			'Created'		=> array('datetime', date('Y-m-d H:i:s'), true),
 			'Text'			=> array('string', '')
 		);
 		parent::__construct($sModule);

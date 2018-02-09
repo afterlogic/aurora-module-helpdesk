@@ -38,7 +38,7 @@ class Thread extends \Aurora\System\EAV\Entity
 			'Type'				=> array('int', \Aurora\Modules\HelpDesk\Enums\ThreadType::None),
 			'Subject'			=> array('string', ''),
 			'Created'			=> array('datetime', date('Y-m-d H:i:s')),
-			'Updated'			=> array('datetime', date('Y-m-d H:i:s')),
+			'Updated'			=> array('datetime', date('Y-m-d H:i:s'), true),
 			'PostCount'			=> array('int', 0),
 			'Notificated'		=> array('bool', false),
 			'HasAttachments'	=> array('bool', false),
