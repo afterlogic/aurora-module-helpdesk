@@ -960,7 +960,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$mThread = false;
 		try
 		{
-			$mThread = $this->oEavManager->getEntity($iThreadId);
+			$mThread = $this->oEavManager->getEntity((int)$iThreadId, $this->getModule()->getNamespace() . '\Classes\Thread');
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
