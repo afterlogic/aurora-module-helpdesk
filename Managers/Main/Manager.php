@@ -1132,7 +1132,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 			
 			$oApiFileCache = /* @var $oApiFileCache \Aurora\System\Managers\Filecache */ new \Aurora\System\Managers\Filecache();
 			$oApiFilestorage = /* @var $oApiFileCache \CApiFilestorageManager */ \Aurora\System\Api::Manager('filestorage');
-			$oApiIntegrator = /* @var $oApiIntegrator \Aurora\Modules\Core\Managers\Integrator */ new \Aurora\Modules\Core\Managers\Integrator();
+			$oApiIntegrator = /* @var $oApiIntegrator \Aurora\Modules\Core\Managers\Integrator */ \Aurora\Modules\Core\Managers\Integrator::getInstance();
 			
 			if ($oApiUsers && $oApiMail && $oApiFileCache)
 			{
