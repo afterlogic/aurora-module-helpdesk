@@ -265,7 +265,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
 		\setcookie('aft-cache-ctrl', '', \time() - 3600);
-		$oApiIntegrator = new \Aurora\Modules\Core\Managers\Integrator();
+		$oApiIntegrator = \Aurora\Modules\Core\Managers\Integrator::getInstance();
 		$oApiIntegrator->logoutHelpdeskUser();
 
 		return true;
