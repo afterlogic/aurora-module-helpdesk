@@ -1242,7 +1242,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 													$oApiMail->directMessageToStream($oAccount,
 														function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($oUser, &$sTempName, $oApiFileCache) {
 
-															if (!$oApiFileCache->putFile($oUser, $sTempName, $rResource))
+															if (!$oApiFileCache->putFile($oUser, $sTempName, $rResource, '', 'HelpDesk'))
 															{
 																$sTempName = '';
 															}
@@ -1250,10 +1250,10 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 														}, $oAttachment->getFolder(), $oAttachment->getUid(), $oAttachment->MimeIndex());
 
 
-													$rData = 0 < \strlen($sTempName) ? $oApiFileCache->getFile($oUser, $sTempName) : null;
+													$rData = 0 < \strlen($sTempName) ? $oApiFileCache->getFile($oUser, $sTempName, '', 'HelpDesk') : null;
 													if ($rData)
 													{
-														$iFileSize = $oApiFileCache->fileSize($oUser, $sTempName);
+														$iFileSize = $oApiFileCache->fileSize($oUser, $sTempName, '', 'HelpDesk');
 
 														$sThreadID = (string) $oThread->IdThread;
 														$sThreadID = str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
@@ -1282,7 +1282,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 														$oAttachment->SizeInBytes = $iFileSize;
 														$oAttachment->encodeHash($oUser, $sThreadFolderName);
 
-														$oApiFileCache->clear($oUser, $sTempName);
+														$oApiFileCache->clear($oUser, $sTempName, '', 'HelpDesk');
 
 														$aResultAttachment[] = $oAttachment;
 													}
@@ -1398,7 +1398,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 															$oApiMail->directMessageToStream($oAccount,
 																function($rResource, $sContentType, $sFileName, $sMimeIndex = '') use ($oUser, &$sTempName, $oApiFileCache) {
 
-																	if (!$oApiFileCache->putFile($oUser, $sTempName, $rResource))
+																	if (!$oApiFileCache->putFile($oUser, $sTempName, $rResource, '', 'HelpDesk'))
 																	{
 																		$sTempName = '';
 																	}
@@ -1406,10 +1406,10 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 																}, $oAttachment->getFolder(), $oAttachment->getUid(), $oAttachment->MimeIndex());
 
 
-															$rData = 0 < \strlen($sTempName) ? $oApiFileCache->getFile($oUser, $sTempName) : null;
+															$rData = 0 < \strlen($sTempName) ? $oApiFileCache->getFile($oUser, $sTempName, '', 'HelpDesk') : null;
 															if ($rData)
 															{
-																$iFileSize = $oApiFileCache->fileSize($oUser, $sTempName);
+																$iFileSize = $oApiFileCache->fileSize($oUser, $sTempName, '', 'HelpDesk');
 
 																$sThreadID = (string) $oThread->IdThread;
 																$sThreadID = str_pad($sThreadID, 2, '0', STR_PAD_LEFT);
@@ -1438,7 +1438,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 																$oAttachment->SizeInBytes = $iFileSize;
 																$oAttachment->encodeHash($oUser, $sThreadFolderName);
 
-																$oApiFileCache->clear($oUser, $sTempName);
+																$oApiFileCache->clear($oUser, $sTempName, '', 'HelpDesk');
 
 																$aResultAttachment[] = $oAttachment;
 															}
