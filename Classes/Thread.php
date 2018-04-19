@@ -1,8 +1,5 @@
 <?php
 /**
- * @copyright Copyright (c) 2017, Afterlogic Corp.
- * @license AfterLogic Software License
- *
  * This code is licensed under AfterLogic Software License.
  * For full statements of the license see LICENSE file.
  */
@@ -10,6 +7,9 @@
 namespace Aurora\Modules\HelpDesk\Classes;
 
 /**
+ * @license https://afterlogic.com/products/common-licensing AfterLogic Software License
+ * @copyright Copyright (c) 2018, Afterlogic Corp.
+ *
  * @property string $ThreadHash
  * @property int $IdTenant
  * @property int $IdOwner
