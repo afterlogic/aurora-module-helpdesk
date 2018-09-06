@@ -178,7 +178,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
 		
-		\setcookie('aft-cache-ctrl', '', \time() - 3600);
+		@\setcookie('aft-cache-ctrl', '', \strtotime('-1 hour'), \Aurora\System\Api::getCookiePath());
 		$sTenantName = \Aurora\System\Api::getTenantName();
 
 		if (0 === \strlen($Login) || 0 === \strlen($Password))
@@ -264,7 +264,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
-		\setcookie('aft-cache-ctrl', '', \time() - 3600);
+		@\setcookie('aft-cache-ctrl', '', \strtotime('-1 hour'), \Aurora\System\Api::getCookiePath());
 		$oApiIntegrator = \Aurora\Modules\Core\Managers\Integrator::getInstance();
 		$oApiIntegrator->logoutHelpdeskUser();
 
@@ -1041,7 +1041,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 	{
 		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Customer);
 		
-		\setcookie('aft-cache-ctrl', '', \time() - 3600);
+		@\setcookie('aft-cache-ctrl', '', \strtotime('-1 hour'), \Aurora\System\Api::getCookiePath());
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 
 		$oUser->Name = \trim($Name);
