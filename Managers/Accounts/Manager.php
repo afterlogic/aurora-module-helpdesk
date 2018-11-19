@@ -58,7 +58,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 				$iAccountId = (int) $iAccountId;
 				if (null === $oAccount)
 				{
-					$oAccount = $this->oEavManager->getEntity($iAccountId, $this->getModule()->getNamespace() . '\Classes\Account');
+					$oAccount = $this->oEavManager->getEntity($iAccountId, $this->getModule()::getNamespace() . '\Classes\Account');
 				}
 			}
 			else

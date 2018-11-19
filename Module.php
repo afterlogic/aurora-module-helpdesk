@@ -34,18 +34,18 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		$this->oCoreDecorator = \Aurora\Modules\Core\Module::Decorator();
 		$this->oAuthDecorator = \Aurora\Modules\StandardAuth\Module::Decorator();
 		
-		$this->extendObject(
-			'Aurora\Modules\Core\Classes\User', 
-			array(
+		\Aurora\Modules\Core\Classes\User::extend(
+			self::GetName(),
+			[
 				'AllowEmailNotifications'	=> array('bool', $this->getConfig('AllowEmailNotifications', false)),
 				'Signature'					=> array('bool', $this->getConfig('Signature', '')),
 				'UseSignature'				=> array('bool', $this->getConfig('UseSignature', false)),
-			)
+			]
 		);
 
-		$this->extendObject(
-			'Aurora\Modules\Core\Classes\Tenant', 
-			array(
+		\Aurora\Modules\Core\Classes\Tenant::extend(
+			self::GetName(),
+			[
 				'AdminEmail'		=> array('string', ''),
 				'AdminEmailAccount'	=> array('string', ''),
 				'ClientIframeUrl'	=> array('string', ''),
@@ -57,9 +57,9 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 				'StyleText'			=> array('string', ''),
 				'AllowFetcher'		=> array('bool', false),
 				'FetcherTimer'		=> array('int', 0)
-			)
+			]
 		);
-		
+
 //		$this->subscribeEvent('HelpDesk::Login', array($this, 'checkAuth'));
 	}
 	
@@ -517,7 +517,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 			$bIsNew = true;
 			
 			$oThread = Classes\Thread::createInstance(
-				$this->getNamespace() . '\Classes\Thread', $this->GetName()
+				$this::getNamespace() . '\Classes\Thread', self::GetName()
 			);
 			$oThread->IdTenant = $oUser->IdTenant;
 			$oThread->IdOwner = $oUser->EntityId;
@@ -537,8 +537,8 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		if ($oThread && 0 < $oThread->EntityId)
 		{
 			$oPost = Classes\Post::createInstance(
-				$this->getNamespace() . '\Classes\Post',
-				$this->GetName()
+				self::getNamespace() . '\Classes\Post',
+				self::GetName()
 			);
 			$oPost->IdTenant = $oUser->IdTenant;
 			$oPost->IdOwner = $oUser->EntityId;
@@ -577,7 +577,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 //						$this->oApiFilestorage->createFile($oUser,
 //							\Aurora\System\Enums\FileStorageType::Corporate, $sThreadFolderName, $sUploadName, $rData, false);
 //
-//						$oAttachment = \CHelpdeskAttachment::createInstance('CHelpdeskAttachment', $this->GetName());
+//						$oAttachment = \CHelpdeskAttachment::createInstance('CHelpdeskAttachment', self::GetName());
 //						$oAttachment->IdThread = $oThread->IdThread;
 //						$oAttachment->IdPost = $oPost->IdPost;
 //						$oAttachment->IdOwner = $oUser->EntityId;
@@ -853,7 +853,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		$oOnlineManager->removeViewerOnline($oUser, $ThreadId);
 		
 		$oOnline = Classes\Online::createInstance(
-			$this->getNamespace() . '\Classes\Online', $this->GetName()
+			$this::getNamespace() . '\Classes\Online', self::GetName()
 		);
 		$oOnline->IdThread = $ThreadId;
 		$oOnline->IdViewer = $oUser->EntityId;
@@ -1068,9 +1068,9 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		{
 			if ($oUser->Role === \Aurora\System\Enums\UserRole::NormalUser)
 			{
-				$oUser->{$this->GetName().'::AllowEmailNotifications'} = $AllowEmailNotifications;
-				$oUser->{$this->GetName().'::Signature'} = $Signature;
-				$oUser->{$this->GetName().'::UseSignature'} = $UseSignature;
+				$oUser->{self::GetName().'::AllowEmailNotifications'} = $AllowEmailNotifications;
+				$oUser->{self::GetName().'::Signature'} = $Signature;
+				$oUser->{self::GetName().'::UseSignature'} = $UseSignature;
 				return $this->oCoreDecorator->UpdateUserObject($oUser);
 			}
 			if ($oUser->Role === \Aurora\System\Enums\UserRole::SuperAdmin)

@@ -960,7 +960,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$mThread = false;
 		try
 		{
-			$mThread = $this->oEavManager->getEntity((int)$iThreadId, $this->getModule()->getNamespace() . '\Classes\Thread');
+			$mThread = $this->oEavManager->getEntity((int)$iThreadId, $this->getModule()::getNamespace() . '\Classes\Thread');
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{
@@ -1199,7 +1199,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 										}
 										else
 										{
-											$oThread = \CThread::createInstance('CThread', $this->GetModule()->GetName());
+											$oThread = \CThread::createInstance('CThread', $this->GetModule()::GetName());
 											$oThread->IdTenant = $iIdTenant;
 											$oThread->IdOwner = $oUser->iObjectId;
 											$oThread->Type = \Aurora\Modules\HelpDesk\Enums\ThreadType::Pending;
@@ -1272,7 +1272,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 															@fclose($rData);
 														}
 
-														$oAttachment = \CHelpdeskAttachment::createInstance('CHelpdeskAttachment', $this->GetModule()->GetName());
+														$oAttachment = \CHelpdeskAttachment::createInstance('CHelpdeskAttachment', $this->GetModule()::GetName());
 														$oAttachment->IdThread = $oThread->IdThread;
 														$oAttachment->IdPost = $oPost->IdPost;
 														$oAttachment->IdOwner = $oUser->iObjectId;
@@ -1428,7 +1428,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 																	@fclose($rData);
 																}
 
-																$oAttachment = \CHelpdeskAttachment::createInstance('CHelpdeskAttachment', $this->GetModule()->GetName());
+																$oAttachment = \CHelpdeskAttachment::createInstance('CHelpdeskAttachment', $this->GetModule()::GetName());
 																$oAttachment->IdThread = $oThread->IdThread;
 																$oAttachment->IdPost = $oPost->IdPost;
 																$oAttachment->IdOwner = $oUser->iObjectId;
