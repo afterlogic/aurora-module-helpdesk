@@ -49,7 +49,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$this->oApiTenants = null;
 		if ($oModule instanceof \Aurora\System\Module\AbstractModule)
 		{
-			$this->oEavManager = new \Aurora\System\Managers\Eav();
+			$this->oEavManager = \Aurora\System\Managers\Eav::getInstance();
 		}
 	}
 
@@ -960,7 +960,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 		$mThread = false;
 		try
 		{
-			$mThread = $this->oEavManager->getEntity((int)$iThreadId, \Aurora\Modules\HelpDesk\Module::getNamespace() . '\Classes\Thread');
+			$mThread = $this->oEavManager->getEntity((int)$iThreadId, \Aurora\Modules\HelpDesk\Classes\Thread::class);
 		}
 		catch (\Aurora\System\Exceptions\BaseException $oException)
 		{

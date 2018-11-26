@@ -35,7 +35,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	{
 		parent::__construct($oModule);
 		
-		$this->oEavManager = new \Aurora\System\Managers\Eav();
+		$this->oEavManager = \Aurora\System\Managers\Eav::getInstance();
 		
 		$this->oCoreDecorator = \Aurora\Modules\Core\Module::Decorator();
 		
@@ -58,7 +58,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 				$iAccountId = (int) $iAccountId;
 				if (null === $oAccount)
 				{
-					$oAccount = $this->oEavManager->getEntity($iAccountId, \Aurora\Modules\HelpDesk\Module::getNamespace() . '\Classes\Account');
+					$oAccount = $this->oEavManager->getEntity($iAccountId, \Aurora\Modules\HelpDesk\Classes\Account::class);
 				}
 			}
 			else
