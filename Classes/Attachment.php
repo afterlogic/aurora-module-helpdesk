@@ -102,7 +102,7 @@ class Attachment extends \Aurora\System\EAV\Entity
 	public function toResponseArray()
 	{
 		$oSettings =& \Aurora\System\Api::GetSettings();
-		$iThumbnailLimit = ((int) $oSettings->GetConf('ThumbnailMaxFileSizeMb', 5)) * 1024 * 1024;
+		$iThumbnailLimit = ((int) $oSettings->GetValue('ThumbnailMaxFileSizeMb', 5)) * 1024 * 1024;
 		return array(
 			'IdAttachment' => $this->IdAttachment,
 			'IdPost' => $this->IdPost,
@@ -110,7 +110,7 @@ class Attachment extends \Aurora\System\EAV\Entity
 			'SizeInBytes' => $this->SizeInBytes,
 			'FileName' => $this->FileName,
 			'MimeType' => \MailSo\Base\Utils::MimeContentType($this->FileName),
-			'Thumb' => $oSettings->GetConf('AllowThumbnail', true) &&
+			'Thumb' => $oSettings->GetValue('AllowThumbnail', true) &&
 				$this->SizeInBytes < $iThumbnailLimit &&
 				\Aurora\System\Utils::IsGDImageMimeTypeSuppoted(
 					\MailSo\Base\Utils::MimeContentType($this->FileName), $this->FileName),

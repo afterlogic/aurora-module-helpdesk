@@ -107,47 +107,47 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		
 //		if (isset($oMap['HelpdeskFacebookAllow'][2]) && !$oMap['HelpdeskFacebookAllow'][2])
 //		{
-//			$this->HelpdeskFacebookAllow = !!$oSettings->GetConf('Helpdesk/FacebookAllow');
+//			$this->HelpdeskFacebookAllow = !!$oSettings->GetValue('Helpdesk/FacebookAllow');
 //		}
 //		
 //		if (isset($oMap['HelpdeskFacebookId'][2]) && !$oMap['HelpdeskFacebookId'][2])
 //		{
-//			$this->HelpdeskFacebookId = (string) $oSettings->GetConf('Helpdesk/FacebookId');
+//			$this->HelpdeskFacebookId = (string) $oSettings->GetValue('Helpdesk/FacebookId');
 //		}
 //		
 //		if (isset($oMap['HelpdeskFacebookSecret'][2]) && !$oMap['HelpdeskFacebookSecret'][2])
 //		{
-//			$this->HelpdeskFacebookSecret = (string) $oSettings->GetConf('Helpdesk/FacebookSecret');
+//			$this->HelpdeskFacebookSecret = (string) $oSettings->GetValue('Helpdesk/FacebookSecret');
 //		}
 //		
 //		if (isset($oMap['HelpdeskGoogleAllow'][2]) && !$oMap['HelpdeskGoogleAllow'][2])
 //		{
-//			$this->HelpdeskGoogleAllow = !!$oSettings->GetConf('Helpdesk/GoogleAllow');
+//			$this->HelpdeskGoogleAllow = !!$oSettings->GetValue('Helpdesk/GoogleAllow');
 //		}
 //		
 //		if (isset($oMap['HelpdeskGoogleId'][2]) && !$oMap['HelpdeskGoogleId'][2])
 //		{
-//			$this->HelpdeskGoogleId = (string) $oSettings->GetConf('Helpdesk/GoogleId');
+//			$this->HelpdeskGoogleId = (string) $oSettings->GetValue('Helpdesk/GoogleId');
 //		}
 //		
 //		if (isset($oMap['HelpdeskGoogleSecret'][2]) && !$oMap['HelpdeskGoogleSecret'][2])
 //		{
-//			$this->HelpdeskGoogleSecret = (string) $oSettings->GetConf('Helpdesk/GoogleSecret');
+//			$this->HelpdeskGoogleSecret = (string) $oSettings->GetValue('Helpdesk/GoogleSecret');
 //		}
 //		
 //		if (isset($oMap['HelpdeskTwitterAllow'][2]) && !$oMap['HelpdeskTwitterAllow'][2])
 //		{
-//			$this->HelpdeskTwitterAllow = !!$oSettings->GetConf('Helpdesk/TwitterAllow');
+//			$this->HelpdeskTwitterAllow = !!$oSettings->GetValue('Helpdesk/TwitterAllow');
 //		}
 //		
 //		if (isset($oMap['HelpdeskTwitterId'][2]) && !$oMap['HelpdeskTwitterId'][2])
 //		{
-//			$this->HelpdeskTwitterId = (string) $oSettings->GetConf('Helpdesk/TwitterId');
+//			$this->HelpdeskTwitterId = (string) $oSettings->GetValue('Helpdesk/TwitterId');
 //		}
 //		
 //		if (isset($oMap['HelpdeskTwitterSecret'][2]) && !$oMap['HelpdeskTwitterSecret'][2])
 //		{
-//			$this->HelpdeskTwitterSecret = (string) $oSettings->GetConf('Helpdesk/TwitterSecret');
+//			$this->HelpdeskTwitterSecret = (string) $oSettings->GetValue('Helpdesk/TwitterSecret');
 //		}
 	}
 	
