@@ -8,7 +8,7 @@ namespace Aurora\Modules\HelpDesk\Enums;
 
 /**
  * @license https://afterlogic.com/products/common-licensing AfterLogic Software License
- * @copyright Copyright (c) 2018, Afterlogic Corp.
+ * @copyright Copyright (c) 2019, Afterlogic Corp.
  */
 class ThreadFilterType extends \Aurora\System\Enums\AbstractEnumeration
 {

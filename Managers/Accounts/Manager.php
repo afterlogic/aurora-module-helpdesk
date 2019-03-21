@@ -12,7 +12,7 @@ use \Modules\HelpDesk\CAccount as CHelpDeskAccount;
  * CApiAccountsManager class summary
  
  * @license https://afterlogic.com/products/common-licensing AfterLogic Software License
- * @copyright Copyright (c) 2018, Afterlogic Corp.
+ * @copyright Copyright (c) 2019, Afterlogic Corp.
  * 
  * @package Accounts
  */

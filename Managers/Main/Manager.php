@@ -10,7 +10,7 @@ namespace Aurora\Modules\HelpDesk\Managers\Main;
  * CApiHelpdeskManager class summary
  *
  * @license https://afterlogic.com/products/common-licensing AfterLogic Software License
- * @copyright Copyright (c) 2018, Afterlogic Corp.
+ * @copyright Copyright (c) 2019, Afterlogic Corp.
  *
  * @package Helpdesk
  */
