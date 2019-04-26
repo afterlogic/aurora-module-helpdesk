@@ -9,8 +9,6 @@ namespace Aurora\Modules\HelpDesk\Managers\Accounts;
 use \Modules\HelpDesk\CAccount as CHelpDeskAccount;
 
 /**
- * CApiAccountsManager class summary
- 
  * @license https://afterlogic.com/products/common-licensing Afterlogic Software License
  * @copyright Copyright (c) 2019, Afterlogic Corp.
  * 
