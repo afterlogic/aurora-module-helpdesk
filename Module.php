@@ -1066,7 +1066,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 		if ($oUser)
 		{
-			if ($oUser->Role === \Aurora\System\Enums\UserRole::NormalUser)
+			if ($oUser->isNormalOrTenant())
 			{
 				$oUser->{self::GetName().'::AllowEmailNotifications'} = $AllowEmailNotifications;
 				$oUser->{self::GetName().'::Signature'} = $Signature;

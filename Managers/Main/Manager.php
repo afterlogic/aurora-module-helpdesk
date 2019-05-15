@@ -416,7 +416,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	
 	public function isAgent(\Aurora\Modules\Core\Classes\User $oUser)
 	{
-		return !empty($oUser) && $oUser->Role === \Aurora\System\Enums\UserRole::NormalUser;
+		return !empty($oUser) && $oUser->isNormalOrTenant();
 	}
 	
 	/**
