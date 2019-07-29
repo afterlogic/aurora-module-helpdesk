@@ -938,7 +938,7 @@ class Module extends \Aurora\System\Module\AbstractLicensedModule
 //		{
 //			foreach ($aThreadsList as &$oItem)
 //			{
-//				$oOwnerUser = $this->oCoreDecorator->GetUser($oItem->IdOwner);
+//				$oOwnerUser = \Aurora\Modules\Core\Module::Decorator()->GetUserUnchecked($oItem->IdOwner);
 //				$oOwnerAccount = $this->oAccountsManager->getAccountByUserId($oItem->IdOwner);
 //				
 //				if ($oOwnerUser)

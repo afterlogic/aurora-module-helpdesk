@@ -529,10 +529,15 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 	 */
 	public function getHelpdeskMainSettings($iIdTenant)
 	{
-		$oApiTenant = $this->GetModule()->oCoreDecorator;
-		
-		$oTenant = /* @var $oTenant CTenant */ $oApiTenant ? 
-			(0 < $iIdTenant ? $oApiTenant->GetTenantById($iIdTenant) : $oApiTenant->GetDefaultGlobalTenant()) : null;
+		$oTenant = null;
+		if (0 < $iIdTenant)
+		{
+			$oTenant = \Aurora\Modules\Core\Module::Decorator()->GetTenantUnchecked($iIdTenant);
+		}
+		else
+		{
+			$oTenant = \Aurora\Modules\Core\Module::Decorator()->GetDefaultGlobalTenant();
+		}
 
 		$sClientIframeUrl = '';
 		$sAdminEmail = '';
@@ -1702,7 +1707,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 //		{
 //			$oFromAccount = null;
 //			
-//			$oUser = $this->oCoreDecorator->GetUser($oHelpdeskAccount->IdUser);
+//			$oUser = \Aurora\Modules\Core\Module::Decorator()->GetUserUnchecked($oHelpdeskAccount->IdUser);
 //			$aData = $this->getHelpdeskMainSettings($oUser->IdTenant);
 //			if (!empty($aData['AdminEmailAccount']))
 //			{

@@ -137,7 +137,7 @@ class Manager extends \Aurora\System\Managers\AbstractManager
 //				$aUsserIds = Underscode\Types\Arrays::pluck($aResults, 'IdUser');
 				
 				foreach ($aResults as $key => $oAccount) {
-					$oUser = $this->oCoreDecorator->GetUser($oAccount->IdUser);
+					$oUser = \Aurora\Modules\Core\Module::Decorator()->GetUserUnchecked($oAccount->IdUser);
 					
 					if ($oUser && $oUser->IdTenant !== $sIdTenant)
 					{
